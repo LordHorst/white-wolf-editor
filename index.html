@@ -317,8 +317,9 @@
                         <section>
                             <div className="relative flex justify-center items-center border-y border-emerald-900/50 py-1 mb-6">
                                 <h2 className="text-xl font-bold uppercase tracking-[0.3em] text-emerald-500">Fähigkeiten</h2>
+                                <button onClick={() => setShowAbilInfo(!showAbilInfo)} className="absolute right-0 w-6 h-6 rounded-full border border-emerald-700 text-emerald-600 flex items-center justify-center text-xs font-bold">i</button>
                             </div>
-                            <InfoBox isOpen={showAttrInfo} text="Attribute werden nach dem Schema 13 / 9 / 5 verteilt." />
+                            <InfoBox isOpen={showAbilInfo} text="Attribute werden nach dem Schema 13 / 9 / 5 verteilt." />
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
                                 {Object.entries(character.abilities).map(([cat, fields]) => (
                                     <div key={cat} className="space-y-1">
@@ -338,8 +339,9 @@
                         <section>
                             <div className="relative flex justify-center items-center border-y border-emerald-900/50 py-1 mb-6">
                                 <h2 className="text-xl font-bold uppercase tracking-[0.3em] text-emerald-500">Vorteile</h2>
+                                <button onClick={() => setShowAdvInfo(!showAdvInfo)} className="absolute right-0 w-6 h-6 rounded-full border border-emerald-700 text-emerald-600 flex items-center justify-center text-xs font-bold">i</button>
                             </div>
-                            <InfoBox isOpen={showAttrInfo} text="Attribute werden verteilt nach dem Schema Disziplinen: 3, Gesellschaftlich: 5, Geistig: 7 (zusätzlich zum freien ersten Punkt)." />
+                            <InfoBox isOpen={showAdvInfo} text="Attribute werden verteilt nach dem Schema Disziplinen: 3, Gesellschaftlich: 5, Geistig: 7 (zusätzlich zum freien ersten Punkt)." />
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
                                 {/* Disziplinen, Hintergründe, Tugenden */}
                                 <div>
