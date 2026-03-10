@@ -167,12 +167,12 @@
                         { label: "Außer Gefecht", penalty: "X", checked: false, disabled: true },
                     ]
                 },
-                extra: { vorzügeSchwächen: "", erfahrung: "" }
+                extra: { vorzügeSchwächen: [], erfahrung: "" }
             });
-
             const [showAttrInfo, setShowAttrInfo] = useState(false);
             const [showAbilInfo, setShowAbilInfo] = useState(false);
             const [showAdvInfo, setShowAdvInfo] = useState(false);
+            const [showAddTypeSelection, setShowAddTypeSelection] = useState(false);
             const [notification, setNotification] = useState({ text: "", show: false });
             const timeoutRef = useRef(null);
 
@@ -249,7 +249,24 @@
                 nh[i].checked = !nh[i].checked;
                 setCharacter(p => ({ ...p, status: { ...p.status, gesundheit: nh } }));
             };
-
+            const addMeritFlaw = (type) => {
+                if (character.extra.vorzügeSchwächen.length >= 6) return;
+                const newItem = { id: Date.now(), type, text: "" };
+                const newList = [...character.extra.vorzügeSchwächen, newItem];
+                // Merits (+) immer vor Schwächen (-) einsortieren
+                newList.sort((a, b) => {
+                    if (a.type === b.type) return 0;
+                    return a.type === '+' ? -1 : 1;
+                });
+                setCharacter(p => ({...p, extra: {...p.extra, vorzügeSchwächen: newList}}));
+                setShowAddTypeSelection(false);
+            };
+            const updateMeritFlaw = (id, text) => {
+                const newList = character.extra.vorzügeSchwächen.map(item =>
+                    item.id === id ? { ...item, text } : item
+                );
+                setCharacter(p => ({...p, extra: {...p.extra, vorzügeSchwächen: newList}}));
+            };
             const clans = {
                 "Camarilla": ["Brujah", "Gangrel", "Malkavian", "Nosferatu", "Toreador", "Tremere", "Ventrue"],
                 "Sabbat": ["Lasombra", "Tzimisce"],
@@ -274,7 +291,7 @@
                                         onChange={(e) => updateInfo(key, e.target.value)} 
                                         className="bg-transparent outline-none py-1 text-stone-100"
                                     >
-                                        <option value="" disabled>Wähle...</option>
+                                        <option value="" disabled>Wähle Clan...</option>
                                         {/* Gruppierung der Clans */}
                                         {Object.entries(clans).map(([group, list]) => (
                                             <optgroup key={group} label={group}>
@@ -407,8 +424,50 @@
                                             <div className="grid grid-cols-10 gap-1.5">{[...Array(10)].map((_, i) => <div key={i} className="h-5 border border-emerald-900 bg-black/40 rounded-sm" />)}</div>
                                         </div>
                                     </div>
+                                    
+                                    {/* Vorzüge & Schwächen NEU positioniert */}
+                                    <div>
+                                        <h3 className="text-[10px] font-bold text-emerald-700 uppercase tracking-widest border-b border-emerald-900/20 mb-4 mt-8">Vorzüge / Schwächen</h3>
+                                        <div className="space-y-3">
+                                            {character.extra.vorzügeSchwächen.map(item => (
+                                                <div key={item.id} className="flex items-center">
+                                                    <span className={`font-bold w-6 text-center text-lg leading-none ${item.type === '+' ? 'text-emerald-500' : 'text-red-500'}`}>{item.type}</span>
+                                                    <input
+                                                        type="text"
+                                                        value={item.text}
+                                                        onChange={(e) => updateMeritFlaw(item.id, e.target.value)}
+                                                        className="bg-transparent border-b border-emerald-900/30 text-sm outline-none w-full text-stone-200"
+                                                    />
+                                                </div>
+                                            ))}
+                                            {character.extra.vorzügeSchwächen.length < 6 && (
+                                                <div className="mt-2 pl-2">
+                                                    {!showAddTypeSelection ? (
+                                                        <button
+                                                            onClick={() => setShowAddTypeSelection(true)}
+                                                            className="text-emerald-700 hover:text-emerald-500 text-xl font-bold transition-colors"
+                                                            title="Vorzug/Schwäche hinzufügen"
+                                                        >
+                                                            +
+                                                        </button>
+                                                    ) : (
+                                                        <div className="flex space-x-3 text-[11px] mt-2">
+                                                            <button onClick={() => addMeritFlaw('+')} className="bg-emerald-900/40 hover:bg-emerald-800 text-emerald-400 px-2 py-1 rounded border border-emerald-800 transition-colors">
+                                                                + Vorzug
+                                                            </button>
+                                                            <button onClick={() => addMeritFlaw('-')} className="bg-red-900/40 hover:bg-red-800 text-red-400 px-2 py-1 rounded border border-red-800 transition-colors">
+                                                                - Schwäche
+                                                            </button>
+                                                            <button onClick={() => setShowAddTypeSelection(false)} className="text-stone-500 hover:text-stone-300 px-2 py-1">
+                                                                Abbrechen
+                                                            </button>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
                                 </div>
-
                                 <div className="space-y-8">
                                     <div className="p-6 health-box rounded-lg shadow-inner">
                                         <h3 className="text-[11px] font-bold text-emerald-500 uppercase mb-6 tracking-widest border-b border-emerald-900/50 pb-2 italic text-center">Gesundheit</h3>
@@ -426,15 +485,24 @@
                                             ))}
                                         </div>
                                     </div>
-                                    <div className="space-y-2">
-                                        <h3 className="text-[10px] font-bold text-emerald-700 uppercase tracking-widest text-center">Vorzüge / Schwächen</h3>
-                                        <textarea className="w-full h-40 p-3 text-sm text-box rounded outline-none text-stone-200" value={character.extra.vorzügeSchwächen} onChange={(e) => setCharacter(p => ({...p, extra: {...p.extra, vorzügeSchwächen: e.target.value}}))} />
+                                    
+                                    {/* Erfahrung NEU positioniert */}
+                                    <div className="space-y-2 pt-4">
+                                        <h3 className="text-[10px] font-bold text-emerald-700 uppercase tracking-widest text-center border-b border-emerald-900/20 pb-2 mb-4">Erfahrung</h3>
+                                        <div className="flex justify-center">
+                                            <input
+                                                type="text"
+                                                className="bg-transparent border-b border-emerald-900/30 text-center text-sm outline-none w-full max-w-[200px] text-stone-200"
+                                                value={character.extra.erfahrung}
+                                                onChange={(e) => setCharacter(p => ({...p, extra: {...p.extra, erfahrung: e.target.value}}))}
+                                                placeholder="_____________________"
+                                            />
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </section>
                     </div>
-
                     {notification.show && (
                         <div className="fixed bottom-6 right-6 z-50 toast-enter">
                             <div className="bg-red-950/90 border-l-4 border-red-600 text-red-200 px-6 py-4 shadow-lg rounded-r flex items-center space-x-3">
