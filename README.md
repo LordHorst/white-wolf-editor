@@ -1,107 +1,93 @@
 # White Wolf Editor
 
-Ein moderner **World of Darkness** Charakterbogen-Editor, entwickelt mit React und Tailwind CSS. Unterstützt drei klassische WoD-Systeme mit authentischem Dark Gothic Design.
+Ein Charakterbogen-Editor für die **World of Darkness** Rollenspielsysteme. Entwickelt mit React und Tailwind CSS für eine moderne Benutzeroberfläche im Gothic-Design.
 
-## 🎭 Features
+## Unterstützte Systeme
 
-- **Drei Spielsysteme:**
-  - 🧛 **Vampire: The Masquerade** - Vollständige Charaktererstellung mit Clan-spezifischen Disziplinen
-  - 🐺 **Werewolf: The Apocalypse** - Stamm-, Vorzeichen- und Rassen-Auswahl
-  - 🔮 **Mage: The Ascension** - Traditionen und Sphären-System
+- **Vampire: The Masquerade** - Charaktererstellung mit Clan-Auswahl und Disziplinen
+- **Werewolf: The Apocalypse** - Stamm-, Vorzeichen- und Rassen-System
+- **Mage: The Ascension** - Traditionen und Sphären der Magie
 
-- **Intelligente Charaktererstellung:**
-  - Automatische Punkteverteilung nach WoD-Regeln
-  - Freebie-Point-System für Anpassungen
-  - Clan-spezifische Beschränkungen (z.B. Nosferatu)
-  - Validierung von Attribut- und Fähigkeitslimits
+## Funktionen
 
-- **Persistente Speicherung:**
-  - Lokaler Browser-Speicher für bis zu 10 Charaktere pro System
-  - JSON Import/Export für Backup und Sharing
-  - Automatische Speicher-Verwaltung
+### Charaktererstellung
+- Punkteverteilung nach offiziellen WoD-Regeln
+- Automatische Validierung von Attribut- und Fähigkeitslimits
+- Freebie-Point-System für individuelle Anpassungen
+- System-spezifische Besonderheiten (z.B. Nosferatu-Schwäche)
 
-## 🚀 Installation
+### Datenverwaltung
+- Speicherung von bis zu 10 Charakteren pro System im Browser
+- JSON-Export und -Import für Datensicherung
+- Automatische Speicherverwaltung
+
+### Benutzeroberfläche
+- Responsive Design für verschiedene Bildschirmgrößen
+- System-spezifische Farbthemen (Emerald, Amber, Purple)
+- Hamburger-Menü für einfache Navigation
+
+## Installation
 
 ```shell script
 # Repository klonen
-git clone [repository-url]
+git clone https://github.com/[username]/white-wolf-editor.git
 cd white-wolf-editor
 
-# Dependencies installieren
+# Abhängigkeiten installieren
 npm install
 
 # Entwicklungsserver starten
 npm run dev
 
-# Build für Produktion
+# Für Produktion erstellen
 npm run build
 ```
 
 
-## 🎲 Spielsystem-Details
+## Technische Details
 
-### Vampire: The Masquerade
-- **15 Clans** aus Camarilla, Sabbat und Unabhängigen
-- Automatische Disziplinen-Zuordnung
-- Nosferatu-Schwäche (Erscheinungsbild = 0)
-- Tugenden → Menschlichkeit/Willenskraft-Berechnung
-- Blutvorrat-Tracking
+**Frontend-Stack:**
+- React 18 mit Hooks
+- Tailwind CSS für Styling
+- Lucide React für Icons
+- Vite als Build-Tool
 
-### Werewolf: The Apocalypse
-- **13 Stämme** mit individuellen Eigenschaften
-- **5 Vorzeichen** (Ragabash bis Ahroun)
-- **3 Rassen** (Homid, Metis, Lupus)
-- Gaben-System mit variablen Stufen
-- Renown-Tracking (Ruhm, Ehre, Weisheit)
+**Datenhaltung:**
+- LocalStorage für browserbasierte Persistierung
+- JSON-Format für Import/Export
 
-### Mage: The Ascension
-- **9 Traditionen** der Magier
-- **4 Essenzen** (Dynamisch, Muster, etc.)
-- **9 Sphären** der Magie
-- Arete und Quintessenz/Paradox-System
+## Nutzung
 
-## 🎨 Design-Features
+1. System über das Menü auswählen
+2. Charakterinformationen eingeben
+3. Attribute und Fähigkeiten nach WoD-Regeln verteilen
+4. Optional Freebies für Feinabstimmung verwenden
+5. Charakter lokal speichern oder als JSON exportieren
 
-- **Responsive Design** für Desktop und Mobile
-- **System-spezifische Farbthemen:**
-  - Vampire: Smaragdgrün
-  - Werewolf: Bernstein
-  - Mage: Violett
-- **Gothic UI** mit Custom Fonts
-- **Smooth Transitions** und Hover-Effekte
+## Projektstruktur
 
-## 🛠️ Technologie-Stack
+```
+src/
+├── components/ui/     # Wiederverwendbare UI-Komponenten
+├── systems/          # System-spezifische Charakterbögen
+├── hooks/            # Custom React Hooks
+├── data/             # Spieldaten und Konfiguration
+└── App.jsx           # Hauptkomponente
+```
 
-- **React 18** mit Hooks und Context
-- **Tailwind CSS** für Styling
-- **Lucide React** für Icons
-- **Vite** als Build-Tool
-- **localStorage** für Persistierung
 
-## 📱 Nutzung
+## Entwicklung
 
-1. **System wählen:** Hamburger-Menü öffnen und gewünschtes System auswählen
-2. **Charakter erstellen:** Grunddaten eingeben und Punkte nach WoD-Regeln verteilen
-3. **Freebies nutzen:** Optional 15 Freebie-Points für Anpassungen verwenden
-4. **Speichern:** Lokal speichern oder als JSON exportieren
+Das Projekt verwendet Standard-React-Patterns mit funktionalen Komponenten und Hooks. Spieldaten sind in `src/data/sharedData.js` zentral verwaltet.
 
-## 🔧 Konfiguration
+**Wichtige Hooks:**
+- `useCharacterManager` - Charakterdaten und Persistierung
+- `useFreebies` - Freebie-Point-Verwaltung
 
-Das Projekt verwendet Standard-Vite-Konfiguration. Anpassungen in:
-- `vite.config.js` - Build-Einstellungen
-- `tailwind.config.js` - Design-System
-- `src/data/sharedData.js` - Spieldaten
+## Lizenz
 
-## 🤝 Beitragen
+MIT License. World of Darkness ist ein Warenzeichen von Paradox Interactive. Dieses Projekt ist ein inoffizielles Fan-Tool.
 
-1. Repository forken
-2. Feature-Branch erstellen (`git checkout -b feature/amazing-feature`)
-3. Änderungen committen (`git commit -m 'Add amazing feature'`)
-4. Branch pushen (`git push origin feature/amazing-feature`)
-5. Pull Request erstellen
+## Beitragen
 
-## 📄 Lizenz
-
-Dieses Projekt steht unter der MIT-Lizenz. Siehe `LICENSE` Datei für Details.
-
-Alle Rechte an der **World of Darkness** liegen bei **Paradox Interactive**. Dieses Projekt ist ein Fan-Tool und nicht offiziell lizenziert.
+Pull Requests sind willkommen. Bei größeren Änderungen bitte zuerst ein Issue erstellen, um die geplanten Änderungen zu diskutieren.
