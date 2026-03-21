@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Info } from 'lucide-react';
-import { SharedData, VampireData, getClanDisciplines } from '../../data/sharedData';
+import { SharedData, VampireData, getClanDisciplines, VampireMerits, VampireFlaws } from '../../data/sharedData';
 import { useCharacterManager } from '../../hooks/useCharacterManager';
 import { SheetControls } from '../../components/ui/SheetControls';
 import { FreebiePanel } from '../../components/ui/FreebiePanel';
@@ -11,7 +11,6 @@ import { StorageModals } from '../../components/ui/StorageModals';
 import { DotRating } from '../../components/ui/DotRating';
 import { useFreebies } from '../../hooks/useFreebies';
 import { MeritsFlawsModal } from '../../components/ui/MeritsFlawsModal';
-import { VampireMerits, VampireFlaws } from '../../data/sharedData';
 
 // Kosten pro Kategorie (werden später im Hook verwendet)
 const freebieCosts = {
@@ -203,6 +202,206 @@ export const VampireSheet = () => {
   const freebie = useFreebies(15, freebieCosts);
   const [showMeritsModal, setShowMeritsModal] = useState(false);
   const [meritsModalType, setMeritsModalType] = useState('merit'); // 'merit' or 'flaw'
+
+  // ---------- Random character generation ----------
+  const randomInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+  const randomChoice = (arr) => arr[Math.floor(Math.random() * arr.length)];
+
+  // Distribute points across a list of items, respecting max per item
+  const distributePoints = (items, totalPoints, maxPerItem = 5) => {
+    const result = items.map(() => 0);
+    let remaining = totalPoints;
+    while (remaining > 0) {
+      const possibleIndices = [];
+      for (let i = 0; i < result.length; i++) {
+        if (result[i] < maxPerItem) possibleIndices.push(i);
+      }
+      if (possibleIndices.length === 0) break;
+      const idx = randomChoice(possibleIndices);
+      result[idx]++;
+      remaining--;
+    }
+    return result;
+  };
+
+  const randomizeCharacter = () => {
+    // 1. Info fields
+    const allClans = [];
+    for (const category in VampireData.clans) {
+      Object.keys(VampireData.clans[category]).forEach(clan => allClans.push(clan));
+    }
+    const randomClan = randomChoice(allClans);
+    const clanDisciplines = getClanDisciplines(randomClan);
+    
+    const randomName = randomChoice(SharedData.firstNames) + " " + randomChoice(SharedData.lastNames);
+    const randomConcept = randomChoice(SharedData.concepts);
+    const randomNature = randomChoice(SharedData.natures);
+    
+    const info = {
+      Name: randomName,
+      Spieler: "Computer",
+      Chronik: "",
+      Wesen: "Vampir",
+      Verhalten: randomNature,
+      Clan: randomClan,
+      Generation: "13",
+      Zuflucht: "",
+      Konzept: randomConcept,
+    };
+
+    // 2. Attributes
+    // Start with base 1 in each
+    const baseAttr = {
+      körperlich: { Körperkraft: 1, Geschick: 1, Widerstandsfähigkeit: 1 },
+      gesellschaftlich: { Charisma: 1, Manipulation: 1, Erscheinungsbild: 1 },
+      geistig: { Wahrnehmung: 1, Intelligenz: 1, Geistesschärfe: 1 },
+    };
+    // Assign 7,5,3 to categories randomly
+    const categories = ['körperlich', 'gesellschaftlich', 'geistig'];
+    const points = [7,5,3];
+    const shuffled = [...points];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    const attrBonuses = {};
+    categories.forEach((cat, idx) => { attrBonuses[cat] = shuffled[idx]; });
+    
+    // Distribute within each category
+    const newAttributes = JSON.parse(JSON.stringify(baseAttr));
+    for (const cat of categories) {
+      const attrNames = Object.keys(newAttributes[cat]);
+      const distribution = distributePoints(attrNames, attrBonuses[cat], 5); // max 5 per attribute
+      attrNames.forEach((name, i) => {
+        newAttributes[cat][name] += distribution[i];
+      });
+    }
+    
+    // Nosferatu: Erscheinungsbild = 0
+    if (randomClan === 'Nosferatu') {
+      newAttributes.gesellschaftlich.Erscheinungsbild = 0;
+    }
+
+    // 3. Abilities
+    const emptyAbilities = {
+      talente: { Ausdruck: 0, Aufmerksamkeit: 0, Ausflüchte: 0, Ausweichen: 0, Einschüchtern: 0, Empathie: 0, Führungsqualitäten: 0, Handgemenge: 0, Sportlichkeit: 0, Szenekenntnis: 0 },
+      fertigkeiten: { Etikette: 0, Fahren: 0, Handwerk: 0, Heimlichkeit: 0, Nahkampf: 0, Schusswaffen: 0, Sicherheit: 0, Tierkunde: 0, Überleben: 0, Vortrag: 0 },
+      kenntnisse: { Akademisches_Wissen: 0, Computer: 0, Finanzen: 0, Gesetzeskenntnis: 0, Linguistik: 0, Medizin: 0, Nachforschungen: 0, Naturwissenschaften: 0, Okkultismus: 0, Politik: 0 },
+    };
+    const abilityGroups = ['talente', 'fertigkeiten', 'kenntnisse'];
+    const abilityPoints = [13, 9, 5];
+    const shuffledAbility = [...abilityPoints];
+    for (let i = shuffledAbility.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffledAbility[i], shuffledAbility[j]] = [shuffledAbility[j], shuffledAbility[i]];
+    }
+    const abilityBonuses = {};
+    abilityGroups.forEach((group, idx) => { abilityBonuses[group] = shuffledAbility[idx]; });
+    
+    const newAbilities = JSON.parse(JSON.stringify(emptyAbilities));
+    for (const group of abilityGroups) {
+      const abilityNames = Object.keys(newAbilities[group]);
+      const distribution = distributePoints(abilityNames, abilityBonuses[group], 3); // max 3 per ability
+      abilityNames.forEach((name, i) => {
+        newAbilities[group][name] = distribution[i];
+      });
+    }
+
+    // 4. Disciplines
+    let disciplinesList = [{ name: "", value: 0 }, { name: "", value: 0 }, { name: "", value: 0 }];
+    if (clanDisciplines.length > 0) {
+      // Use clan disciplines
+      disciplinesList = clanDisciplines.map(name => ({ name, value: 0 }));
+      // Distribute 3 points among them (max 3 each)
+      const discPoints = distributePoints(disciplinesList.map(() => 0), 3, 3);
+      disciplinesList.forEach((d, i) => { d.value = discPoints[i]; });
+      // Ensure exactly 3 slots: if fewer than 3, pad with empty
+      while (disciplinesList.length < 3) disciplinesList.push({ name: "", value: 0 });
+    } else {
+      // Caitiff or other: leave empty
+      disciplinesList = [{ name: "", value: 0 }, { name: "", value: 0 }, { name: "", value: 0 }];
+    }
+
+    // 5. Backgrounds
+    const predefinedBackgrounds = Object.keys(SharedData.backgrounds);
+    const backgroundsList = [{ name: "", value: 0 }, { name: "", value: 0 }, { name: "", value: 0 }, { name: "", value: 0 }, { name: "", value: 0 }];
+    // Distribute 5 points among possible backgrounds (max 5 each)
+    const usedBackgrounds = [];
+    let remainingPoints = 5;
+    while (remainingPoints > 0 && usedBackgrounds.length < 5) {
+      const bgName = randomChoice(predefinedBackgrounds);
+      if (usedBackgrounds.includes(bgName)) continue; // no duplicates
+      const maxPoints = Math.min(5, remainingPoints);
+      const points = randomInt(1, maxPoints);
+      usedBackgrounds.push(bgName);
+      backgroundsList[usedBackgrounds.length-1] = { name: bgName, value: points };
+      remainingPoints -= points;
+    }
+
+    // 6. Virtues
+    const baseVirtues = { Gewissen: 1, Selbstbeherrschung: 1, Mut: 1 };
+    const extraVirtues = distributePoints([0,0,0], 7, 4); // max 5 total (so extra up to 4)
+    const newVirtues = {
+      Gewissen: baseVirtues.Gewissen + extraVirtues[0],
+      Selbstbeherrschung: baseVirtues.Selbstbeherrschung + extraVirtues[1],
+      Mut: baseVirtues.Mut + extraVirtues[2],
+    };
+
+    // 7. Humanity & Willpower
+    const minHumanity = newVirtues.Gewissen + newVirtues.Selbstbeherrschung;
+    const maxHumanity = 10;
+    let humanity = minHumanity + randomInt(0, maxHumanity - minHumanity);
+    humanity = Math.min(maxHumanity, humanity);
+    const minWill = newVirtues.Mut;
+    let willpower = minWill + randomInt(0, 10 - minWill);
+    willpower = Math.min(10, willpower);
+
+    // 8. Blood Pool based on Generation background
+    const genBg = backgroundsList.find(bg => bg.name === "Generation");
+    let generation = "13";
+    let bloodCapacity = 10;
+    if (genBg) {
+      const dots = genBg.value;
+      const genMap = {
+        1: { generation: "12", bloodCapacity: 11 },
+        2: { generation: "11", bloodCapacity: 12 },
+        3: { generation: "10", bloodCapacity: 13 },
+        4: { generation: "9", bloodCapacity: 14 },
+        5: { generation: "8", bloodCapacity: 15 },
+      };
+      if (genMap[dots]) {
+        generation = genMap[dots].generation;
+        bloodCapacity = genMap[dots].bloodCapacity;
+      }
+    }
+    info.Generation = generation;
+
+    // Build new character
+    const newCharacter = {
+      info,
+      attributes: newAttributes,
+      abilities: newAbilities,
+      advantages: {
+        disziplinen: disciplinesList,
+        hintergründe: backgroundsList,
+        tugenden: newVirtues,
+      },
+      status: {
+        menschlichkeit: humanity,
+        willenskraft: willpower,
+        blutvorrat: bloodCapacity,
+        gesundheit: JSON.parse(JSON.stringify(SharedData.initialHealth)),
+      },
+      extra: { erfahrung: "", vorzügeSchwächen: [] },
+      merits: [],
+      flaws: [],
+    };
+
+    setCharacter(newCharacter);
+    freebie.reset(15);
+    freebie.setFreebiesActive(false); // turn off freebie mode
+    showToast("Zufälliger Charakter erstellt!", "success");
+  };
 
   const handleAddMerit = (merit) => {
     if (!freebie.freebiesActive) return;
@@ -609,13 +808,22 @@ useEffect(() => {
       <div className="border-2 border-emerald-900/50 bg-[#051a11]/95 p-8 shadow-2xl relative">
         <header className="text-center mb-12 border-b border-emerald-900/30 pb-6 relative">
           <h1 className="text-5xl font-bold tracking-[0.2em] text-emerald-500 uppercase mb-2">Vampire</h1>
-          <button
-            onClick={() => setShowRules(!showRules)}
-            className="absolute top-0 right-0 p-2 text-emerald-400 hover:text-emerald-200 transition-colors"
-            title="Regeln anzeigen"
-          >
-            <Info size={20} />
-          </button>
+          <div className="absolute top-0 right-0 flex gap-2">
+            <button
+              onClick={randomizeCharacter}
+              className="p-2 text-emerald-400 hover:text-emerald-200 transition-colors"
+              title="Zufälliger Charakter"
+            >
+              🎲
+            </button>
+            <button
+              onClick={() => setShowRules(!showRules)}
+              className="p-2 text-emerald-400 hover:text-emerald-200 transition-colors"
+              title="Regeln anzeigen"
+            >
+              <Info size={20} />
+            </button>
+          </div>
         </header>
 
         {/* Regel‑Infobox */}
