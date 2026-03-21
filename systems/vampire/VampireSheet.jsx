@@ -234,14 +234,15 @@ export const VampireSheet = () => {
     const clanDisciplines = getClanDisciplines(randomClan);
     
     const randomName = randomChoice(SharedData.firstNames) + " " + randomChoice(SharedData.lastNames);
+    const randomDemeanor = randomChoice(SharedData.demeanors);
     const randomConcept = randomChoice(SharedData.concepts);
     const randomNature = randomChoice(SharedData.natures);
     
     const info = {
       Name: randomName,
-      Spieler: "Computer",
+      Spieler: "",
       Chronik: "",
-      Wesen: "Vampir",
+      Wesen: randomDemeanor,
       Verhalten: randomNature,
       Clan: randomClan,
       Generation: "13",
