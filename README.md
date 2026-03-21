@@ -31,6 +31,43 @@ Ein Charakterbogen-Editor für die **World of Darkness** Rollenspielsysteme. Ent
 
 ## Letzte Updates
 
+### Version 1.3 (21.03.2026)
+- **🎲 Zufällige Charaktergenerierung hinzugefügt**
+  - Kompletter Algorithmus für WoD-regelkonforme Charaktererstellung
+  - Intelligente Punktverteilung (7/5/3 für Attribute, 13/9/5 für Fähigkeiten)
+  - Automatische Clan-Auswahl mit entsprechenden Disziplinen
+  - Berücksichtigung von Clan-spezifischen Schwächen (z.B. Nosferatu Erscheinungsbild = 0)
+  - Zufällige Namen, Konzepte und Naturen aus vordefiniertem Pool
+  - Tugenden-basierte Menschlichkeits- und Willenskraft-Berechnung
+  - Generationsabhängige Blutvorrat-Kapazität
+  - 🎲-Button im Charakterbogen-Header für Ein-Klick-Generierung
+
+- **✨ Merits & Flaws System implementiert**
+  - Neue `MeritsFlawsModal` Komponente mit Tab-Navigation
+  - Vollständig anpassbares Punktesystem für Vor- und Nachteile
+  - Intelligente Freebie-Point-Integration (Merits kosten, Flaws geben Punkte)
+  - Responsive Modal-Design mit Theme-Support
+  - Erweiterte Datenstruktur in `sharedData.js` für Vampire-spezifische Merits/Flaws
+  - Automatische Validierung verfügbarer Freebie-Punkte
+  - Persistente Speicherung in Charakterdaten
+
+- **🗂️ Erweiterte Datenstruktur**
+  - Umfassende Backgrounds-Datenbank mit detaillierten Level-Beschreibungen
+  - 10 vordefinierte Hintergrund-Kategorien (Generation, Ressourcen, Einfluss, etc.)
+  - Strukturierte Merit/Flaw-Definitionen mit Kosten und Beschreibungen
+  - Verbesserte Datenorganisation in `sharedData.js`
+
+- **🔧 Technische Verbesserungen**
+  - Robuste Punktverteilungs-Algorithmen (`distributePoints`, `randomInt`, `randomChoice`)
+  - Erweiterte Character-State-Management
+  - Verbesserte Toast-Benachrichtigungen für Benutzer-Feedback
+  - Theme-aware Modal-Komponenten für konsistentes Design
+
+### Version 1.2 (21.03.2026)
+- Projekt-Refactoring für Mehrsystem-Unterstützung
+- Verbesserte Benutzeroberfläche
+- README-Dokumentation erweitert
+
 ### Version 1.2 (21.03.2026)
 - **🎲 Zufällige Charaktergenerierung hinzugefügt**
   - Automatische Punktverteilung für Attribute und Fähigkeiten
