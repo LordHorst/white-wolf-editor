@@ -25,7 +25,7 @@ export const SheetControls = ({ title, subtitle, theme, mngr, freebieState }) =>
         <input type="file" accept=".json" ref={mngr.fileInputRef} onChange={mngr.importJSON} className="hidden" />
         <button onClick={() => mngr.fileInputRef.current?.click()} className={btnClass}><Upload size={14} /><span className="hidden sm:inline">Import</span></button>
         <button onClick={mngr.exportJSON} className={btnClass}><Download size={14} /><span className="hidden sm:inline">Export</span></button>
-        <button onClick={() => mngr.setStorageModalOpen(true)} className={btnClass}><FolderOpen size={14} /><span>Speicher</span></button>
+        <button onClick={() => mngr.setStorageModalOpen(true)} className={btnClass}><FolderOpen size={14} /><span>Speichern</span></button>
         <button onClick={() => mngr.setGmMode(!mngr.gmMode)} className={btnClass}>
           {mngr.gmMode ? <Shield size={14} /> : <ShieldOff size={14} />}<span className="hidden sm:inline">{mngr.gmMode ? 'GM Edit' : 'Normal'}</span>
         </button>
