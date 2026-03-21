@@ -32,9 +32,13 @@ Ein Charakterbogen-Editor für die **World of Darkness** Rollenspielsysteme. Ent
 ## Letzte Updates
 
 ### Version 1.4 (21.03.2026)
-- Mage-Charakterbogen auf den Stand von Vampire/Werewolf gebracht
-- Benennung des Buttons "Speicher" auf "Load / Save" geändert
-
+- **Bugfixes
+  - Benennung des Buttons "Speicher" auf "Load / Save" geändert
+  - Mage-Charakterbogen korrigiert
+- **Mage-Charaktererstellung angepasst
+  - Mage-Charakterbogen auf den Stand von Vampire/Werewolf gebracht
+  - Zugehörigkeit und Gruppierung eingefügt
+- 
 ### Version 1.3 (21.03.2026)
 - **🎲 Zufällige Charaktergenerierung hinzugefügt**
   - Kompletter Algorithmus für WoD-regelkonforme Charaktererstellung
