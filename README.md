@@ -35,6 +35,7 @@ Ein Charakterbogen-Editor für die **World of Darkness** Rollenspielsysteme. Ent
 - **Bugfixes
   - Benennung des Buttons "Speicher" auf "Load / Save" geändert
   - Mage-Charakterbogen korrigiert
+  - Bei Mage: Keine Fähigkeit über 3 Punkte (ohne Freebie)
 - **Mage-Charaktererstellung angepasst
   - Mage-Charakterbogen auf den Stand von Vampire/Werewolf gebracht
   - Zugehörigkeit und Gruppierung eingefügt
