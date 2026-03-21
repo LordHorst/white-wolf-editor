@@ -342,6 +342,7 @@ export const MageSheet = () => {
   const validateAndApplyAttributeChange = (cat, name, newValue) => {
     const currentValue = character.attributes[cat][name];
     if (newValue === currentValue) return;
+
     if (freebie.freebiesActive) {
       const cost = freebie.getCost('attribute', currentValue, newValue);
       if (cost > freebie.freebiePoints) {
@@ -352,6 +353,7 @@ export const MageSheet = () => {
       freebie.spend('attribute', currentValue, newValue);
       return;
     }
+
     const testChar = JSON.parse(JSON.stringify(character));
     testChar.attributes[cat][name] = newValue;
     const newBonus = calculateGroupBonusPoints(testChar);
@@ -383,6 +385,13 @@ export const MageSheet = () => {
       freebie.spend('ability', currentValue, newValue);
       return;
     }
+
+    // Normales Limit: keine Fähigkeit > 3
+    if (newValue > 3) {
+      showToast(`Fähigkeiten können ohne Freebies maximal 3 Punkte haben.`, 'error');
+      return;
+    }
+
     const testChar = JSON.parse(JSON.stringify(character));
     testChar.abilities[cat][name] = newValue;
     const newTotals = calculateAbilityTotals(testChar);
