@@ -184,6 +184,18 @@ export const WerewolfData = {
   breeds: ["Homid", "Metis", "Lupus"]
 };
 
+export const WerewolfMerits = [
+  { name: "Ausdauer", cost: 1, description: "Der Charakter ist außergewöhnlich ausdauernd." },
+  { name: "Verführerische Stimme", cost: 2, description: "Die Stimme des Charakters ist außergewöhnlich angenehm." },
+  // ... weitere Vorteile
+];
+
+export const WerewolfFlaws = [
+  { name: "Klein", cost: 1, description: "Der Charakter ist auffällig klein." },
+  { name: "Monströses Aussehen", cost: 3, description: "Das Aussehen ist abschreckend und unvergesslich." },
+  // ... weitere Nachteile
+];
+
 // ---------------- MAGE DATA ---------------------------
 export const MageData = {
   traditions: ["Akashic Brotherhood", "Celestial Chorus", "Cult of Ecstasy", "Dreamspeakers", "Euthanatos", "Order of Hermes", "Sons of Ether", "Verbena", "Virtual Adepts"],
