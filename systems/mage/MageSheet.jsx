@@ -19,20 +19,20 @@ const freebieCosts = {
   sphere: 4,       // Erhöhung einer Sphäre um 1 Punkt
   arete: 8,        // Erhöhung von Arete um 1 Punkt
   willpower: 1,
-  quintessence: 2,
+  quintessence: 2
 };
 
 const getEmptyMage = () => ({
   info: {
     Name: "",
-    Spieler: "",
-    Chronik: "",
     Wesen: "",
+    Zugehörigkeit: "",
+    Spieler: "",
     Verhalten: "",
-    Tradition: "",
+    Gruppierung: "",
+    Chronik: "",
     Essenz: "",
-    Konzept: "",
-    Kabale: ""
+    Konzept: ""
   },
   attributes: {
     körperlich: { Körperkraft: 1, Geschick: 1, Widerstandsfähigkeit: 1 },
@@ -141,6 +141,11 @@ export const MageSheet = () => {
   const [meritsModalType, setMeritsModalType] = useState('merit');
   const freebie = useFreebies(15, freebieCosts);
 
+    // Helper to get sects for current affiliation
+    const getSectsForCurrentAffiliation = () => {
+      const affiliation = character.info.Zugehörigkeit;
+      return MageData.affiliations.find(a => a.name === affiliation)?.sects || [];
+    };
   // ---------- Zufallsgenerator ----------
   const randomInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
   const randomChoice = (arr) => arr[Math.floor(Math.random() * arr.length)];
@@ -163,7 +168,10 @@ export const MageSheet = () => {
 
   const randomizeCharacter = () => {
     // 1. Info Felder
-    const randomTradition = randomChoice(MageData.traditions);
+    const randomAffiliation = randomChoice(MageData.affiliations.map(a => a.name));
+    const availableSects = getSectsForCurrentAffiliation(); // but we need to get sects for the randomAffiliation
+    // Better: get sects directly
+    const randomSect = randomChoice(MageData.affiliations.find(a => a.name === randomAffiliation)?.sects || []);
     const randomEssence = randomChoice(MageData.essences);
     const randomName = randomChoice(SharedData.firstNames) + " " + randomChoice(SharedData.lastNames);
     const randomDemeanor = randomChoice(SharedData.demeanors || ["?"]);
@@ -171,15 +179,15 @@ export const MageSheet = () => {
     const randomNature = randomChoice(SharedData.natures || ["?"]);
 
     const info = {
-      Name: randomName,
-      Spieler: "",
-      Chronik: "",
-      Wesen: randomDemeanor,
-      Verhalten: randomNature,
-      Tradition: randomTradition,
-      Essenz: randomEssence,
-      Konzept: randomConcept,
-      Kabale: "",
+        Name: randomName,
+        Wesen: randomDemeanor,
+        Zugehörigkeit: randomAffiliation,
+        Spieler: "",
+        Verhalten: randomNature,
+        Gruppierung: randomSect,
+        Chronik: "",
+        Essenz: randomEssence,
+        Konzept: randomConcept
     };
 
     // 2. Attribute (7/5/3)
@@ -523,7 +531,8 @@ export const MageSheet = () => {
             Jeder Charakter beginnt mit 1 Punkt in jedem Attribut. Zusätzlich werden 7, 5 und 3 Punkte auf die drei Kategorien verteilt.<br />
             Die Kategorie mit den meisten Zusatzpunkten gilt als Primär (max. 7), die zweitmeiste als Sekundär (max. 5), die dritte als Tertiär (max. 3).</p>
             <p><strong>⚙️ Fähigkeiten‑Punkteverteilung</strong><br />
-            Alle Fähigkeiten starten bei 0. Die drei Gruppen erhalten 13, 9 und 5 Punkte – automatisch nach der Gesamtpunktzahl zugeordnet.</p>
+            Alle Fähigkeiten starten bei 0. Die drei Gruppen erhalten 13, 9 und 5 Punkte – automatisch nach der Gesamtpunktzahl zugeordnet.<br />
+            Keine Fähigkeit kann zu Beginn höher als 3 sein.</p>
             <p><strong>✨ Vorteile</strong><br />
             <strong>Hintergründe:</strong> 5 Punkte insgesamt (max. 5 pro Hintergrund).<br />
             <strong>Sphären:</strong> 3 Punkte insgesamt (max. 3 pro Sphäre).<br />
@@ -543,15 +552,49 @@ export const MageSheet = () => {
           {Object.entries(character.info).map(([key, val]) => (
             <div key={key} className="flex flex-col border-b border-purple-900/30">
               <label className="text-[9px] uppercase text-purple-700 font-bold">{key}</label>
-              {key === "Tradition" || key === "Essenz" ? (
+              {key === "Zugehörigkeit" ? (
                 <select
                   value={val}
-                  onChange={(e) => setCharacter(p => ({ ...p, info: { ...p.info, [key]: e.target.value } }))}
+                  onChange={(e) => {
+                    const newAff = e.target.value;
+                    // Reset Gruppierung when affiliation changes
+                    setCharacter(p => ({
+                      ...p,
+                      info: {
+                        ...p.info,
+                        Zugehörigkeit: newAff,
+                        Gruppierung: ""  // reset
+                      }
+                    }));
+                  }}
                   className="bg-transparent text-purple-100 outline-none py-1 cursor-pointer"
                 >
                   <option value="" className="bg-black text-purple-500">Wähle...</option>
-                  {(key === "Tradition" ? MageData.traditions : MageData.essences).map(c => (
-                    <option key={c} value={c} className="bg-black text-purple-100">{c}</option>
+                  {MageData.affiliations.map(aff => (
+                    <option key={aff.name} value={aff.name} className="bg-black text-purple-100">{aff.name}</option>
+                  ))}
+                </select>
+              ) : key === "Gruppierung" ? (
+                <select
+                  value={val}
+                  disabled={!character.info.Zugehörigkeit}
+                  onChange={(e) => setCharacter(p => ({ ...p, info: { ...p.info, Gruppierung: e.target.value } }))}
+                  className={`bg-transparent outline-none py-1 cursor-pointer ${!character.info.Zugehörigkeit ? 'opacity-50' : ''}`}
+                >
+                  <option value="" className="bg-black text-purple-500">Wähle...</option>
+                  {getSectsForCurrentAffiliation().map(sect => (
+                    <option key={sect} value={sect} className="bg-black text-purple-100">{sect}</option>
+                  ))}
+                </select>
+              ) : key === "Essenz" ? (
+                <select
+                  value={val}
+                  onChange={(e) => setCharacter(p => ({ ...p, info: { ...p.info, Essenz: e.target.value } }))}
+                  className="bg-transparent text-purple-100 outline-none py-1 cursor-pointer"
+                >
+                  <option value="" className="bg-black text-purple-500">Wähle...</option>
+                  {MageData.essences.map(ess => (
+                    <option key={ess} value={ess} className="bg-black text-purple-100">{ess}</option>
                   ))}
                 </select>
               ) : (
