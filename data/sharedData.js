@@ -202,3 +202,15 @@ export const MageData = {
   essences: ["Dynamisch", "Muster", "Primordial", "Suchend"],
   spheres: ["Entropie", "Geist", "Kräfte", "Leben", "Materie", "Gedanken", "Kern", "Verbindung", "Zeit"]
 };
+
+export const MageMerits = [
+  { name: "Ausdauer", cost: 1, description: "Der Charakter ist außergewöhnlich ausdauernd." },
+  { name: "Verführerische Stimme", cost: 2, description: "Die Stimme des Charakters ist außergewöhnlich angenehm." },
+  // ... weitere Vorteile
+];
+
+export const MageFlaws = [
+  { name: "Klein", cost: 1, description: "Der Charakter ist auffällig klein." },
+  { name: "Monströses Aussehen", cost: 3, description: "Das Aussehen ist abschreckend und unvergesslich." },
+  // ... weitere Nachteile
+];
