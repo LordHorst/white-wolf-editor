@@ -64,11 +64,6 @@ Ein Charakterbogen-Editor für die **World of Darkness** Rollenspielsysteme. Ent
   - Theme-aware Modal-Komponenten für konsistentes Design
 
 ### Version 1.2 (21.03.2026)
-- Projekt-Refactoring für Mehrsystem-Unterstützung
-- Verbesserte Benutzeroberfläche
-- README-Dokumentation erweitert
-
-### Version 1.2 (21.03.2026)
 - **🎲 Zufällige Charaktergenerierung hinzugefügt**
   - Automatische Punktverteilung für Attribute und Fähigkeiten
   - Zufällige Clan- und Disziplinwahl für Vampire
