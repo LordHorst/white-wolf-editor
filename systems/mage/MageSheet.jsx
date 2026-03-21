@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Info } from 'lucide-react';
-import { SharedData, MageData, MageMerits, MageFlaws } from '../../data/sharedData';
+import { SharedData, MageData, MageMerits, MageFlaws, getSectsForAffiliation } from '../../data/sharedData';
 import { useCharacterManager } from '../../hooks/useCharacterManager';
 import { SheetControls } from '../../components/ui/SheetControls';
 import { TraitSection } from '../../components/ui/TraitSection';
@@ -16,8 +16,8 @@ const freebieCosts = {
   attribute: 5,
   ability: 2,
   background: 1,
-  sphere: 4,       // Erhöhung einer Sphäre um 1 Punkt
-  arete: 8,        // Erhöhung von Arete um 1 Punkt
+  sphere: 4,
+  arete: 8,
   willpower: 1,
   quintessence: 2
 };
@@ -73,7 +73,7 @@ const getEmptyMage = () => ({
   flaws: []
 });
 
-// Hilfsfunktionen für Attribute (identisch zu Vampir)
+// Hilfsfunktionen für Attribute
 const getBonusPoints = (value) => Math.max(0, value - 1);
 
 const calculateGroupBonusPoints = (character) => {
@@ -131,7 +131,6 @@ const getPredefinedBackgroundsForMage = () => {
 
 // Sphären-Hilfsfunktionen
 const sumSpheres = (spheres) => Object.values(spheres).reduce((sum, v) => sum + v, 0);
-const getSphereTotal = (spheres) => sumSpheres(spheres);
 
 export const MageSheet = () => {
   const mngr = useCharacterManager(getEmptyMage(), 'mta');
@@ -141,11 +140,6 @@ export const MageSheet = () => {
   const [meritsModalType, setMeritsModalType] = useState('merit');
   const freebie = useFreebies(15, freebieCosts);
 
-    // Helper to get sects for current affiliation
-    const getSectsForCurrentAffiliation = () => {
-      const affiliation = character.info.Zugehörigkeit;
-      return MageData.affiliations.find(a => a.name === affiliation)?.sects || [];
-    };
   // ---------- Zufallsgenerator ----------
   const randomInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
   const randomChoice = (arr) => arr[Math.floor(Math.random() * arr.length)];
@@ -169,9 +163,8 @@ export const MageSheet = () => {
   const randomizeCharacter = () => {
     // 1. Info Felder
     const randomAffiliation = randomChoice(MageData.affiliations.map(a => a.name));
-    const availableSects = getSectsForCurrentAffiliation(); // but we need to get sects for the randomAffiliation
-    // Better: get sects directly
-    const randomSect = randomChoice(MageData.affiliations.find(a => a.name === randomAffiliation)?.sects || []);
+    const affiliation = MageData.affiliations.find(a => a.name === randomAffiliation);
+    const randomSect = randomChoice(affiliation?.sects || []);
     const randomEssence = randomChoice(MageData.essences);
     const randomName = randomChoice(SharedData.firstNames) + " " + randomChoice(SharedData.lastNames);
     const randomDemeanor = randomChoice(SharedData.demeanors || ["?"]);
@@ -179,15 +172,15 @@ export const MageSheet = () => {
     const randomNature = randomChoice(SharedData.natures || ["?"]);
 
     const info = {
-        Name: randomName,
-        Wesen: randomDemeanor,
-        Zugehörigkeit: randomAffiliation,
-        Spieler: "",
-        Verhalten: randomNature,
-        Gruppierung: randomSect,
-        Chronik: "",
-        Essenz: randomEssence,
-        Konzept: randomConcept
+      Name: randomName,
+      Wesen: randomDemeanor,
+      Zugehörigkeit: randomAffiliation,
+      Spieler: "",
+      Verhalten: randomNature,
+      Gruppierung: randomSect,
+      Chronik: "",
+      Essenz: randomEssence,
+      Konzept: randomConcept
     };
 
     // 2. Attribute (7/5/3)
@@ -215,7 +208,7 @@ export const MageSheet = () => {
       });
     }
 
-    // 3. Fähigkeiten (13/9/5)
+    // 3. Fähigkeiten (13/9/5, max 3 pro Fähigkeit)
     const emptyAbilities = getEmptyMage().abilities;
     const abilityGroups = ['talente', 'fertigkeiten', 'kenntnisse'];
     const abilityPoints = [13, 9, 5];
@@ -253,14 +246,13 @@ export const MageSheet = () => {
     while (backgroundsList.length < 5) backgroundsList.push({ name: "", value: 0 });
 
     // 5. Sphären: 3 Punkte verteilen (max 3 pro Sphäre)
-    const sphereNames = Object.keys(emptyAbilities ? {} : MageData.spheres.reduce((acc, s) => ({ ...acc, [s]: 0 }), {}));
     const sphereDist = distributePoints(MageData.spheres, 3, 3);
     const newSpheres = {};
     MageData.spheres.forEach((sphere, idx) => {
       newSpheres[sphere] = sphereDist[idx];
     });
 
-    // 6. Status (Arete = 1, Willenskraft = 5, Quintessenz = 1, Paradox = 0)
+    // 6. Status
     const newStatus = {
       arete: 1,
       willenskraft: 5,
@@ -324,7 +316,7 @@ export const MageSheet = () => {
     freebie.spendPoints(flaw.cost);
   };
 
-  // ---------- Attribute & Fähigkeiten Limits (wie Vampir) ----------
+  // ---------- Attribute & Fähigkeiten Limits ----------
   const bonusPoints = calculateGroupBonusPoints(character);
   const attrLimits = getGroupLimits(bonusPoints);
   const attrGroupStats = {};
@@ -354,6 +346,12 @@ export const MageSheet = () => {
       return;
     }
 
+    // Ohne Freebies: max 5 pro Attribut
+    if (newValue > 5) {
+      showToast("Attribute können ohne Freebies maximal 5 Punkte haben.", 'error');
+      return;
+    }
+
     const testChar = JSON.parse(JSON.stringify(character));
     testChar.attributes[cat][name] = newValue;
     const newBonus = calculateGroupBonusPoints(testChar);
@@ -375,6 +373,7 @@ export const MageSheet = () => {
   const validateAndApplyAbilityChange = (cat, name, newValue) => {
     const currentValue = character.abilities[cat][name];
     if (newValue === currentValue) return;
+
     if (freebie.freebiesActive) {
       const cost = freebie.getCost('ability', currentValue, newValue);
       if (cost > freebie.freebiePoints) {
@@ -386,9 +385,9 @@ export const MageSheet = () => {
       return;
     }
 
-    // Normales Limit: keine Fähigkeit > 3
+    // Ohne Freebies: max 3 pro Fähigkeit
     if (newValue > 3) {
-      showToast(`Fähigkeiten können ohne Freebies maximal 3 Punkte haben.`, 'error');
+      showToast("Fähigkeiten können ohne Freebies maximal 3 Punkte haben.", 'error');
       return;
     }
 
@@ -431,7 +430,6 @@ export const MageSheet = () => {
       }));
       freebie.spend('sphere', oldValue, newValue);
     } else {
-      // Normales Startlimit: 3 Punkte insgesamt
       if (newTotal <= 3) {
         setCharacter(p => ({
           ...p,
@@ -443,10 +441,11 @@ export const MageSheet = () => {
     }
   };
 
-  // ---------- Status-Änderungen mit Freebies ----------
+  // ---------- Status-Änderungen mit Freebies (nur Erhöhung mit Freebies) ----------
   const handleAreteChange = (newValue) => {
     const current = character.status.arete;
     if (newValue === current) return;
+
     if (freebie.freebiesActive) {
       const cost = freebie.getCost('arete', current, newValue);
       if (cost > freebie.freebiePoints) {
@@ -456,13 +455,20 @@ export const MageSheet = () => {
       setCharacter(p => ({ ...p, status: { ...p.status, arete: newValue } }));
       freebie.spend('arete', current, newValue);
     } else {
-      setCharacter(p => ({ ...p, status: { ...p.status, arete: newValue } }));
+      // Erhöhung ohne Freebies nicht erlaubt
+      if (newValue > current) {
+        showToast("Arete kann nur mit Freebies erhöht werden.", 'error');
+      } else {
+        // Verringern erlaubt (innerhalb min=1)
+        setCharacter(p => ({ ...p, status: { ...p.status, arete: newValue } }));
+      }
     }
   };
 
   const handleWillpowerChange = (newValue) => {
     const current = character.status.willenskraft;
     if (newValue === current) return;
+
     if (freebie.freebiesActive) {
       const cost = freebie.getCost('willpower', current, newValue);
       if (cost > freebie.freebiePoints) {
@@ -472,13 +478,18 @@ export const MageSheet = () => {
       setCharacter(p => ({ ...p, status: { ...p.status, willenskraft: newValue } }));
       freebie.spend('willpower', current, newValue);
     } else {
-      setCharacter(p => ({ ...p, status: { ...p.status, willenskraft: newValue } }));
+      if (newValue > current) {
+        showToast("Willenskraft kann nur mit Freebies erhöht werden.", 'error');
+      } else {
+        setCharacter(p => ({ ...p, status: { ...p.status, willenskraft: newValue } }));
+      }
     }
   };
 
   const handleQuintessenceChange = (newValue) => {
     const current = character.status.quintessenz;
     if (newValue === current) return;
+
     if (freebie.freebiesActive) {
       const cost = freebie.getCost('quintessence', current, newValue);
       if (cost > freebie.freebiePoints) {
@@ -488,12 +499,15 @@ export const MageSheet = () => {
       setCharacter(p => ({ ...p, status: { ...p.status, quintessenz: newValue } }));
       freebie.spend('quintessence', current, newValue);
     } else {
-      setCharacter(p => ({ ...p, status: { ...p.status, quintessenz: newValue } }));
+      if (newValue > current) {
+        showToast("Quintessenz kann nur mit Freebies erhöht werden.", 'error');
+      } else {
+        setCharacter(p => ({ ...p, status: { ...p.status, quintessenz: newValue } }));
+      }
     }
   };
 
   const handleParadoxChange = (newValue) => {
-    // Paradox kann nicht mit Freebies erhöht werden (nur durch Spiel)
     setCharacter(p => ({ ...p, status: { ...p.status, paradox: newValue } }));
   };
 
@@ -501,6 +515,12 @@ export const MageSheet = () => {
   useEffect(() => {
     freebie.reset(15);
   }, [character.info.Name]);
+
+  // Helper für Gruppierung-Select
+  const getSectsForCurrentAffiliation = () => {
+    const affiliation = character.info.Zugehörigkeit;
+    return MageData.affiliations.find(a => a.name === affiliation)?.sects || [];
+  };
 
   return (
     <div className="text-purple-300 font-serif">
@@ -538,10 +558,11 @@ export const MageSheet = () => {
           <div className="mb-8 p-4 bg-black/60 border border-purple-800/50 rounded text-xs space-y-2">
             <p><strong>📜 Attribut‑Punkteverteilung</strong><br />
             Jeder Charakter beginnt mit 1 Punkt in jedem Attribut. Zusätzlich werden 7, 5 und 3 Punkte auf die drei Kategorien verteilt.<br />
-            Die Kategorie mit den meisten Zusatzpunkten gilt als Primär (max. 7), die zweitmeiste als Sekundär (max. 5), die dritte als Tertiär (max. 3).</p>
+            Die Kategorie mit den meisten Zusatzpunkten gilt als Primär (max. 7), die zweitmeiste als Sekundär (max. 5), die dritte als Tertiär (max. 3).<br />
+            Ohne Freebies darf kein Attribut 5 überschreiten.</p>
             <p><strong>⚙️ Fähigkeiten‑Punkteverteilung</strong><br />
             Alle Fähigkeiten starten bei 0. Die drei Gruppen erhalten 13, 9 und 5 Punkte – automatisch nach der Gesamtpunktzahl zugeordnet.<br />
-            Keine Fähigkeit kann zu Beginn höher als 3 sein.</p>
+            Ohne Freebies darf keine Fähigkeit 3 überschreiten.</p>
             <p><strong>✨ Vorteile</strong><br />
             <strong>Hintergründe:</strong> 5 Punkte insgesamt (max. 5 pro Hintergrund).<br />
             <strong>Sphären:</strong> 3 Punkte insgesamt (max. 3 pro Sphäre).<br />
@@ -566,13 +587,12 @@ export const MageSheet = () => {
                   value={val}
                   onChange={(e) => {
                     const newAff = e.target.value;
-                    // Reset Gruppierung when affiliation changes
                     setCharacter(p => ({
                       ...p,
                       info: {
                         ...p.info,
                         Zugehörigkeit: newAff,
-                        Gruppierung: ""  // reset
+                        Gruppierung: "" // reset
                       }
                     }));
                   }}
@@ -684,6 +704,7 @@ export const MageSheet = () => {
                 <DotRating
                   theme="purple"
                   value={character.status.arete}
+                  min={1}
                   max={10}
                   onChange={handleAreteChange}
                 />
@@ -695,6 +716,7 @@ export const MageSheet = () => {
                 <DotRating
                   theme="purple"
                   value={character.status.willenskraft}
+                  min={5}
                   max={10}
                   onChange={handleWillpowerChange}
                 />
@@ -816,7 +838,7 @@ export const MageSheet = () => {
         </div>
         <br />
 
-        {/* Buttons für Vorzüge/Nachteile (nur wenn Freebies aktiv) */}
+        {/* Buttons für Vorzüge/Nachteile */}
         <div className="absolute bottom-4 left-4 flex gap-2">
           <button
             onClick={() => {

@@ -40,6 +40,25 @@ const themeConfig = {
     removeButton: 'bg-gray-700 hover:bg-gray-600 text-white',
     disabledButton: 'bg-gray-700 opacity-50 cursor-not-allowed',
   },
+  purple: {
+    bg: 'bg-purple-950/90',
+    border: 'border-purple-800',
+    text: 'text-purple-100',
+    accentBorder: 'border-purple-500',
+    accentText: 'text-purple-300',
+    tabActive: 'border-purple-500 text-purple-300',
+    tabInactive: 'text-purple-500 hover:text-purple-300',
+    meritButton: 'bg-purple-800 hover:bg-purple-700 text-white',
+    flawButton: 'bg-rose-800 hover:bg-rose-700 text-white',
+    footerText: 'text-purple-400',
+    headerButton: 'text-purple-400 hover:text-purple-200',
+    emptyText: 'text-purple-500',
+    descriptionText: 'text-purple-400',
+    meritBadge: 'bg-purple-800 text-purple-200',
+    flawBadge: 'bg-rose-800 text-rose-200',
+    removeButton: 'bg-gray-700 hover:bg-gray-600 text-white',
+    disabledButton: 'bg-gray-700 opacity-50 cursor-not-allowed',
+  },
 };
 
 export const MeritsFlawsModal = ({
