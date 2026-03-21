@@ -28,6 +28,10 @@ Ein Charakterbogen-Editor für die **World of Darkness** Rollenspielsysteme. Ent
 
 ## Installation
 
+Entweder über github verwenden: https://lordhorst.github.io/white-wolf-editor/
+
+oder lokal installieren:
+
 ```shell script
 # Repository klonen
 git clone https://github.com/[username]/white-wolf-editor.git
