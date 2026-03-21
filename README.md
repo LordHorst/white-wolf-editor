@@ -15,6 +15,8 @@ Ein Charakterbogen-Editor für die **World of Darkness** Rollenspielsysteme. Ent
 - Automatische Validierung von Attribut- und Fähigkeitslimits
 - Freebie-Point-System für individuelle Anpassungen
 - System-spezifische Besonderheiten (z.B. Nosferatu-Schwäche)
+- **🎲 Zufällige Charaktergenerierung** - Automatische Erstellung kompletter Charaktere
+- **✨ Merits & Flaws System** - Vor- und Nachteile für erweiterte Charakteranpassung
 
 ### Datenverwaltung
 - Speicherung von bis zu 10 Charakteren pro System im Browser
@@ -25,16 +27,36 @@ Ein Charakterbogen-Editor für die **World of Darkness** Rollenspielsysteme. Ent
 - Responsive Design für verschiedene Bildschirmgrößen
 - System-spezifische Farbthemen (Emerald, Amber, Purple)
 - Hamburger-Menü für einfache Navigation
+- Modal-Dialoge für erweiterte Funktionen
+
+## Letzte Updates
+
+### Version 1.2 (21.03.2026)
+- **🎲 Zufällige Charaktergenerierung hinzugefügt**
+  - Automatische Punktverteilung für Attribute und Fähigkeiten
+  - Zufällige Clan- und Disziplinwahl für Vampire
+  - Vollständig WoD-regelkonformer Charakteraufbau
+  - Ein-Klick-Generierung für schnelle NPCs
+
+- **✨ Merits & Flaws System implementiert**
+  - Umfangreiche Bibliothek von Vor- und Nachteilen
+  - Punktesystem für ausgewogene Charakterentwicklung
+  - Benutzerfreundliche Modal-Oberfläche
+  - Integration in bestehenden Charakterbogen
+
+### Version 1.1 (21.03.2026)
+- Projekt-Refactoring für Mehrsystem-Unterstützung
+- Verbesserte Benutzeroberfläche
+- README-Dokumentation erweitert
 
 ## Installation
+Entweder den Release verwenden: https://lordhorst.github.io/white-wolf-editor/
 
-Entweder über github verwenden: https://lordhorst.github.io/white-wolf-editor/
-
-oder lokal installieren:
-
-```shell script
+oder lokal installieren
+```
+shell script
 # Repository klonen
-git clone https://github.com/[username]/white-wolf-editor.git
+git clone https://github.com/LordHorst/white-wolf-editor.git
 cd white-wolf-editor
 
 # Abhängigkeiten installieren
@@ -46,8 +68,6 @@ npm run dev
 # Für Produktion erstellen
 npm run build
 ```
-
-
 ## Technische Details
 
 **Frontend-Stack:**
@@ -66,11 +86,13 @@ npm run build
 2. Charakterinformationen eingeben
 3. Attribute und Fähigkeiten nach WoD-Regeln verteilen
 4. Optional Freebies für Feinabstimmung verwenden
-5. Charakter lokal speichern oder als JSON exportieren
+5. **NEU**: Zufällige Charaktergenerierung für schnelle Erstellung
+6. **NEU**: Merits & Flaws für erweiterte Charakteranpassung
+7. Charakter lokal speichern oder als JSON exportieren
 
 ## Projektstruktur
-
 ```
+
 src/
 ├── components/ui/     # Wiederverwendbare UI-Komponenten
 ├── systems/          # System-spezifische Charakterbögen
@@ -78,8 +100,6 @@ src/
 ├── data/             # Spieldaten und Konfiguration
 └── App.jsx           # Hauptkomponente
 ```
-
-
 ## Entwicklung
 
 Das Projekt verwendet Standard-React-Patterns mit funktionalen Komponenten und Hooks. Spieldaten sind in `src/data/sharedData.js` zentral verwaltet.
@@ -87,6 +107,10 @@ Das Projekt verwendet Standard-React-Patterns mit funktionalen Komponenten und H
 **Wichtige Hooks:**
 - `useCharacterManager` - Charakterdaten und Persistierung
 - `useFreebies` - Freebie-Point-Verwaltung
+
+**Neue Komponenten:**
+- `RandomCharacterGenerator` - Zufällige Charaktererstellung
+- `MeritsFlawsModal` - Vor- und Nachteile-Verwaltung
 
 ## Lizenz
 
