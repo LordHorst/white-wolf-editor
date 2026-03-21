@@ -10,7 +10,8 @@ import { HealthBox } from '../../components/ui/HealthBox';
 import { StorageModals } from '../../components/ui/StorageModals';
 import { DotRating } from '../../components/ui/DotRating';
 import { useFreebies } from '../../hooks/useFreebies';
-
+import { MeritsFlawsModal } from '../../components/ui/MeritsFlawsModal';
+import { VampireMerits, VampireFlaws } from '../../data/sharedData';
 
 // Kosten pro Kategorie (werden später im Hook verwendet)
 const freebieCosts = {
@@ -24,7 +25,7 @@ const freebieCosts = {
 };
 
 const getEmptyVampire = () => ({
-  info: { Name: "", Spieler: "", Chronik: "", Wesen: "", Verhalten: "", Clan: "", Generation: "13", Zuflucht: "", Konzept: "" },
+  info: { Name: "", Spieler: "", Chronik: "", Wesen: "", Verhalten: "", Clan: "", Generation: "", Zuflucht: "", Konzept: "" },
   attributes: {
     körperlich: { Körperkraft: 1, Geschick: 1, Widerstandsfähigkeit: 1 },
     gesellschaftlich: { Charisma: 1, Manipulation: 1, Erscheinungsbild: 1 },
@@ -41,7 +42,9 @@ const getEmptyVampire = () => ({
     tugenden: { Gewissen: 1, Selbstbeherrschung: 1, Mut: 1 }
   },
   status: { menschlichkeit: 2, willenskraft: 1, blutvorrat: 10, gesundheit: JSON.parse(JSON.stringify(SharedData.initialHealth)) },
-  extra: { erfahrung: "", vorzügeSchwächen: [] }
+  extra: { erfahrung: "", vorzügeSchwächen: [] },
+  merits: [],
+  flaws: []
 });
 
 // ---------- Hilfsfunktionen für Attribute ----------
@@ -101,6 +104,93 @@ const getAbilityLimits = (totals) => {
   return limits;
 };
 
+// ---------- Hintergruende --------------
+// Get predefined background list safely
+const getPredefinedBackgrounds = () => {
+  return SharedData.backgrounds ? Object.keys(SharedData.backgrounds) : [];
+};
+
+// Tooltip component for background descriptions
+const BackgroundTooltip = ({ backgroundName, value, children }) => {
+  const [show, setShow] = useState(false);
+  const background = SharedData.backgrounds ? SharedData.backgrounds[backgroundName] : null;
+  if (!background || !background.levels) return children;
+
+  const levelDesc = background.levels[value - 1] || "Keine Beschreibung verfügbar.";
+  return (
+    <div className="relative inline-block" onMouseEnter={() => setShow(true)} onMouseLeave={() => setShow(false)}>
+      {children}
+      {show && (
+        <div className="absolute z-50 bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-64 p-2 bg-black border border-emerald-800 rounded shadow-lg text-xs text-emerald-100">
+          <div className="font-bold mb-1">{backgroundName} (Stufe {value})</div>
+          <div>{levelDesc}</div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+// Custom background list item with dropdown and tooltip
+const BackgroundListItem = ({ item, index, onChange, maxPointsPerBackground = 5 }) => {
+  const predefinedOptions = getPredefinedBackgrounds();
+  const [isCustom, setIsCustom] = useState(!predefinedOptions.includes(item.name) && item.name !== "");
+  const [customName, setCustomName] = useState(isCustom ? item.name : "");
+
+  const handleNameChange = (selectedName) => {
+    if (selectedName === "custom") {
+      setIsCustom(true);
+      onChange(index, customName, undefined);
+    } else {
+      setIsCustom(false);
+      onChange(index, selectedName, undefined);
+    }
+  };
+
+  const handleCustomNameChange = (e) => {
+    const newName = e.target.value;
+    setCustomName(newName);
+    onChange(index, newName, undefined);
+  };
+
+  return (
+    <div className="mb-3 flex items-center gap-2">
+      {!isCustom ? (
+        <select
+          value={item.name}
+          onChange={(e) => handleNameChange(e.target.value)}
+          className="bg-transparent border-b border-emerald-900 text-emerald-100 text-sm py-1 w-40"
+        >
+          <option value="" disabled></option>
+          {predefinedOptions.map(opt => (
+            <option key={opt} value={opt} className="bg-black">{opt}</option>
+          ))}
+          <option value="custom" className="bg-[#051a11]">✏️ Eigener Hintergrund...</option>
+        </select>
+      ) : (
+        <input
+          type="text"
+          value={customName}
+          onChange={handleCustomNameChange}
+          placeholder="Eigener Hintergrund"
+          className="bg-transparent border-b border-emerald-900 text-emerald-100 text-sm py-1 w-40"
+        />
+      )}
+
+      <DotRating
+        theme="emerald"
+        value={item.value}
+        max={maxPointsPerBackground}
+        onChange={(v) => onChange(index, undefined, v)}
+      />
+
+      {!isCustom && SharedData.backgrounds && SharedData.backgrounds[item.name] && (
+        <BackgroundTooltip backgroundName={item.name} value={item.value}>
+          <Info size={14} className="text-emerald-500 cursor-help" />
+        </BackgroundTooltip>
+      )}
+    </div>
+  );
+};
 // ---------- Hilfsfunktionen für Vorteile ----------
 const sumDisciplines = (disciplines) => disciplines.reduce((sum, d) => sum + d.value, 0);
 const sumBackgrounds = (backgrounds) => backgrounds.reduce((sum, b) => sum + b.value, 0);
@@ -111,6 +201,78 @@ export const VampireSheet = () => {
   const { character, setCharacter, gmMode, updateStat, showToast } = mngr;
   const [showRules, setShowRules] = useState(false);
   const freebie = useFreebies(15, freebieCosts);
+  const [showMeritsModal, setShowMeritsModal] = useState(false);
+  const [meritsModalType, setMeritsModalType] = useState('merit'); // 'merit' or 'flaw'
+
+  const handleAddMerit = (merit) => {
+    if (!freebie.freebiesActive) return;
+    if (character.merits.some(m => m.name === merit.name)) {
+      showToast("Dieser Vorteil ist bereits ausgewählt.", "error");
+      return;
+    }
+    const cost = merit.cost;
+    if (cost > freebie.freebiePoints) {
+      showToast(`Nicht genug Freebies (${cost} benötigt, ${freebie.freebiePoints} verfügbar).`, 'error');
+      return;
+    }
+    setCharacter(prev => ({
+      ...prev,
+      merits: [...prev.merits, merit]
+    }));
+    freebie.spendPoints(cost); // use spendPoints
+  };
+
+  const handleRemoveMerit = (merit) => {
+    setCharacter(prev => ({
+      ...prev,
+      merits: prev.merits.filter(m => m.name !== merit.name)
+    }));
+    freebie.addPoints(merit.cost); // give points back
+  };
+
+  const handleAddFlaw = (flaw) => {
+    if (!freebie.freebiesActive) return;
+    if (character.flaws.some(f => f.name === flaw.name)) {
+      showToast("Dieser Nachteil ist bereits ausgewählt.", "error");
+      return;
+    }
+    setCharacter(prev => ({
+      ...prev,
+      flaws: [...prev.flaws, flaw]
+    }));
+    freebie.addPoints(flaw.cost); // gain points
+  };
+
+  const handleRemoveFlaw = (flaw) => {
+    setCharacter(prev => ({
+      ...prev,
+      flaws: prev.flaws.filter(f => f.name !== flaw.name)
+    }));
+    freebie.spendPoints(flaw.cost); // lose points
+  };
+
+// ----------- Handler fuer Hintergrund "Generation" -------------
+// Generation mapping: dots -> generation & blood capacity
+const generationMap = {
+  0: { generation: "13", bloodCapacity: 10 },
+  1: { generation: "12", bloodCapacity: 11 },
+  2: { generation: "11", bloodCapacity: 12 },
+  3: { generation: "10", bloodCapacity: 13 },
+  4: { generation: "9", bloodCapacity: 14 },
+  5: { generation: "8", bloodCapacity: 15 }
+};
+
+// Find the Generation background (if any)
+const getGenerationBackground = (backgrounds) => {
+  return backgrounds.find(bg => bg.name === "Generation");
+};
+
+// Compute generation info based on the Generation background
+const getGenerationInfo = (backgrounds) => {
+  const genBg = getGenerationBackground(backgrounds);
+  const dots = genBg ? genBg.value : 0;
+  return generationMap[dots] || generationMap[0];
+};
 
   // ---------- Nosferatu-Logik (Erscheinungsbild auf 0) ----------
   useEffect(() => {
@@ -402,6 +564,38 @@ export const VampireSheet = () => {
     freebie.reset(15);
   }, [character.info.Name]); // einfache Erkennung eines neuen Charakters
 
+// ------------- Handler fuer Hintergrund "Generation" -------------------
+// Sync generation info and blood pool capacity when Generation background changes
+useEffect(() => {
+  const backgrounds = character.advantages.hintergründe;
+  const { generation, bloodCapacity } = getGenerationInfo(backgrounds);
+  const currentGeneration = character.info.Generation;
+  const currentBlood = character.status.blutvorrat;
+
+  let updated = false;
+  const updates = {};
+
+  if (currentGeneration !== generation) {
+    updates.info = { ...character.info, Generation: generation };
+    updated = true;
+  }
+
+  // Always set blood points to capacity (full pool) when generation changes.
+  // This ensures the pool is always consistent with the new capacity.
+  if (currentBlood !== bloodCapacity) {
+    updates.status = { ...character.status, blutvorrat: bloodCapacity };
+    updated = true;
+  }
+
+  if (updated) {
+    setCharacter(prev => ({
+      ...prev,
+      ...(updates.info && { info: updates.info }),
+      ...(updates.status && { status: updates.status })
+    }));
+  }
+}, [character.advantages.hintergründe, character.info.Generation, character.status.blutvorrat, setCharacter]);
+
   return (
     <div className="text-emerald-300 font-serif">
       <SheetControls 
@@ -456,23 +650,22 @@ export const VampireSheet = () => {
             <div key={key} className="flex flex-col border-b border-emerald-900/30">
               <label className="text-[9px] uppercase text-emerald-700 font-bold">{key}</label>
               {key === "Clan" ? (
-                <select 
-                  value={val} 
+                <select
+                  value={val}
                   onChange={(e) => {
                     const newClan = e.target.value;
                     const clanDisciplines = getClanDisciplines(newClan);
-                    
                     setCharacter(p => ({
-                      ...p, 
-                      info: {...p.info, Clan: newClan},
+                      ...p,
+                      info: { ...p.info, Clan: newClan },
                       advantages: {
-                        ...p.advantages, 
-                        disziplinen: clanDisciplines.length > 0 
-                          ? clanDisciplines.map(d => ({name: d, value: 0})) 
+                        ...p.advantages,
+                        disziplinen: clanDisciplines.length > 0
+                          ? clanDisciplines.map(d => ({ name: d, value: 0 }))
                           : p.advantages.disziplinen
                       }
                     }));
-                  }} 
+                  }}
                   className="bg-transparent text-emerald-100 outline-none py-1 cursor-pointer"
                 >
                   <option value="" className="bg-black text-emerald-500 italic">Wähle...</option>
@@ -484,8 +677,27 @@ export const VampireSheet = () => {
                     </optgroup>
                   ))}
                 </select>
+              ) : key === "Generation" ? (
+                (() => {
+                  const genBg = getGenerationBackground(character.advantages.hintergründe);
+                  const isReadOnly = genBg && genBg.value > 0;
+                  return (
+                    <input
+                      type="text"
+                      value={val}
+                      readOnly={isReadOnly}
+                      className={`bg-transparent outline-none py-1 text-emerald-100 ${isReadOnly ? 'opacity-70 cursor-default' : ''}`}
+                      onChange={(e) => setCharacter(p => ({ ...p, info: { ...p.info, [key]: e.target.value } }))}
+                    />
+                  );
+                })()
               ) : (
-                <input type="text" value={val} onChange={(e) => setCharacter(p => ({...p, info: {...p.info, [key]: e.target.value}}))} className="bg-transparent outline-none py-1 text-emerald-100" />
+                <input
+                  type="text"
+                  value={val}
+                  onChange={(e) => setCharacter(p => ({ ...p, info: { ...p.info, [key]: e.target.value } }))}
+                  className="bg-transparent outline-none py-1 text-emerald-100"
+                />
               )}
             </div>
           ))}
@@ -525,13 +737,18 @@ export const VampireSheet = () => {
               />
             </div>
             <div>
-              <ListTrait 
-                block={character.advantages.hintergründe} 
-                title={`Hintergründe (${backgroundsTotal}/5)`} 
-                theme="emerald" 
-                onChange={handleBackgroundsChange}
-                max={5}
-              />
+              <h3 className="text-xs font-bold text-emerald-700 uppercase mb-4">
+                Hintergründe ({backgroundsTotal}/5)
+              </h3>
+              {character.advantages.hintergründe.map((bg, idx) => (
+                <BackgroundListItem
+                  key={idx}
+                  item={bg}
+                  index={idx}
+                  onChange={handleBackgroundsChange}
+                  maxPointsPerBackground={5}
+                />
+              ))}
             </div>
             <div>
               <h3 className="text-xs font-bold text-emerald-700 uppercase mb-4">Tugenden ({virtuesExtra}/7)</h3>
@@ -583,25 +800,138 @@ export const VampireSheet = () => {
                </div>
                <div className="flex justify-center space-x-1.5 mt-2">{[...Array(10)].map((_, i) => <div key={i} className="w-4 h-4 border border-emerald-900" />)}</div>
             </div>
-            <div className="text-center">
-               <h3 className="text-xs text-emerald-700 uppercase font-bold mb-2">Blutvorrat</h3>
-              <div className="flex justify-center space-x-1.5 flex-wrap px-8 gap-y-2">
-                {[...Array(20)].map((_, i) => (
-                  <React.Fragment key={i}>
-                    <div
-                      onClick={i < 10 ? () => setCharacter(p => ({...p, status: {...p.status, blutvorrat: i+1}})) : undefined}
-                      className={`w-5 h-5 border border-emerald-900 ${i < character.status.blutvorrat ? 'bg-emerald-700' : ''} ${i < 10 ? 'cursor-pointer' : 'cursor-default'}`}
-                    />
-                    {i % 10 === 9 && <div key={`break-${i}`} className="w-full"></div>}
-                  </React.Fragment>
-                ))}
-              </div>
+                        <div className="text-center">
+              <h3 className="text-xs text-emerald-700 uppercase font-bold mb-2">Blutvorrat</h3>
+              <div className="flex flex-col items-center gap-1">
+                  {(() => {
+                    const capacity = getGenerationInfo(character.advantages.hintergründe).bloodCapacity;
+                    const totalBoxes = capacity * 2; // Gesamtzahl der Kästchen (z.B. 15 * 2 = 30)
+                    const boxesPerRow = capacity; // Anzahl der Kästchen pro Zeile
+                    const rows = [];
+
+                    for (let row = 0; row < 2; row++) {
+                      const rowBoxes = [];
+                      for (let col = 0; col < boxesPerRow; col++) {
+                        const index = row * boxesPerRow + col;
+                        const isFilled = index < character.status.blutvorrat;
+                        const isClickable = false;
+                        rowBoxes.push(
+                          <div
+                            key={index}
+                            className={`w-5 h-5 border border-emerald-900 ${isFilled ? 'bg-emerald-700' : ''} ${isClickable ? 'cursor-pointer' : 'cursor-default'}`}
+                          />
+                        );
+                      }
+                      rows.push(
+                        <div key={`row-${row}`} className="flex justify-center space-x-1.5">
+                          {rowBoxes}
+                        </div>
+                      );
+                    }
+
+                    return rows;
+                  })()}
+                </div>
             </div>
           </div>
           <HealthBox health={character.status.gesundheit} theme="emerald" setCharacter={setCharacter} />
         </section>
+        {/* Merits & Flaws Display */}
+        <div className="grid grid-cols-2 gap-8 mt-8 border-t border-emerald-900/50 pt-6">
+          <div>
+            <h3 className="text-sm font-bold uppercase text-emerald-500 mb-3">Vorzüge</h3>
+            {character.merits.length === 0 ? (
+              <p className="text-xs text-emerald-600 italic">Keine Vorzüge ausgewählt.</p>
+            ) : (
+              <ul className="space-y-1">
+                {character.merits.sort((a,b) => a.name.localeCompare(b.name)).map((merit, idx) => (
+                  <li key={idx} className="text-xs text-emerald-300 flex justify-between items-center border-b border-emerald-800/30 pb-1">
+                    <span>
+                      <span className="font-bold">{merit.name}</span>
+                      <span className="text-emerald-500 ml-2">({merit.cost})</span>
+                    </span>
+                    {freebie.freebiesActive && (
+                      <button
+                        onClick={() => handleRemoveMerit(merit)}
+                        className="text-rose-400 hover:text-rose-300 text-xs ml-2"
+                      >
+                        Entfernen
+                      </button>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+          <div>
+            <h3 className="text-sm font-bold uppercase text-emerald-500 mb-3">Nachteile</h3>
+            {character.flaws.length === 0 ? (
+              <p className="text-xs text-emerald-600 italic">Keine Nachteile ausgewählt.</p>
+            ) : (
+              <ul className="space-y-1">
+                {character.flaws.sort((a,b) => a.name.localeCompare(b.name)).map((flaw, idx) => (
+                  <li key={idx} className="text-xs text-emerald-300 flex justify-between items-center border-b border-emerald-800/30 pb-1">
+                    <span>
+                      <span className="font-bold">{flaw.name}</span>
+                      <span className="text-emerald-500 ml-2">({flaw.cost})</span>
+                    </span>
+                    {freebie.freebiesActive && (
+                      <button
+                        onClick={() => handleRemoveFlaw(flaw)}
+                        className="text-rose-400 hover:text-rose-300 text-xs ml-2"
+                      >
+                        Entfernen
+                      </button>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        </div>
+        <br/>
+        <div className="absolute bottom-4 left-4 flex gap-2">
+          <button
+            onClick={() => { setMeritsModalType('merit'); setShowMeritsModal(true); }}
+            disabled={!freebie.freebiesActive}
+            className={`px-3 py-1 text-xs uppercase tracking-wider rounded border ${
+              freebie.freebiesActive
+                ? 'border-emerald-700 bg-emerald-950/50 text-emerald-300 hover:bg-emerald-900/50'
+                : 'border-emerald-900/30 bg-black/30 text-emerald-600 cursor-not-allowed'
+            }`}
+          >
+            Vorzüge
+          </button>
+          <button
+            onClick={() => { setMeritsModalType('flaw'); setShowMeritsModal(true); }}
+            disabled={!freebie.freebiesActive}
+            className={`px-3 py-1 text-xs uppercase tracking-wider rounded border ${
+              freebie.freebiesActive
+                ? 'border-emerald-700 bg-emerald-950/50 text-emerald-300 hover:bg-emerald-900/50'
+                : 'border-emerald-900/30 bg-black/30 text-emerald-600 cursor-not-allowed'
+            }`}
+          >
+            Nachteile
+          </button>
+        </div>
       </div>
       <StorageModals mngr={mngr} theme="emerald" />
+      {/* Modal */}
+      <MeritsFlawsModal
+        isOpen={showMeritsModal}
+        onClose={() => setShowMeritsModal(false)}
+        type={meritsModalType}
+        meritsList={VampireMerits}
+        flawsList={VampireFlaws}
+        selectedMerits={character.merits}
+        selectedFlaws={character.flaws}
+        onAddMerit={handleAddMerit}
+        onRemoveMerit={handleRemoveMerit}
+        onAddFlaw={handleAddFlaw}
+        onRemoveFlaw={handleRemoveFlaw}
+        freebiePoints={freebie.freebiePoints}
+        theme="emerald"
+      />
     </div>
   );
 };

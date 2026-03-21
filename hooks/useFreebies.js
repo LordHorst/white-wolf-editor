@@ -27,6 +27,23 @@ export const useFreebies = (initialPoints = 0, costMap = {}) => {
     return false;
   }, [freebiesActive, getCost]);
 
+  // Directly add or subtract points (for merits/flaws)
+  const spendPoints = useCallback((amount) => {
+    if (amount > 0 && freebiesActive) {
+      setFreebiePoints(prev => prev - amount);
+      return true;
+    }
+    return false;
+  }, [freebiesActive]);
+
+  const addPoints = useCallback((amount) => {
+    if (amount > 0 && freebiesActive) {
+      setFreebiePoints(prev => prev + amount);
+      return true;
+    }
+    return false;
+  }, [freebiesActive]);
+
   const reset = useCallback((newPoints = initialPoints) => {
     setFreebiePoints(newPoints);
     setFreebiesActive(false);
@@ -39,6 +56,8 @@ export const useFreebies = (initialPoints = 0, costMap = {}) => {
     getCost,
     canAfford,
     spend,
+    spendPoints,
+    addPoints,
     reset,
   };
 };
