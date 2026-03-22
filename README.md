@@ -36,8 +36,10 @@ Ein Charakterbogen-Editor für die **World of Darkness** Rollenspielsysteme. Ent
   - "Wesen", "Verhalten" und "Konzept" kann jetzt aus einem DropDown-Menü gewählt werden
   - Datenstruktur modularisiert
   - "Hintergründe" für Mage angepasst und auswählbar gemacht
+  - Codestruktur verbessert
 - **Bugfixes
   - "Kampfkunst" in Mage darf zu Beginn nicht mehr als 2 sein
+  - "Merits" und "Flaws" öffnen jetzt korrekten Tab
 
 ### Version 1.4 (21.03.2026)
 - **Bugfixes
