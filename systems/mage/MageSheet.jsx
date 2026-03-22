@@ -603,6 +603,48 @@ export const MageSheet = () => {
                     <option key={aff.name} value={aff.name} className="bg-black text-purple-100">{aff.name}</option>
                   ))}
                 </select>
+              ) : key === "Konzept" ? (
+                      <>
+                        <input
+                            list="concepts"
+                            value={val}
+                            onChange={(e) => setCharacter(p => ({ ...p, info: { ...p.info, Konzept: e.target.value } }))}
+                            className="bg-transparent text-emerald-100 outline-none py-1 cursor-pointer"
+                        />
+                        <datalist id="concepts">
+                          {SharedData.concepts.map((concept, index) => (
+                              <option key={index} value={concept} />
+                          ))}
+                        </datalist>
+                      </>
+                  ) : key === "Wesen" ? (
+                  <>
+                    <input
+                        list="natures"
+                        value={val}
+                        onChange={(e) => setCharacter(p => ({ ...p, info: { ...p.info, Wesen: e.target.value } }))}
+                        className="bg-transparent text-emerald-100 outline-none py-1 cursor-pointer"
+                    />
+                    <datalist id="natures">
+                      {SharedData.natures.map((nature, index) => (
+                          <option key={index} value={nature} />
+                      ))}
+                    </datalist>
+                  </>
+              ) : key === "Verhalten" ? (
+                  <>
+                    <input
+                        list="demeanors"
+                        value={val}
+                        onChange={(e) => setCharacter(p => ({ ...p, info: { ...p.info, Verhalten: e.target.value } }))}
+                        className="bg-transparent text-emerald-100 outline-none py-1 cursor-pointer"
+                    />
+                    <datalist id="demeanors">
+                      {SharedData.demeanors.map((demeanor, index) => (
+                          <option key={index} value={demeanor} />
+                      ))}
+                    </datalist>
+                  </>
               ) : key === "Gruppierung" ? (
                 <select
                   value={val}

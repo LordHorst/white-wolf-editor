@@ -858,7 +858,49 @@ useEffect(() => {
           {Object.entries(character.info).map(([key, val]) => (
             <div key={key} className="flex flex-col border-b border-emerald-900/30">
               <label className="text-[9px] uppercase text-emerald-700 font-bold">{key}</label>
-              {key === "Clan" ? (
+              {key === "Konzept" ? (
+                <>
+                <input
+                    list="concepts"
+                    value={val}
+                    onChange={(e) => setCharacter(p => ({ ...p, info: { ...p.info, Konzept: e.target.value } }))}
+                    className="bg-transparent text-emerald-100 outline-none py-1 cursor-pointer"
+                />
+                   <datalist id="concepts">
+                    {SharedData.concepts.map((concept, index) => (
+                      <option key={index} value={concept} />
+                    ))}
+                  </datalist>
+                </>
+              ) : key === "Wesen" ? (
+                <>
+                <input
+                    list="natures"
+                    value={val}
+                    onChange={(e) => setCharacter(p => ({ ...p, info: { ...p.info, Wesen: e.target.value } }))}
+                    className="bg-transparent text-emerald-100 outline-none py-1 cursor-pointer"
+                />
+                   <datalist id="natures">
+                    {SharedData.natures.map((nature, index) => (
+                      <option key={index} value={nature} />
+                    ))}
+                  </datalist>
+                </>
+              ) : key === "Verhalten" ? (
+                <>
+                <input
+                    list="demeanors"
+                    value={val}
+                    onChange={(e) => setCharacter(p => ({ ...p, info: { ...p.info, Verhalten: e.target.value } }))}
+                    className="bg-transparent text-emerald-100 outline-none py-1 cursor-pointer"
+                />
+                   <datalist id="demeanors">
+                    {SharedData.demeanors.map((demeanor, index) => (
+                      <option key={index} value={demeanor} />
+                    ))}
+                  </datalist>
+                </>
+              ) : key === "Clan" ? (
                 <select
                   value={val}
                   onChange={(e) => {
