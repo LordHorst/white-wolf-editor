@@ -134,7 +134,10 @@ export const getSectsForAffiliation = (affiliationName) => {
 };
 
 export const MageMerits = [
-    {name: "Ausdauer", cost: 1, description: "Der Charakter ist außergewöhnlich ausdauernd."},
+    {name: "Fremdsprache", cost: 1, description: "Der Charakter spricht eine zusätzliche Sprache.", stackable: true, maxStack: 5 },
+    {name: "Geschärfter Sinn", cost: 1, description: "Ein einzelner deiner Sinne ist schärfter als gewöhnlich."},
+    {name: "Dunkle Triade", cost: 3, description: "Eine charmante (und zugleich beunruhigende) Mischung aus Narzissmus, Machiavellismus und Soziopathie macht dich zu einem gewandten, regelbrechenden Verführer."},
+    {name: "Geschärfte Sinne", cost: 3, description: "Alle fünf deiner Sinne sind schärfter als gewöhnlich."},    
     {name: "Verführerische Stimme", cost: 2, description: "Die Stimme des Charakters ist außergewöhnlich angenehm."},
     // ... weitere Vorteile
 ];

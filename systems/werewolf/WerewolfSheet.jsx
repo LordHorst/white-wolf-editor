@@ -441,6 +441,12 @@ export const WerewolfSheet = () => {
     freebie.reset(15);
   }, [character.info.Name]);
 
+  const getButtonClasses = (isActive) => `px-3 py-1 text-xs uppercase tracking-wider rounded border ${
+      isActive
+          ? 'border-amber-700 bg-amber-950/50 text-amber-300 hover:bg-amber-900/50'
+          : 'border-amber-900/30 bg-black/30 text-amber-600 cursor-not-allowed'
+  }`;
+  
   return (
     <div className="text-amber-300 font-serif">
       <SheetControls
@@ -737,34 +743,14 @@ export const WerewolfSheet = () => {
 
         {/* Buttons für Vorzüge/Nachteile (nur wenn Freebies aktiv) */}
         <div className="absolute bottom-4 left-4 flex gap-2">
-          <button
-            onClick={() => {
-              setMeritsModalType('merit');
-              setShowMeritsModal(true);
-            }}
-            disabled={!freebie.freebiesActive}
-            className={`px-3 py-1 text-xs uppercase tracking-wider rounded border ${
-              freebie.freebiesActive
-                ? 'border-amber-700 bg-amber-950/50 text-amber-300 hover:bg-amber-900/50'
-                : 'border-amber-900/30 bg-black/30 text-amber-600 cursor-not-allowed'
-            }`}
-          >
-            Vorzüge
-          </button>
-          <button
-            onClick={() => {
-              setMeritsModalType('flaw');
-              setShowMeritsModal(true);
-            }}
-            disabled={!freebie.freebiesActive}
-            className={`px-3 py-1 text-xs uppercase tracking-wider rounded border ${
-              freebie.freebiesActive
-                ? 'border-amber-700 bg-amber-950/50 text-amber-300 hover:bg-amber-900/50'
-                : 'border-amber-900/30 bg-black/30 text-amber-600 cursor-not-allowed'
-            }`}
-          >
-            Nachteile
-          </button>
+          <button onClick={() => {
+            setShowMeritsModal(true);
+            setMeritsModalType('merit');
+          }} className={getButtonClasses(freebie?.freebiesActive)}>Vorzüge</button>
+          <button onClick={() => {
+            setShowMeritsModal(true);
+            setMeritsModalType('flaw');
+          }} className={getButtonClasses(freebie?.freebiesActive)}>Nachteile</button>
         </div>
       </div>
 

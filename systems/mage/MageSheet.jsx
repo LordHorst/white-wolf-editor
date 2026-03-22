@@ -290,21 +290,71 @@ export const MageSheet = () => {
   // ---------- Merit/Flaw Handler ----------
   const handleAddMerit = (merit) => {
     if (!freebie.freebiesActive) return;
-    if (character.merits.some(m => m.name === merit.name)) {
-      showToast("Dieser Vorteil ist bereits ausgewählt.", "error");
-      return;
+    const existing = character.merits.find(m => m.name === merit.name);
+    if (merit.stackable) {
+      const currentQty = existing ? existing.quantity : 0;
+      if (currentQty >= merit.maxStack) {
+        showToast(`Maximal ${merit.maxStack} ${merit.name} erlaubt.`, 'error');
+        return;
+      }
+      const newQty = currentQty + 1;
+      const cost = merit.cost; // cost per rank
+      if (cost > freebie.freebiePoints) {
+        showToast(`Nicht genug Freebies (${cost} benötigt, ${freebie.freebiePoints} verfügbar).`, 'error');
+        return;
+      }
+      if (existing) {
+        setCharacter(prev => ({
+          ...prev,
+          merits: prev.merits.map(m =>
+              m.name === merit.name ? { ...m, quantity: newQty } : m
+          )
+        }));
+      } else {
+        setCharacter(prev => ({
+          ...prev,
+          merits: [...prev.merits, { ...merit, quantity: 1 }]
+        }));
+      }
+      freebie.spendPoints(cost);
+    } else {
+      // Non-stackable: same as before
+      if (existing) {
+        showToast("Dieser Vorteil ist bereits ausgewählt.", "error");
+        return;
+      }
+      if (merit.cost > freebie.freebiePoints) {
+        showToast(`Nicht genug Freebies (${merit.cost} benötigt, ${freebie.freebiePoints} verfügbar).`, 'error');
+        return;
+      }
+      setCharacter(prev => ({
+        ...prev,
+        merits: [...prev.merits, { ...merit, quantity: 1 }]
+      }));
+      freebie.spendPoints(merit.cost);
     }
-    if (merit.cost > freebie.freebiePoints) {
-      showToast(`Nicht genug Freebies (${merit.cost} benötigt, ${freebie.freebiePoints} verfügbar).`, 'error');
-      return;
-    }
-    setCharacter(prev => ({ ...prev, merits: [...prev.merits, merit] }));
-    freebie.spendPoints(merit.cost);
   };
 
   const handleRemoveMerit = (merit) => {
-    setCharacter(prev => ({ ...prev, merits: prev.merits.filter(m => m.name !== merit.name) }));
-    freebie.addPoints(merit.cost);
+    const existing = character.merits.find(m => m.name === merit.name);
+    if (!existing) return;
+    if (merit.stackable && existing.quantity > 1) {
+      // Decrease quantity
+      setCharacter(prev => ({
+        ...prev,
+        merits: prev.merits.map(m =>
+            m.name === merit.name ? { ...m, quantity: m.quantity - 1 } : m
+        )
+      }));
+      freebie.addPoints(merit.cost);
+    } else {
+      // Remove entirely
+      setCharacter(prev => ({
+        ...prev,
+        merits: prev.merits.filter(m => m.name !== merit.name)
+      }));
+      freebie.addPoints(merit.cost);
+    }
   };
 
   const handleAddFlaw = (flaw) => {
@@ -661,6 +711,15 @@ export const MageSheet = () => {
     setCharacter(p => ({ ...p, status: { ...p.status, paradox: newValue } }));
   };
 
+  useEffect(() => {
+    if (character.merits && character.merits.length > 0) {
+      const needsUpdate = character.merits.some(m => !m.hasOwnProperty('quantity'));
+      if (needsUpdate) {
+        const newMerits = character.merits.map(m => ({ ...m, quantity: 1 }));
+        setCharacter(prev => ({ ...prev, merits: newMerits }));
+      }
+    }
+  }, [character.merits]);
   // ---------- Freebies zurücksetzen bei neuem Charakter ----------
   useEffect(() => {
     freebie.reset(15);
@@ -671,7 +730,13 @@ export const MageSheet = () => {
     const affiliation = character.info.Zugehörigkeit;
     return MageData.affiliations.find(a => a.name === affiliation)?.sects || [];
   };
-
+  
+  const getButtonClasses = (isActive) => `px-3 py-1 text-xs uppercase tracking-wider rounded border ${
+      isActive
+          ? 'border-purple-700 bg-purple-950/50 text-purple-300 hover:bg-purple-900/50'
+          : 'border-purple-900/30 bg-black/30 text-purple-600 cursor-not-allowed'
+  }`;
+  
   return (
     <div className="text-purple-300 font-serif">
       <SheetControls
@@ -984,10 +1049,9 @@ export const MageSheet = () => {
                   .sort((a, b) => a.name.localeCompare(b.name))
                   .map((merit, idx) => (
                     <li key={idx} className="text-xs text-purple-300 flex justify-between items-center border-b border-purple-800/30 pb-1">
-                      <span>
-                        <span className="font-bold">{merit.name}</span>
-                        <span className="text-purple-500 ml-2">({merit.cost})</span>
-                      </span>
+                      <span className="font-bold">{merit.name}</span>
+                      {merit.quantity > 1 && <span className="text-purple-400 ml-1">x{merit.quantity}</span>}
+                      <span className="text-purple-500 ml-2">({merit.cost * merit.quantity})</span>
                       {freebie.freebiesActive && (
                         <button
                           onClick={() => handleRemoveMerit(merit)}
@@ -1032,36 +1096,16 @@ export const MageSheet = () => {
         <br />
 
         {/* Buttons für Vorzüge/Nachteile */}
-        <div className="absolute bottom-4 left-4 flex gap-2">
-          <button
-            onClick={() => {
+          <div className="absolute bottom-4 left-4 flex gap-2">
+            <button onClick={() => {
+              setShowMeritsModal(true);
               setMeritsModalType('merit');
+            }} className={getButtonClasses(freebie?.freebiesActive)}>Vorzüge</button>
+            <button onClick={() => {
               setShowMeritsModal(true);
-            }}
-            disabled={!freebie.freebiesActive}
-            className={`px-3 py-1 text-xs uppercase tracking-wider rounded border ${
-              freebie.freebiesActive
-                ? 'border-purple-700 bg-purple-950/50 text-purple-300 hover:bg-purple-900/50'
-                : 'border-purple-900/30 bg-black/30 text-purple-600 cursor-not-allowed'
-            }`}
-          >
-            Vorzüge
-          </button>
-          <button
-            onClick={() => {
               setMeritsModalType('flaw');
-              setShowMeritsModal(true);
-            }}
-            disabled={!freebie.freebiesActive}
-            className={`px-3 py-1 text-xs uppercase tracking-wider rounded border ${
-              freebie.freebiesActive
-                ? 'border-purple-700 bg-purple-950/50 text-purple-300 hover:bg-purple-900/50'
-                : 'border-purple-900/30 bg-black/30 text-purple-600 cursor-not-allowed'
-            }`}
-          >
-            Nachteile
-          </button>
-        </div>
+            }} className={getButtonClasses(freebie?.freebiesActive)}>Nachteile</button>
+          </div>
       </div>
 
       <StorageModals mngr={mngr} theme="purple" />

@@ -793,6 +793,11 @@ useEffect(() => {
   }
 }, [character.advantages.hintergründe, character.info.Generation, character.status.blutvorrat, setCharacter]);
 
+  const getButtonClasses = (isActive) => `px-3 py-1 text-xs uppercase tracking-wider rounded border ${
+      isActive
+          ? 'border-emerald-700 bg-emerald-950/50 text-emerald-300 hover:bg-emerald-900/50'
+          : 'border-emerald-900/30 bg-black/30 text-emerald-600 cursor-not-allowed'
+  }`;
   return (
     <div className="text-emerald-300 font-serif">
       <SheetControls 
@@ -1138,28 +1143,14 @@ useEffect(() => {
         </div>
         <br/>
         <div className="absolute bottom-4 left-4 flex gap-2">
-          <button
-            onClick={() => { setMeritsModalType('merit'); setShowMeritsModal(true); }}
-            disabled={!freebie.freebiesActive}
-            className={`px-3 py-1 text-xs uppercase tracking-wider rounded border ${
-              freebie.freebiesActive
-                ? 'border-emerald-700 bg-emerald-950/50 text-emerald-300 hover:bg-emerald-900/50'
-                : 'border-emerald-900/30 bg-black/30 text-emerald-600 cursor-not-allowed'
-            }`}
-          >
-            Vorzüge
-          </button>
-          <button
-            onClick={() => { setMeritsModalType('flaw'); setShowMeritsModal(true); }}
-            disabled={!freebie.freebiesActive}
-            className={`px-3 py-1 text-xs uppercase tracking-wider rounded border ${
-              freebie.freebiesActive
-                ? 'border-emerald-700 bg-emerald-950/50 text-emerald-300 hover:bg-emerald-900/50'
-                : 'border-emerald-900/30 bg-black/30 text-emerald-600 cursor-not-allowed'
-            }`}
-          >
-            Nachteile
-          </button>
+          <button onClick={() => {
+            setShowMeritsModal(true);
+            setMeritsModalType('merit');
+          }} className={getButtonClasses(freebie?.freebiesActive)}>Vorzüge</button>
+          <button onClick={() => {
+            setShowMeritsModal(true);
+            setMeritsModalType('flaw');
+          }} className={getButtonClasses(freebie?.freebiesActive)}>Nachteile</button>
         </div>
       </div>
       <StorageModals mngr={mngr} theme="emerald" />
