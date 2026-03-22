@@ -44,7 +44,7 @@ export function useCharacterManager(defaultEmptyChar, systemKey) {
         showToast("Charakter importiert", "success");
       } catch (err) { showToast("Fehler beim Einlesen", "error"); }
     };
-    e.target.value = null; 
+    e.target.value = null;
   };
 
   const saveToLocal = () => {
