@@ -1,7 +1,7 @@
 // src/hooks/useFreebies.js
 import { useState, useCallback } from 'react';
 
-export const useFreebies = (initialPoints = 0, costMap = {}) => {
+export const useFreebies = (initialPoints = 0, costMap = {}, updateTrait) => {
   const [freebiePoints, setFreebiePoints] = useState(initialPoints);
   const [freebiesActive, setFreebiesActive] = useState(false);
 
