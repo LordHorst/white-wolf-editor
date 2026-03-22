@@ -41,17 +41,18 @@ const getEmptyMage = () => ({
   },
   abilities: {
     talente: {
-      Aufmerksamkeit: 0, Ausflüchte: 0, Ausweichen: 0, Bewusstsein: 0,
-      Einschüchtern: 0, Empathie: 0, Führungsqualitäten: 0, Handgemenge: 0,
+      Aufmerksamkeit: 0, Asudruck: 0, Ausflüchte: 0, Einschüchtern: 0, Empathie: 0,
+      Führungsqualitäten: 0, Handgemenge: 0, Kunst: 0, Sechster_Sinn: 0,
       Sportlichkeit: 0, Szenekenntnis: 0
     },
     fertigkeiten: {
-      Etikette: 0, Fahren: 0, Handwerk: 0, Heimlichkeit: 0,
-      Meditation: 0, Nahkampf: 0, Schusswaffen: 0, Technologie: 0, Überleben: 0
+      Etikette: 0, Fahren: 0, Handwerk: 0, Heimlichkeit: 0, Kampfkunst: 0,
+      Meditation: 0, Nahkampf: 0, Recherche: 0, Schusswaffen: 0, Technologie: 0, Überleben: 0
     },
     kenntnisse: {
-      Akademisches_Wissen: 0, Computer: 0, Enigmas: 0, Gesetzeskenntnis: 0,
-      Kosmologie: 0, Linguistik: 0, Medizin: 0, Naturwissenschaften: 0, Okkultismus: 0
+      Akademisches_Wissen: 0, Computer: 0, Enigmas: 0, Esoterik: 0, Gesetzeskenntnis: 0,
+      Kosmologie: 0, Medizin: 0, Nachforschungen: 0, Naturwissenschaften: 0, Okkultismus: 0,
+      Poltik: 0
     }
   },
   advantages: {
@@ -229,6 +230,9 @@ export const MageSheet = () => {
       });
     }
 
+    // Spezialfall: Kampfkunst auf maximal 2 beschränken
+    const finalAbilities = enforceKampfkunstLimit(newAbilities);
+
     // 4. Hintergründe (5 Punkte, ohne "Generation")
     const availableBgs = getPredefinedBackgroundsForMage();
     const backgroundsList = [];
@@ -264,7 +268,7 @@ export const MageSheet = () => {
     const newCharacter = {
       info,
       attributes: newAttributes,
-      abilities: newAbilities,
+      abilities: finalAbilities,
       advantages: {
         sphären: newSpheres,
         hintergründe: backgroundsList,
@@ -374,6 +378,12 @@ export const MageSheet = () => {
     const currentValue = character.abilities[cat][name];
     if (newValue === currentValue) return;
 
+    // Special rule: Kampfkunst (Do) darf maximal 2 Punkte haben (auch mit Freebies)
+    if (name === "Kampfkunst" && newValue > 2) {
+      showToast("Kampfkunst (Do) kann zu Beginn maximal 2 Punkte haben.", 'error');
+      return;
+    }
+    
     if (freebie.freebiesActive) {
       const cost = freebie.getCost('ability', currentValue, newValue);
       if (cost > freebie.freebiePoints) {
@@ -410,6 +420,32 @@ export const MageSheet = () => {
   };
 
   // ---------- Sphären: Startlimit 3 Punkte, Freebies ----------
+  // Helper function. Kampfkunst (Do) nur 2 Punkte!
+  const enforceKampfkunstLimit = (abilities) => {
+    const newAbilities = JSON.parse(JSON.stringify(abilities));
+    const fertigkeiten = newAbilities.fertigkeiten;
+    const kampfkunstValue = fertigkeiten.Kampfkunst;
+
+    if (kampfkunstValue <= 2) return newAbilities;
+
+    // Überzählige Punkte
+    const excess = kampfkunstValue - 2;
+    fertigkeiten.Kampfkunst = 2;
+
+    // Verteilung der überschüssigen Punkte auf andere Fertigkeiten (max 3)
+    const otherSkills = Object.keys(fertigkeiten).filter(name => name !== "Kampfkunst");
+    let remaining = excess;
+    while (remaining > 0) {
+      const possible = otherSkills.filter(name => fertigkeiten[name] < 3);
+      if (possible.length === 0) break;
+      const skill = randomChoice(possible);
+      fertigkeiten[skill]++;
+      remaining--;
+    }
+
+    return newAbilities;
+  };
+  
   const spheresTotal = sumSpheres(character.advantages.sphären);
   const handleSphereChange = (sphereName, newValue) => {
     const oldValue = character.advantages.sphären[sphereName];
