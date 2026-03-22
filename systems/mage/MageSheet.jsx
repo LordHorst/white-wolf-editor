@@ -124,14 +124,16 @@ const getAbilityLimits = (totals) => {
   };
 };
 
-// Hintergrundliste ohne "Generation"
-const getPredefinedBackgroundsForMage = () => {
-  if (!SharedData.backgrounds) return [];
-  return Object.keys(SharedData.backgrounds).filter(bg => bg !== "Generation");
-};
-
 // Sphären-Hilfsfunktionen
 const sumSpheres = (spheres) => Object.values(spheres).reduce((sum, v) => sum + v, 0);
+// Backgrounds
+const sumBackgrounds = (backgrounds) => backgrounds.reduce((sum, b) => sum + b.value, 0);
+
+// Helper to get predefined backgrounds for Mage (without Generation)
+const getPredefinedBackgroundsForMage = () => {
+  if (!MageData.backgrounds) return [];
+  return Object.keys(MageData.backgrounds);
+};
 
 export const MageSheet = () => {
   const mngr = useCharacterManager(getEmptyMage(), 'mta');
@@ -476,7 +478,119 @@ export const MageSheet = () => {
       }
     }
   };
+// Tooltip component for background descriptions
+  const BackgroundTooltip = ({ backgroundName, value, children }) => {
+    const [show, setShow] = useState(false);
+    const background = MageData.backgrounds ? MageData.backgrounds[backgroundName] : null;
+    if (!background || !background.levels) return children;
 
+    const levelDesc = background.levels[value - 1] || "Keine Beschreibung verfügbar.";
+    return (
+        <div className="relative inline-block" onMouseEnter={() => setShow(true)} onMouseLeave={() => setShow(false)}>
+          {children}
+          {show && (
+              <div className="absolute z-50 bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-64 p-2 bg-black border border-purple-800 rounded shadow-lg text-xs text-purple-100">
+                <div className="font-bold mb-1">{backgroundName} (Stufe {value})</div>
+                <div>{levelDesc}</div>
+              </div>
+          )}
+        </div>
+    );
+  };
+
+// Custom background list item with dropdown and tooltip
+  const BackgroundListItem = ({ item, index, onChange, maxPointsPerBackground = 5 }) => {
+    const predefinedOptions = getPredefinedBackgroundsForMage();
+    const [isCustom, setIsCustom] = useState(!predefinedOptions.includes(item.name) && item.name !== "");
+    const [customName, setCustomName] = useState(isCustom ? item.name : "");
+
+    const handleNameChange = (selectedName) => {
+      if (selectedName === "custom") {
+        setIsCustom(true);
+        onChange(index, customName, undefined);
+      } else {
+        setIsCustom(false);
+        onChange(index, selectedName, undefined);
+      }
+    };
+
+    const handleCustomNameChange = (e) => {
+      const newName = e.target.value;
+      setCustomName(newName);
+      onChange(index, newName, undefined);
+    };
+
+    return (
+        <div className="mb-3 flex items-center gap-2">
+          {!isCustom ? (
+              <select
+                  value={item.name}
+                  onChange={(e) => handleNameChange(e.target.value)}
+                  className="bg-transparent border-b border-purple-900 text-purple-100 text-sm py-1 w-40"
+              >
+                <option value="" disabled></option>
+                {predefinedOptions.map(opt => (
+                    <option key={opt} value={opt} className="bg-black">{opt}</option>
+                ))}
+                <option value="custom" className="bg-[#060208]">✏️ Eigener Hintergrund...</option>
+              </select>
+          ) : (
+              <input
+                  type="text"
+                  value={customName}
+                  onChange={handleCustomNameChange}
+                  placeholder="Eigener Hintergrund"
+                  className="bg-transparent border-b border-purple-900 text-purple-100 text-sm py-1 w-40"
+              />
+          )}
+
+          <DotRating
+              theme="purple"
+              value={item.value}
+              max={maxPointsPerBackground}
+              onChange={(v) => onChange(index, undefined, v)}
+          />
+
+          {!isCustom && MageData.backgrounds && MageData.backgrounds[item.name] && (
+              <BackgroundTooltip backgroundName={item.name} value={item.value}>
+                <Info size={14} className="text-purple-500 cursor-help" />
+              </BackgroundTooltip>
+          )}
+        </div>
+    );
+  };
+
+  const backgroundsTotal = sumBackgrounds(character.advantages.hintergründe);
+  const handleBackgroundsChange = (index, name, value) => {
+    const newList = [...character.advantages.hintergründe];
+    if (name !== undefined) newList[index].name = name;
+    if (value !== undefined) {
+      const oldValue = newList[index].value;
+      newList[index].value = value;
+      const newTotal = sumBackgrounds(newList);
+
+      if (freebie.freebiesActive) {
+        const cost = freebie.getCost('background', oldValue, value);
+        if (cost > freebie.freebiePoints) {
+          newList[index].value = oldValue;
+          showToast(`Nicht genug Freebies (${cost} benötigt, ${freebie.freebiePoints} verfügbar).`, 'error');
+          return;
+        }
+        setCharacter(p => ({ ...p, advantages: { ...p.advantages, hintergründe: newList } }));
+        freebie.spend('background', oldValue, value);
+      } else {
+        if (newTotal <= 5) {
+          setCharacter(p => ({ ...p, advantages: { ...p.advantages, hintergründe: newList } }));
+        } else {
+          newList[index].value = oldValue;
+          showToast(`Maximal 5 Punkte in Hintergründen erlaubt (aktuell ${newTotal}).`, 'error');
+        }
+      }
+    } else {
+      setCharacter(p => ({ ...p, advantages: { ...p.advantages, hintergründe: newList } }));
+    }
+  };
+  
   // ---------- Status-Änderungen mit Freebies (nur Erhöhung mit Freebies) ----------
   const handleAreteChange = (newValue) => {
     const current = character.status.arete;
@@ -758,17 +872,18 @@ export const MageSheet = () => {
               </div>
             </div>
             <div>
-              <ListTrait
-                block={character.advantages.hintergründe}
-                title="Hintergründe"
-                theme="purple"
-                onChange={(i, name, v) => {
-                  const nl = [...character.advantages.hintergründe];
-                  if (name !== undefined) nl[i].name = name;
-                  if (v !== undefined) nl[i].value = v;
-                  setCharacter(p => ({ ...p, advantages: { ...p.advantages, hintergründe: nl } }));
-                }}
-              />
+              <h3 className="text-xs font-bold text-purple-700 uppercase mb-4">
+                Hintergründe ({backgroundsTotal}/5)
+              </h3>
+              {character.advantages.hintergründe.map((bg, idx) => (
+                  <BackgroundListItem
+                      key={idx}
+                      item={bg}
+                      index={idx}
+                      onChange={handleBackgroundsChange}
+                      maxPointsPerBackground={5}
+                  />
+              ))}
             </div>
           </div>
         </section>

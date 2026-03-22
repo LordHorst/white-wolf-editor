@@ -1,16 +1,15 @@
-import React, { useEffect, useState } from 'react';
-import { Info } from 'lucide-react';
-import { SharedData, VampireData, getClanDisciplines, VampireMerits, VampireFlaws } from '../../data/sharedData';
-import { useCharacterManager } from '../../hooks/useCharacterManager';
-import { SheetControls } from '../../components/ui/SheetControls';
-import { FreebiePanel } from '../../components/ui/FreebiePanel';
-import { TraitSection } from '../../components/ui/TraitSection';
-import { ListTrait } from '../../components/ui/ListTrait';
-import { HealthBox } from '../../components/ui/HealthBox';
-import { StorageModals } from '../../components/ui/StorageModals';
-import { DotRating } from '../../components/ui/DotRating';
-import { useFreebies } from '../../hooks/useFreebies';
-import { MeritsFlawsModal } from '../../components/ui/MeritsFlawsModal';
+import React, {useEffect, useState} from 'react';
+import {Info} from 'lucide-react';
+import {getClanDisciplines, SharedData, VampireData, VampireFlaws, VampireMerits} from '../../data/sharedData';
+import {useCharacterManager} from '../../hooks/useCharacterManager';
+import {SheetControls} from '../../components/ui/SheetControls';
+import {TraitSection} from '../../components/ui/TraitSection';
+import {ListTrait} from '../../components/ui/ListTrait';
+import {HealthBox} from '../../components/ui/HealthBox';
+import {StorageModals} from '../../components/ui/StorageModals';
+import {DotRating} from '../../components/ui/DotRating';
+import {useFreebies} from '../../hooks/useFreebies';
+import {MeritsFlawsModal} from '../../components/ui/MeritsFlawsModal';
 
 // Kosten pro Kategorie (werden später im Hook verwendet)
 const freebieCosts = {
@@ -71,12 +70,11 @@ const calculateGroupBonusPoints = (character) => {
 
 const getGroupLimits = (bonusPoints) => {
   const sorted = Object.entries(bonusPoints).sort((a, b) => b[1] - a[1]);
-  const limits = {
+  return {
     [sorted[0][0]]: 7, // Primär
     [sorted[1][0]]: 5, // Sekundär
     [sorted[2][0]]: 3, // Tertiär
   };
-  return limits;
 };
 
 // ---------- Hilfsfunktionen für Fähigkeiten ----------
@@ -95,24 +93,23 @@ const calculateAbilityTotals = (character) => {
 
 const getAbilityLimits = (totals) => {
   const sorted = Object.entries(totals).sort((a, b) => b[1] - a[1]);
-  const limits = {
+  return {
     [sorted[0][0]]: 13, // Primär
     [sorted[1][0]]: 9,  // Sekundär
     [sorted[2][0]]: 5,  // Tertiär
   };
-  return limits;
 };
 
 // ---------- Hintergruende --------------
 // Get predefined background list safely
 const getPredefinedBackgrounds = () => {
-  return SharedData.backgrounds ? Object.keys(SharedData.backgrounds) : [];
+  return VampireData.backgrounds ? Object.keys(VampireData.backgrounds) : [];
 };
 
 // Tooltip component for background descriptions
 const BackgroundTooltip = ({ backgroundName, value, children }) => {
   const [show, setShow] = useState(false);
-  const background = SharedData.backgrounds ? SharedData.backgrounds[backgroundName] : null;
+  const background = VampireData.backgrounds ? VampireData.backgrounds[backgroundName] : null;
   if (!background || !background.levels) return children;
 
   const levelDesc = background.levels[value - 1] || "Keine Beschreibung verfügbar.";
@@ -182,7 +179,7 @@ const BackgroundListItem = ({ item, index, onChange, maxPointsPerBackground = 5 
         onChange={(v) => onChange(index, undefined, v)}
       />
 
-      {!isCustom && SharedData.backgrounds && SharedData.backgrounds[item.name] && (
+      {!isCustom && VampireData.backgrounds && VampireData.backgrounds[item.name] && (
         <BackgroundTooltip backgroundName={item.name} value={item.value}>
           <Info size={14} className="text-emerald-500 cursor-help" />
         </BackgroundTooltip>
@@ -195,9 +192,9 @@ const sumDisciplines = (disciplines) => disciplines.reduce((sum, d) => sum + d.v
 const sumBackgrounds = (backgrounds) => backgrounds.reduce((sum, b) => sum + b.value, 0);
 const sumVirtues = (virtues) => Object.values(virtues).reduce((sum, v) => sum + v, 0);
 
-export const VampireSheet = () => {
+const VampireSheet = () => {
   const mngr = useCharacterManager(getEmptyVampire(), 'vtm');
-  const { character, setCharacter, gmMode, updateStat, showToast } = mngr;
+  const { character, setCharacter, updateStat, showToast } = mngr;
   const [showRules, setShowRules] = useState(false);
   const freebie = useFreebies(15, freebieCosts);
   const [showMeritsModal, setShowMeritsModal] = useState(false);
@@ -309,7 +306,7 @@ export const VampireSheet = () => {
     }
 
     // 4. Disciplines
-    let disciplinesList = [{ name: "", value: 0 }, { name: "", value: 0 }, { name: "", value: 0 }];
+    let disciplinesList;
     if (clanDisciplines.length > 0) {
       // Use clan disciplines
       disciplinesList = clanDisciplines.map(name => ({ name, value: 0 }));
@@ -324,7 +321,7 @@ export const VampireSheet = () => {
     }
 
     // 5. Backgrounds
-    const predefinedBackgrounds = Object.keys(SharedData.backgrounds);
+    const predefinedBackgrounds = Object.keys(VampireData.backgrounds);
     const backgroundsList = [{ name: "", value: 0 }, { name: "", value: 0 }, { name: "", value: 0 }, { name: "", value: 0 }, { name: "", value: 0 }];
     // Distribute 5 points among possible backgrounds (max 5 each)
     const usedBackgrounds = [];
@@ -1055,9 +1052,8 @@ useEffect(() => {
               <h3 className="text-xs text-emerald-700 uppercase font-bold mb-2">Blutvorrat</h3>
               <div className="flex flex-col items-center gap-1">
                   {(() => {
-                    const capacity = getGenerationInfo(character.advantages.hintergründe).bloodCapacity;
-                    const totalBoxes = capacity * 2; // Gesamtzahl der Kästchen (z.B. 15 * 2 = 30)
-                    const boxesPerRow = capacity; // Anzahl der Kästchen pro Zeile
+                    // Gesamtzahl der Kästchen (z.B. 15 * 2 = 30)
+                    const boxesPerRow = getGenerationInfo(character.advantages.hintergründe).bloodCapacity; // Anzahl der Kästchen pro Zeile
                     const rows = [];
 
                     for (let row = 0; row < 2; row++) {
@@ -1186,3 +1182,4 @@ useEffect(() => {
     </div>
   );
 };
+export default VampireSheet

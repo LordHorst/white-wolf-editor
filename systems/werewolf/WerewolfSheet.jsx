@@ -157,8 +157,8 @@ const getAbilityLimits = (totals) => {
 
 // Hintergrundliste ohne "Generation"
 const getPredefinedBackgroundsForWerewolf = () => {
-  if (!SharedData.backgrounds) return [];
-  return Object.keys(SharedData.backgrounds).filter(bg => bg !== "Generation");
+  if (!WerewolfData.backgrounds) return [];
+  return Object.keys(WerewolfData.backgrounds).filter(bg => bg !== "Generation");
 };
 
 export const WerewolfSheet = () => {

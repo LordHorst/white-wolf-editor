@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Menu, X, Moon, Flame, Sparkles } from 'lucide-react';
-import { VampireSheet } from './systems/vampire/VampireSheet';
+import VampireSheet from './systems/vampire/VampireSheet';
 import { WerewolfSheet } from './systems/werewolf/WerewolfSheet';
 import { MageSheet } from './systems/mage/MageSheet';
 
