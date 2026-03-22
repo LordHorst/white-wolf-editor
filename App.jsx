@@ -1,120 +1,69 @@
 import React, { useState } from 'react';
-import { Menu, Moon, Flame, Sparkles, Ghost } from 'lucide-react';
+import { Menu, X, Moon, Flame, Sparkles } from 'lucide-react';
+import { VampireSheet } from './systems/vampire/VampireSheet';
+import { WerewolfSheet } from './systems/werewolf/WerewolfSheet';
+import { MageSheet } from './systems/mage/MageSheet';
 
-// Korrektur der Import-Pfade: In der aktuellen Umgebung liegen die Files 
-// meist im selben Verzeichnis oder in einer flachen Struktur.
-import VampireSheet from './systems/vampire/VampireSheet';
-import WerewolfSheet from './systems/werewolf/WerewolfSheet'; 
-import MageSheet from './systems/mage/MageSheet';
-
-/**
- * Hauptkomponente der App.
- * Verwaltet die Navigation zwischen den verschiedenen World of Darkness Systemen.
- * Nutzt die refactored Komponenten, die intern das BaseSheetLayout verwenden.
- */
 const App = () => {
   const [activeSystem, setActiveSystem] = useState('vampire');
   const [menuOpen, setMenuOpen] = useState(false);
 
-  // Konfiguration der verfügbaren Spielsysteme
   const systems = [
-    {
-      id: 'vampire',
-      name: 'Vampire: Die Maskerade',
-      icon: <Moon size={18} />,
-      color: 'hover:text-emerald-400 hover:bg-emerald-900/20',
-      accent: 'emerald'
-    },
-    {
-      id: 'werewolf',
-      name: 'Werewolf: Die Apokalypse',
-      icon: <Flame size={18} />,
-      color: 'hover:text-amber-500 hover:bg-amber-900/20',
-      accent: 'amber'
-    },
-    {
-      id: 'mage',
-      name: 'Magus: Die Erleuchtung',
-      icon: <Sparkles size={18} />,
-      color: 'hover:text-purple-400 hover:bg-purple-900/20',
-      accent: 'purple'
-    },
+    { id: 'vampire', name: 'Vampire: The Masquerade', icon: <Moon size={18} />, color: 'hover:text-emerald-400 hover:bg-emerald-900/20' },
+    { id: 'werewolf', name: 'Werewolf: The Apocalypse', icon: <Flame size={18} />, color: 'hover:text-amber-500 hover:bg-amber-900/20' },
+    { id: 'mage', name: 'Mage: The Ascension', icon: <Sparkles size={18} />, color: 'hover:text-purple-400 hover:bg-purple-900/20' },
   ];
 
-  // Helper zum Rendern des aktiven Bogens
-  const renderActiveSheet = () => {
-    // Die Verwendung von eindeutigen Keys stellt sicher, dass React
-    // den State beim Systemwechsel sauber zurücksetzt.
-    switch (activeSystem) {
-      case 'vampire':
-        return <VampireSheet key="vampire-sheet" />;
-      case 'werewolf':
-        return <WerewolfSheet key="werewolf-sheet" />;
-      case 'mage':
-        return <MageSheet key="mage-sheet" />;
-      default:
-        return <VampireSheet key="vampire-default" />;
-    }
-  };
-
   return (
-      <div className="min-h-screen bg-[#020202] text-stone-300 font-sans flex overflow-hidden">
+      <div className="min-h-screen bg-[#020202] text-stone-300 font-sans flex">
 
-        {/* SEITENLEISTE / NAVIGATION */}
-        <div className={`fixed inset-y-0 left-0 z-40 w-72 bg-black border-r border-white/10 transform transition-transform duration-300 ease-in-out ${menuOpen ? 'translate-x-0' : '-translate-x-full'} lg:relative lg:translate-x-0`}>
-          <div className="p-6 flex flex-col h-full">
-            <div className="flex items-center space-x-3 mb-10">
-              <div className="w-8 h-8 bg-gradient-to-br from-red-900 to-black rounded border border-red-600 flex items-center justify-center">
-                <Ghost size={16} className="text-red-500" />
-              </div>
-              <h1 className="font-bold tracking-tighter text-xl text-white">WOD<span className="text-red-600">EDITOR</span></h1>
+        {/* SIDEBAR (Hamburger Menu) */}
+        <div className={`fixed inset-y-0 left-0 z-40 w-72 bg-black border-r border-white/10 transform transition-transform duration-300 ease-in-out ${menuOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+          <div className="p-6">
+            <div className="flex justify-between items-center mb-8">
+              <h2 className="text-sm font-bold uppercase tracking-widest text-stone-400">System Wählen</h2>
+              <button onClick={() => setMenuOpen(false)} className="text-stone-500 hover:text-white"><X size={20} /></button>
             </div>
-
-            <nav className="space-y-2 flex-1">
-              <p className="px-4 text-[10px] uppercase tracking-[0.2em] text-stone-600 mb-4 font-bold">Systeme</p>
-              {systems.map((sys) => (
+            <div className="space-y-2">
+              {systems.map(sys => (
                   <button
                       key={sys.id}
                       onClick={() => { setActiveSystem(sys.id); setMenuOpen(false); }}
-                      className={`w-full flex items-center space-x-3 px-4 py-3 rounded text-left transition-all border
-                  ${activeSystem === sys.id
-                          ? 'bg-white/5 text-white border-white/10 shadow-[0_0_15px_rgba(255,255,255,0.05)]'
-                          : `text-stone-400 border-transparent ${sys.color}`}`}
+                      className={`w-full flex items-center space-x-3 px-4 py-3 rounded text-left transition-colors
+                  ${activeSystem === sys.id ? 'bg-white/10 text-white font-bold' : `text-stone-400 ${sys.color}`}`}
                   >
-                    <span className={activeSystem === sys.id ? 'text-white' : ''}>{sys.icon}</span>
-                    <span className="text-sm font-medium">{sys.name}</span>
+                    {sys.icon}
+                    <span className="text-sm">{sys.name}</span>
                   </button>
               ))}
-            </nav>
-
-            <div className="mt-auto pt-6 border-t border-white/5 text-[9px] text-stone-600 uppercase tracking-widest font-medium">
-              World of Darkness Editor v3.1
             </div>
+          </div>
+          <div className="absolute bottom-6 left-6 text-[9px] text-stone-600 uppercase tracking-widest">
+            World of Darkness Editor v2.1
           </div>
         </div>
 
-        {/* MOBILER OVERLAY */}
+        {/* OVERLAY WENN MENÜ OFFEN */}
         {menuOpen && (
-            <div className="fixed inset-0 bg-black/80 z-30 backdrop-blur-md lg:hidden" onClick={() => setMenuOpen(false)}></div>
+            <div className="fixed inset-0 bg-black/50 z-30 backdrop-blur-sm" onClick={() => setMenuOpen(false)}></div>
         )}
 
-        {/* HAUPTINHALT / EDITOR BEREICH */}
-        <main className="flex-1 h-screen overflow-y-auto relative bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-stone-900/20 via-transparent to-transparent">
-          {/* Mobile Menu Button */}
-          {!menuOpen && (
-              <button
-                  onClick={() => setMenuOpen(true)}
-                  className="lg:hidden fixed top-4 left-4 z-20 p-2 bg-black/50 border border-white/10 text-stone-400 hover:text-white rounded backdrop-blur-sm shadow-xl"
-              >
-                <Menu size={20} />
-              </button>
-          )}
+        {/* HAUPTINHALT */}
+        <div className="flex-1 transition-all duration-300 relative">
+          <button
+              onClick={() => setMenuOpen(true)}
+              className="absolute top-4 left-4 z-20 p-2 bg-black/50 border border-white/10 text-stone-400 hover:text-white rounded backdrop-blur-sm shadow-xl"
+          >
+            <Menu size={20} />
+          </button>
 
-          {/* Container für die Sheets */}
-          <div className="pt-16 lg:pt-8 p-4 md:p-12 max-w-6xl mx-auto min-h-full">
-            {renderActiveSheet()}
+          <div className="pt-16 p-4 md:p-8 max-w-5xl mx-auto">
+            {activeSystem === 'vampire' && <VampireSheet />}
+            {activeSystem === 'werewolf' && <WerewolfSheet />}
+            {activeSystem === 'mage' && <MageSheet />}
           </div>
-        </main>
+        </div>
+
       </div>
   );
 };
