@@ -111,7 +111,7 @@ export const BaseSheet = ({ config }) => {
                 {renderAdvantages(sharedProps)}
 
                 {/* STATUS (links) + GESUNDHEIT (rechts) */}
-                <section className={`grid grid-cols-2 gap-12 border-t ${t.border} pt-8 mb-8`}>
+                <section className={`grid grid-cols-1 md:grid-cols-2 gap-12 border-t ${t.border} pt-8 mb-8`}>
                     <div>{renderStatus(sharedProps)}</div>
                     <HealthBox character={character} setCharacter={setCharacter} theme={theme} />
                 </section>
