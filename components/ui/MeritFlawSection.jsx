@@ -1,54 +1,58 @@
-// components/ui/MeritFlawSection.jsx
-import React, { useState } from 'react';
-import { MeritsFlawsModal } from './MeritsFlawsModal';
+import React from 'react';
+import { themeConfig } from './themes/themes';
 
-export const MeritFlawSection = ({
-                                     character,
-                                     meritsList,
-                                     flawsList,
-                                     onAddMerit,
-                                     onRemoveMerit,
-                                     onAddFlaw,
-                                     onRemoveFlaw,
-                                     freebie,
-                                     theme // z.B. "emerald", "amber", "purple"
-                                 }) => {
-    const [showModal, setShowModal] = useState(false);
-    const [modalType, setModalType] = useState('merit');
+export const MeritsFlawsSection = ({
+                                       merits,
+                                       flaws,
+                                       onRemoveMerit,
+                                       onRemoveFlaw,
+                                       freebiesActive,
+                                       theme = 'emerald',
+                                   }) => {
+    const t = themeConfig[theme] ?? themeConfig.emerald;
 
-    // Die Hilfsfunktion direkt hier drin oder importieren
-    const getButtonClasses = (isActive) => `px-3 py-1 text-xs uppercase tracking-wider rounded border ...`;
+    const renderList = (items, isFlaws) => {
+        const label    = isFlaws ? 'Nachteile' : 'Vorzüge';
+        const empty    = isFlaws ? 'Keine Nachteile ausgewählt.' : 'Keine Vorzüge ausgewählt.';
+        const onRemove = isFlaws ? onRemoveFlaw : onRemoveMerit;
+
+        return (
+            <div>
+                <h3 className={`text-sm font-bold uppercase ${t.accentText} mb-3`}>{label}</h3>
+                {items.length === 0 ? (
+                    <p className={`text-xs ${t.emptyText} italic`}>{empty}</p>
+                ) : (
+                    <ul className="space-y-1">
+                        {[...items]
+                            .sort((a, b) => a.name.localeCompare(b.name))
+                            .map((item, idx) => (
+                                <li key={idx} className={`text-xs ${t.text} flex justify-between items-center border-b ${t.border} pb-1 opacity-80`}>
+                                    <span>
+                                        <span className="font-bold">{item.name}</span>
+                                        {!isFlaws && (item.quantity ?? 1) > 1 && (
+                                            <span className={`${t.descriptionText} ml-1`}>×{item.quantity}</span>
+                                        )}
+                                    </span>
+                                    <span className={`${t.emptyText} ml-2`}>
+                                        ({isFlaws ? item.cost : item.cost * (item.quantity ?? 1)})
+                                    </span>
+                                    {freebiesActive && (
+                                        <button onClick={() => onRemove(item)} className="text-rose-400 hover:text-rose-300 text-xs ml-2">
+                                            Entfernen
+                                        </button>
+                                    )}
+                                </li>
+                            ))}
+                    </ul>
+                )}
+            </div>
+        );
+    };
 
     return (
-        <>
-            {/* Hier kommt die Logik rein, die die Listen rendert (die <ul> aus deinen Dateien) */}
-            <div className="merits-flaws-lists">
-                {/* ... render character.merits und character.flaws ... */}
-            </div>
-
-            <div className="absolute bottom-4 left-4 flex gap-2">
-                <button onClick={() => { setShowModal(true); setModalType('merit'); }}
-                        className={getButtonClasses(freebie?.freebiesActive)}>Vorzüge</button>
-                <button onClick={() => { setShowModal(true); setModalType('flaw'); }}
-                        className={getButtonClasses(freebie?.freebiesActive)}>Nachteile</button>
-            </div>
-
-            <MeritsFlawsModal
-                isOpen={showModal}
-                onClose={() => setShowModal(false)}
-                type={modalType}
-                meritsList={meritsList}
-                flawsList={flawsList}
-                selectedMerits={character.merits}
-                selectedFlaws={character.flaws}
-                onAddMerit={onAddMerit}
-                onRemoveMerit={onRemoveMerit}
-                onAddFlaw={onAddFlaw}
-                onRemoveFlaw={onRemoveFlaw}
-                freebiePoints={freebie.freebiePoints}
-                freebiesActive={freebie.freebiesActive}
-                theme={theme}
-            />
-        </>
+        <div className={`grid grid-cols-2 gap-8 mt-8 border-t ${t.border} pt-6`}>
+            {renderList(merits, false)}
+            {renderList(flaws, true)}
+        </div>
     );
 };

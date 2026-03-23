@@ -1,35 +1,16 @@
 import React from 'react';
 import { Upload, Download, FolderOpen, Shield, ShieldOff } from 'lucide-react';
 import { FreebiePanel } from './FreebiePanel';
+import { themeConfig } from './themes/themes';
 
 export const SheetControls = ({ title, subtitle, theme, mngr, freebieState }) => {
-  // Define color schemes for supported themes, plus a fallback
-  const colorSchemes = {
-    emerald: {
-      text: 'text-emerald-500',
-      border: 'border-emerald-900',
-      hover: 'hover:bg-emerald-900/20',
-    },
-    amber: {
-      text: 'text-amber-600',
-      border: 'border-amber-900',
-      hover: 'hover:bg-amber-900/20',
-    },
-    purple: {
-      text: 'text-purple-500',
-      border: 'border-purple-900',
-      hover: 'hover:bg-purple-900/20',
-    },
-  };
+  const t = themeConfig[theme] ?? themeConfig.emerald;
 
-  // Fallback to emerald if theme is unknown
-  const colors = colorSchemes[theme] || colorSchemes.emerald;
-
-  const btnClass = `flex items-center space-x-1 px-3 py-1.5 border bg-black/40 transition-all rounded text-[10px] font-bold uppercase tracking-widest ${colors.text} ${colors.border} ${colors.hover}`;
+  const btnClass = `flex items-center space-x-1 px-3 py-1.5 border bg-black/40 transition-all rounded text-[10px] font-bold uppercase tracking-widest ${t.accentText} ${t.border} hover:bg-black/60`;
 
   return (
       <div className="flex flex-col md:flex-row justify-between items-center mb-6 px-2 gap-4">
-        <div className={`text-[10px] uppercase tracking-[0.3em] font-bold ${colors.text}`}>
+        <div className={`text-[10px] uppercase tracking-[0.3em] font-bold ${t.accentText}`}>
           {title} • {subtitle}
         </div>
         <div className="flex flex-wrap justify-center md:justify-end items-center gap-2">
