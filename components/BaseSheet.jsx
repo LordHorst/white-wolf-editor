@@ -64,7 +64,7 @@ export const BaseSheet = ({ config }) => {
         <div className={`${t.accentText} font-serif`}>
             <SheetControls title={title} subtitle={subtitle} theme={theme} mngr={mngr} freebieState={freebie} />
 
-            <div className={`border-2 ${t.border} p-8 shadow-2xl relative`} style={{ backgroundColor: bgColor }}>
+            <div className={`border-2 ${t.bg} ${t.border} p-8 shadow-2xl relative`} /*style={{ backgroundColor: bgColor }}*/>
 
                 {/* HEADER */}
                 <header className={`text-center mb-12 border-b ${t.border} pb-6 relative`}>

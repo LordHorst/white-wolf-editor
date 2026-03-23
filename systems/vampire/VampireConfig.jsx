@@ -7,6 +7,7 @@ import { VampireAdvantages } from './VampireAdvantages';
 import { VampireStatus } from './VampireStatus';
 import { randomizeCharacter } from './vampireRandomizer';
 import { getGenerationInfo } from './vampireHelpers';
+import { themeConfig } from '../../components/ui/themes/themes';
 
 // ─── Config-Objekt ───────────────────────────────────────────────────────────
 export const vampireConfig = {
@@ -14,7 +15,6 @@ export const vampireConfig = {
     title:     'Vampire',
     subtitle:  'Die Maskerade',
     theme:     'emerald',
-    bgColor:   '#051a11',
 
     freebieCount: 15,
     freebieCosts: {
@@ -115,6 +115,8 @@ export const vampireConfig = {
 
     renderInfoField: (key, val, { character, setCharacter, theme }) => {
         const set = (patch) => setCharacter(p => ({ ...p, info: { ...p.info, ...patch } }));
+        // Lade hier die aktuellen Farben aus deiner Theme-Datei!
+        const t = themeConfig[theme] ?? themeConfig.emerald;
 
         if (key === 'Clan') return (
             <select
@@ -133,7 +135,7 @@ export const vampireConfig = {
                         },
                     }));
                 }}
-                className={`bg-transparent text-${theme}-100 outline-none py-1 cursor-pointer`}
+                className={`bg-transparent ${t.text} outline-none py-1 cursor-pointer`}
             >
                 <option value="" className="bg-black italic">Wähle...</option>
                 {Object.entries(VampireData.clans).map(([category, clans]) => (
@@ -155,7 +157,7 @@ export const vampireConfig = {
                     value={val}
                     readOnly={isReadOnly}
                     onChange={(e) => set({ Generation: e.target.value })}
-                    className={`bg-transparent outline-none py-1 text-${theme}-100 ${isReadOnly ? 'opacity-70 cursor-default' : ''}`}
+                    className={`bg-transparent outline-none py-1 ${t.text} ${isReadOnly ? 'opacity-70 cursor-default' : ''}`}
                 />
             );
         }
@@ -163,7 +165,7 @@ export const vampireConfig = {
         if (key === 'Konzept') return (
             <>
                 <input list="vtm-concepts" value={val} onChange={(e) => set({ Konzept: e.target.value })}
-                       className={`bg-transparent text-${theme}-100 outline-none py-1`} />
+                       className={`bg-transparent ${t.text} outline-none py-1`} />
                 <datalist id="vtm-concepts">
                     {SharedData.concepts?.map((c, i) => <option key={i} value={c} />)}
                 </datalist>
@@ -173,7 +175,7 @@ export const vampireConfig = {
         if (key === 'Wesen') return (
             <>
                 <input list="vtm-natures" value={val} onChange={(e) => set({ Wesen: e.target.value })}
-                       className={`bg-transparent text-${theme}-100 outline-none py-1`} />
+                       className={`bg-transparent ${t.text} outline-none py-1`} />
                 <datalist id="vtm-natures">
                     {SharedData.natures?.map((n, i) => <option key={i} value={n} />)}
                 </datalist>
@@ -183,7 +185,7 @@ export const vampireConfig = {
         if (key === 'Verhalten') return (
             <>
                 <input list="vtm-demeanors" value={val} onChange={(e) => set({ Verhalten: e.target.value })}
-                       className={`bg-transparent text-${theme}-100 outline-none py-1`} />
+                       className={`bg-transparent ${t.text} outline-none py-1`} />
                 <datalist id="vtm-demeanors">
                     {SharedData.demeanors?.map((d, i) => <option key={i} value={d} />)}
                 </datalist>
@@ -195,7 +197,7 @@ export const vampireConfig = {
                 type="text"
                 value={val}
                 onChange={(e) => set({ [key]: e.target.value })}
-                className={`bg-transparent outline-none py-1 text-${theme}-100`}
+                className={`bg-transparent outline-none py-1 ${t.text}`}
             />
         );
     },

@@ -29,7 +29,7 @@ const systems = [
     name:     'Vampire',
     sub:      'The Masquerade',
     icon:     Moon,
-    theme:    'changeling',
+    theme:    'emerald',
     dot:      'bg-emerald-500',
     active:   'border-emerald-600/60 bg-emerald-950/40 text-emerald-300',
     inactive: 'border-transparent text-stone-500 hover:border-emerald-900/50 hover:bg-emerald-950/20 hover:text-emerald-400',
@@ -39,7 +39,7 @@ const systems = [
     name:     'Werewolf',
     sub:      'The Apocalypse',
     icon:     Flame,
-    theme:    'wraith',
+    theme:    'sky',
     dot:      'bg-amber-500',
     active:   'border-amber-600/60 bg-amber-950/40 text-amber-300',
     inactive: 'border-transparent text-stone-500 hover:border-amber-900/50 hover:bg-amber-950/20 hover:text-amber-400',
@@ -49,7 +49,9 @@ const systems = [
 const App = () => {
   const [activeSystem, setActiveSystem] = useState('vampire');
   const [collapsed, setCollapsed]       = useState(false);
-
+  
+  // Finde das Theme des aktuell gewählten Systems
+  const currentTheme = systems.find(s => s.id === activeSystem)?.theme || 'emerald';
   return (
       <div className="min-h-screen bg-[#0a0a0a] text-stone-300 font-sans flex">
 
@@ -192,10 +194,10 @@ const App = () => {
         {/* ── HAUPTINHALT ──────────────────────────────────────────────────── */}
         <main className="flex-1 min-w-0">
           <div className="p-4 md:p-8 max-w-5xl mx-auto">
-            {activeSystem === 'vampire'  && <Vampire />}
-            {activeSystem === 'werewolf' && <Werewolf />}
-            {activeSystem === 'mage'     && <Mage />}
-            {activeSystem === 'changeling' && <Changeling />}
+            {activeSystem === 'vampire'  && <Vampire theme={currentTheme}/> }
+            {activeSystem === 'werewolf' && <Werewolf theme={currentTheme}/> }
+            {activeSystem === 'mage'     && <Mage theme={currentTheme}/> }
+            {activeSystem === 'changeling' && <Changeling theme={currentTheme}/> }
           </div>
         </main>
 
