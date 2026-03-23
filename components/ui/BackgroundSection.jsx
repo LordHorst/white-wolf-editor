@@ -5,7 +5,7 @@ import { themeConfig } from './themes/themes';
 
 export const BackgroundTooltip = ({ backgroundName, value, backgroundsData, theme = 'emerald', children }) => {
     const [show, setShow] = useState(false);
-    const t = themeConfig[theme] ?? themeConfig.emerald;
+    const t = themeConfig[theme] ?? themeConfig.default;
     const background = backgroundsData?.[backgroundName];
     if (!background?.levels) return <>{children}</>;
 
@@ -37,7 +37,7 @@ export const BackgroundListItem = ({
                                        maxPointsPerBackground = 5,
                                        theme = 'emerald',
                                    }) => {
-    const t = themeConfig[theme] ?? themeConfig.emerald;
+    const t = themeConfig[theme] ?? themeConfig.default;
     const [isCustom, setIsCustom] = useState(
         !predefinedOptions.includes(item.name) && item.name !== ''
     );

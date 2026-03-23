@@ -18,7 +18,7 @@ export const mageConfig = {
     systemId:  'mta',
     title:     'Mage',
     subtitle:  'The Ascension',
-    theme:     'purple',
+    theme:     'mage',
     bgColor:   '#060208',
 
     freebieCount: 15,

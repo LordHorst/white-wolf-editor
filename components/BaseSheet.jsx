@@ -31,7 +31,7 @@ export const BaseSheet = ({ config }) => {
     const [meritsModalType, setMeritsModalType] = useState('merit');
 
     const freebie = useFreebies(freebieCount, freebieCosts);
-    const t = themeConfig[theme] ?? themeConfig.emerald;
+    const t = themeConfig[theme] ?? themeConfig.default;
 
     const { handleAddMerit, handleRemoveMerit, handleAddFlaw, handleRemoveFlaw } =
         useMeritsFlaws({ character, setCharacter, freebie, showToast });

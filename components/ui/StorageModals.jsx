@@ -4,7 +4,7 @@ import { themeConfig } from './themes/themes';
 
 export const StorageModals = ({ mngr, theme }) => {
   const { notification, storageModalOpen, setStorageModalOpen, savedChars, saveToLocal, loadFromLocal, deleteFromLocal } = mngr;
-  const t = themeConfig[theme] ?? themeConfig.emerald;
+  const t = themeConfig[theme] ?? themeConfig.default;
   const borderText = `${t.accentText} ${t.border}`;
 
   return (

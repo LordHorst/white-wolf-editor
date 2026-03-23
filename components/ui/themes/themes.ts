@@ -20,11 +20,11 @@ export interface ThemeColors {
     checkedBg: string;   // ← für HealthBox-Kästchen
 }
 
-export type ThemeName = 'emerald' | 'amber' | 'purple' | 'sky';
+export type ThemeName = 'vampire' | 'werewolf' | 'mage' | 'changeling' | 'default';
 
 let transparencyValue = 20;
 export const themeConfig: Record<ThemeName, ThemeColors> = {
-    emerald: {
+    vampire: {
         bg:              `bg-emerald-950/${transparencyValue}`,
         border:          'border-emerald-800',
         text:            'text-emerald-100',
@@ -45,7 +45,7 @@ export const themeConfig: Record<ThemeName, ThemeColors> = {
         counterButton:   'bg-emerald-800 hover:bg-emerald-700 text-white',
         checkedBg:       'bg-emerald-700',
     },
-    amber: {
+    werewolf: {
         bg:              `bg-amber-950/${transparencyValue}`,
         border:          'border-amber-800',
         text:            'text-amber-100',
@@ -66,7 +66,7 @@ export const themeConfig: Record<ThemeName, ThemeColors> = {
         counterButton:   'bg-amber-800 hover:bg-amber-700 text-white',
         checkedBg:       'bg-amber-700',
     },
-    purple: {
+    mage: {
         bg:              `bg-purple-950/${transparencyValue}`,
         border:          'border-purple-800',
         text:            'text-purple-100',
@@ -87,7 +87,7 @@ export const themeConfig: Record<ThemeName, ThemeColors> = {
         counterButton:   'bg-purple-800 hover:bg-purple-700 text-white',
         checkedBg:       'bg-purple-700',
     },
-    sky: {
+    changeling: {
         bg:              `bg-sky-950/${transparencyValue}`,
         border:          'border-sky-800',
         text:            'text-sky-100',
@@ -108,4 +108,25 @@ export const themeConfig: Record<ThemeName, ThemeColors> = {
         counterButton:   'bg-sky-800 hover:bg-sky-700 text-white',
         checkedBg:       'bg-sky-700',
     },
+    default: {
+        bg:              'bg-white',
+        border:          'border-gray-300',
+        text:            'text-gray-900',
+        accentBorder:    'border-blue-500',
+        accentText:      'text-blue-600',
+        tabActive:       'border-blue-500 text-blue-600',
+        tabInactive:     'text-gray-500 hover:text-gray-700',
+        meritButton:     'bg-blue-600 hover:bg-blue-700 text-white',
+        flawButton:      'bg-red-600 hover:bg-red-700 text-white',
+        footerText:      'text-gray-500',
+        headerButton:    'text-gray-500 hover:text-gray-700',
+        emptyText:       'text-gray-400',
+        descriptionText: 'text-gray-600',
+        meritBadge:      'bg-blue-100 text-blue-800',
+        flawBadge:       'bg-red-100 text-red-800',
+        removeButton:    'bg-gray-200 hover:bg-gray-300 text-gray-800',
+        disabledButton:  'bg-gray-100 opacity-50 cursor-not-allowed text-gray-400',
+        counterButton:   'bg-gray-200 hover:bg-gray-300 text-gray-800',
+        checkedBg:       'bg-blue-200',
+    }
 };

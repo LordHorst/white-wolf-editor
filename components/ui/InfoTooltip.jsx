@@ -3,7 +3,7 @@ import { Info } from 'lucide-react';
 import { themeConfig } from './themes/themes';
 
 export const InfoTooltip = ({ text, theme = 'emerald' }) => {
-    const t = themeConfig[theme] ?? themeConfig.emerald;
+    const t = themeConfig[theme] ?? themeConfig.default;
 
     return (
         <div className="group relative inline-flex items-center ml-2 cursor-help align-middle">

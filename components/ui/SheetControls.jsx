@@ -4,7 +4,7 @@ import { FreebiePanel } from './FreebiePanel';
 import { themeConfig } from './themes/themes';
 
 export const SheetControls = ({ title, subtitle, theme, mngr, freebieState }) => {
-  const t = themeConfig[theme] ?? themeConfig.emerald;
+  const t = themeConfig[theme] ?? themeConfig.default;
 
   const btnClass = `flex items-center space-x-1 px-3 py-1.5 border bg-black/40 transition-all rounded text-[10px] font-bold uppercase tracking-widest ${t.accentText} ${t.border} hover:bg-black/60`;
 

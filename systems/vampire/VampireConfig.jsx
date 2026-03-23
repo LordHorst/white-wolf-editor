@@ -14,7 +14,7 @@ export const vampireConfig = {
     systemId:  'vtm',
     title:     'Vampire',
     subtitle:  'Die Maskerade',
-    theme:     'emerald',
+    theme:     'vampire',
 
     freebieCount: 15,
     freebieCosts: {
@@ -116,7 +116,7 @@ export const vampireConfig = {
     renderInfoField: (key, val, { character, setCharacter, theme }) => {
         const set = (patch) => setCharacter(p => ({ ...p, info: { ...p.info, ...patch } }));
         // Lade hier die aktuellen Farben aus deiner Theme-Datei!
-        const t = themeConfig[theme] ?? themeConfig.emerald;
+        const t = themeConfig[theme] ?? themeConfig.default;
 
         if (key === 'Clan') return (
             <select

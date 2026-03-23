@@ -3,7 +3,7 @@ import { Sparkles, Coins } from 'lucide-react';
 import { themeConfig } from './themes/themes';
 
 export const FreebiePanel = ({ points, active, onToggle, theme = 'emerald' }) => {
-    const t = themeConfig[theme] ?? themeConfig.emerald;
+    const t = themeConfig[theme] ?? themeConfig.default;
 
     return (
         <div className={`flex items-center space-x-2 px-3 py-1.5 border rounded text-[10px] font-bold uppercase tracking-widest ${t.border} ${t.accentText}`}>

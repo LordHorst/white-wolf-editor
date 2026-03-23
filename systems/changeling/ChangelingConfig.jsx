@@ -44,7 +44,7 @@ export const changelingConfig = {
     systemId:  'ctd',
     title:     'Changeling',
     subtitle:  'The Dreaming',
-    theme:     'sky',
+    theme:     'changeling',
     bgColor:   '#020b14',
 
     freebieCount: 15,

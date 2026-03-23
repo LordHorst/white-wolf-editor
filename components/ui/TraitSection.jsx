@@ -20,7 +20,7 @@ export const TraitSection = ({
         return null;
     }
 
-    const t = themeConfig[theme] ?? themeConfig.emerald;
+    const t = themeConfig[theme] ?? themeConfig.default;
 
     // Sektion-Header: Rahmen + Hintergrund + Text
     const sectionClass = `${t.accentText} ${t.border} ${t.bg}`;

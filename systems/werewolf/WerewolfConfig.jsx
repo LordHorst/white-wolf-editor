@@ -6,12 +6,13 @@ import { WerewolfData, WerewolfMerits, WerewolfFlaws } from './werewolfData';
 import { WerewolfAdvantages } from './WerewolfAdvantages';
 import { WerewolfStatus } from './WerewolfStatus';
 import { randomizeCharacter } from './werewolfRandomizer';
+import {themeConfig} from "../../components/ui/themes/themes";
 
 export const werewolfConfig = {
     systemId:  'wta',
     title:     'Werewolf',
     subtitle:  'The Apocalypse',
-    theme:     'amber',
+    theme:     'werewolf',
     bgColor:   '#080501',
 
     freebieCount: 15,
@@ -41,10 +42,11 @@ export const werewolfConfig = {
 
     renderInfoField: (key, val, { character, setCharacter, theme }) => {
         const set = (patch) => setCharacter(p => ({ ...p, info: { ...p.info, ...patch } }));
+        const t = themeConfig[theme] ?? themeConfig.default;
 
         if (key === 'Stamm') return (
             <select value={val} onChange={(e) => set({ Stamm: e.target.value })}
-                className={`bg-transparent text-${theme}-100 outline-none py-1 cursor-pointer`}>
+                className={`bg-transparent ${t.text} outline-none py-1 cursor-pointer`}>
                 <option value="" className="bg-black">Wähle...</option>
                 {WerewolfData.tribes.map(t => <option key={t} value={t} className="bg-black">{t}</option>)}
             </select>
@@ -52,7 +54,7 @@ export const werewolfConfig = {
 
         if (key === 'Vorzeichen') return (
             <select value={val} onChange={(e) => set({ Vorzeichen: e.target.value })}
-                className={`bg-transparent text-${theme}-100 outline-none py-1 cursor-pointer`}>
+                className={`bg-transparent ${t.text} outline-none py-1 cursor-pointer`}>
                 <option value="" className="bg-black">Wähle...</option>
                 {WerewolfData.auspices.map(a => <option key={a} value={a} className="bg-black">{a}</option>)}
             </select>
@@ -60,7 +62,7 @@ export const werewolfConfig = {
 
         if (key === 'Rasse') return (
             <select value={val} onChange={(e) => set({ Rasse: e.target.value })}
-                className={`bg-transparent text-${theme}-100 outline-none py-1 cursor-pointer`}>
+                className={`bg-transparent ${t.text} outline-none py-1 cursor-pointer`}>
                 <option value="" className="bg-black">Wähle...</option>
                 {WerewolfData.breeds.map(b => <option key={b} value={b} className="bg-black">{b}</option>)}
             </select>
@@ -70,7 +72,7 @@ export const werewolfConfig = {
             <>
                 <input list="wta-concepts" value={val}
                     onChange={(e) => set({ Konzept: e.target.value })}
-                    className={`bg-transparent text-${theme}-100 outline-none py-1`} />
+                    className={`bg-transparent ${t.text} outline-none py-1`} />
                 <datalist id="wta-concepts">
                     {SharedData.concepts?.map((c, i) => <option key={i} value={c} />)}
                 </datalist>
@@ -81,7 +83,7 @@ export const werewolfConfig = {
             <>
                 <input list="wta-natures" value={val}
                     onChange={(e) => set({ Wesen: e.target.value })}
-                    className={`bg-transparent text-${theme}-100 outline-none py-1`} />
+                    className={`bg-transparent ${t.text} outline-none py-1`} />
                 <datalist id="wta-natures">
                     {SharedData.natures?.map((n, i) => <option key={i} value={n} />)}
                 </datalist>
@@ -92,7 +94,7 @@ export const werewolfConfig = {
             <>
                 <input list="wta-demeanors" value={val}
                     onChange={(e) => set({ Verhalten: e.target.value })}
-                    className={`bg-transparent text-${theme}-100 outline-none py-1`} />
+                    className={`bg-transparent ${t.text} outline-none py-1`} />
                 <datalist id="wta-demeanors">
                     {SharedData.demeanors?.map((d, i) => <option key={i} value={d} />)}
                 </datalist>
@@ -101,7 +103,7 @@ export const werewolfConfig = {
 
         return (
             <input type="text" value={val} onChange={(e) => set({ [key]: e.target.value })}
-                className={`bg-transparent outline-none py-1 text-${theme}-100`} />
+                className={`bg-transparent outline-none py-1 ${t.text}`} />
         );
     },
 

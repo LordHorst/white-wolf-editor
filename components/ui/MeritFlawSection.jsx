@@ -9,7 +9,7 @@ export const MeritsFlawsSection = ({
                                        freebiesActive,
                                        theme = 'emerald',
                                    }) => {
-    const t = themeConfig[theme] ?? themeConfig.emerald;
+    const t = themeConfig[theme] ?? themeConfig.default;
 
     const renderList = (items, isFlaws) => {
         const label    = isFlaws ? 'Nachteile' : 'Vorzüge';

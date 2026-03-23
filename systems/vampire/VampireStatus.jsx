@@ -12,7 +12,7 @@ import { themeConfig } from '../../components/ui/themes/themes';
 export const VampireStatus = ({ character, setCharacter, freebie, showToast, theme }) => {
     const { tugenden }    = character.advantages;
     const { bloodCapacity } = getGenerationInfo(character.advantages.hintergründe);
-    const t = themeConfig[theme] ?? themeConfig.emerald;
+    const t = themeConfig[theme] ?? themeConfig.default;
 
     // ─── Menschlichkeit ──────────────────────────────────────────────────
     const minHumanity = tugenden.Gewissen + tugenden.Selbstbeherrschung;

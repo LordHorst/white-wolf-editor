@@ -26,7 +26,7 @@ export const MeritsFlawsModal = ({
     }, [type]);
   if (!isOpen) return null;
 
-  const colors = themeConfig[theme] || themeConfig.emerald;
+  const colors = themeConfig[theme] || themeConfig.default;
     const getSelectedItem = (item, list) => list.find(i => i.name === item.name);
 
   const handleAdd = (item) => {

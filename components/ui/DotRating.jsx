@@ -2,7 +2,7 @@
 import { themeConfig } from './themes/themes';
 
 export const DotRating = ({ value, max = 5, onChange, min = 0, disabled = false, readOnly = false, theme = "emerald" }) => {
-  const t = themeConfig[theme] ?? themeConfig.emerald;
+  const t = themeConfig[theme] ?? themeConfig.default;
 
   return (
       <div className={`flex space-x-1.5 items-center ${disabled ? 'opacity-20' : ''}`}>

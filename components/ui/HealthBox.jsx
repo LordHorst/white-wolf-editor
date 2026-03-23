@@ -5,7 +5,7 @@ export const HealthBox = ({ character, setCharacter, theme = 'emerald' }) => {
   const health = character?.status?.gesundheit;
   if (!health || !Array.isArray(health)) return null;
 
-  const t = themeConfig[theme] ?? themeConfig.emerald;
+  const t = themeConfig[theme] ?? themeConfig.default;
 
   const handleClick = (index) => {
     // Find the highest checked index
