@@ -35,6 +35,9 @@ Ein Charakterbogen-Editor für die **World of Darkness** Rollenspielsysteme. Ent
 - **Refactoring
   - Codestruktur verbessert
   - Code-Einsparung von 20%-30%
+- **Bugfixes
+  - Einiges in Werewolf gefixt
+  - "Theme" sollte nun endlich wie gewünscht funktionieren
 ### Version 1.4.1 (22.03.2026)
 - **Verbesserungen
   - "Wesen", "Verhalten" und "Konzept" kann jetzt aus einem DropDown-Menü gewählt werden
