@@ -13,8 +13,8 @@ export const BaseSheet = ({ config }) => {
         systemId, title, subtitle, theme, bgColor,
         freebieCount = 15, freebieCosts,
         getEmptyCharacter, meritsList, flawsList,
-        attrCapWithoutFreebies    = null,
-        abilityCapWithoutFreebies = null,
+        attrCapWithoutFreebies    = 5,
+        abilityCapWithoutFreebies = 3,
         excludeAttrField          = null,
         getExcludeAttrField       = null,
         getDisabledFields         = null,
@@ -105,7 +105,8 @@ export const BaseSheet = ({ config }) => {
                               onChange={validateAndApplyAttributeChange} isAttr
                               disabledFields={disabledFields} groupStats={attrGroupStats} />
                 <TraitSection title="Fähigkeiten" data={character.abilities} theme={theme}
-                              onChange={validateAndApplyAbilityChange} groupStats={abilityGroupStats} />
+                              onChange={validateAndApplyAbilityChange} disabledFields={disabledFields}
+                              groupStats={abilityGroupStats} />
 
                 {/* VORTEILE */}
                 {renderAdvantages(sharedProps)}

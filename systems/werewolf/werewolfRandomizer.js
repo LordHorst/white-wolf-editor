@@ -25,7 +25,7 @@ export const randomizeCharacter = ({ setCharacter, freebie, showToast }) => {
     const info = {
         Name:       `${randomChoice(SharedData.firstNames)} ${randomChoice(SharedData.lastNames)}`,
         Spieler:    '', Chronik: '',
-        Rasse:      randomBreed,
+        Abstammung:      randomBreed,
         Vorzeichen: randomAuspice,
         Stamm:      randomTribe,
         Rudel:      '', Totem: '',
@@ -34,7 +34,7 @@ export const randomizeCharacter = ({ setCharacter, freebie, showToast }) => {
         Verhalten:  randomChoice(SharedData.natures   ?? ['?']),
     };
 
-    // Gaben: je eine aus Rasse, Vorzeichen und Stamm
+    // Gaben: je eine aus Abstammung, Vorzeichen und Stamm
     const gaben = [
         { name: `${randomBreed}-Gabe`,   value: 1 },
         { name: `${randomAuspice}-Gabe`, value: 1 },

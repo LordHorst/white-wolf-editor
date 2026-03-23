@@ -19,7 +19,6 @@ export const mageConfig = {
     title:     'Mage',
     subtitle:  'The Ascension',
     theme:     'mage',
-    bgColor:   '#060208',
 
     freebieCount: 15,
     freebieCosts: {
@@ -31,8 +30,6 @@ export const mageConfig = {
     meritsList: MageMerits,
     flawsList:  MageFlaws,
 
-    attrCapWithoutFreebies:    5,
-    abilityCapWithoutFreebies: 3,
     extraAbilityValidation:    kampfkunstValidation,
 
     // ── Render-Funktionen ────────────────────────────────────────────────────

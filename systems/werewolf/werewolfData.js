@@ -21,24 +21,6 @@ export const WerewolfData = {
                 "Loyale Diener oder Begleiter: Fünf Gefolgsleute"
             ]
         },
-        "Generation": {
-            levels: [
-                "12. Generation: 11 Blutpunkte, 1 pro Runde ausgebbar",
-                "11. Generation: 12 Blutpunkte, 1 pro Runde",
-                "10. Generation: 13 Blutpunkte, 1 pro Runde",
-                "9. Generation: 14 Blutpunkte, 2 pro Runde",
-                "8. Generation: 15 Blutpunkte, 3 pro Runde"
-            ]
-        },
-        "Herde": {
-            levels: [
-                "3 Gefäße.",
-                "7 Gefäße",
-                "15 Gefäße",
-                "30 Gefäße",
-                "60 Gefäße"
-            ]
-        },
         "Kontakte": {
             levels: [
                 "Einzelne, sporadische Quelle.",

@@ -45,7 +45,6 @@ export const changelingConfig = {
     title:     'Changeling',
     subtitle:  'The Dreaming',
     theme:     'changeling',
-    bgColor:   '#020b14',
 
     freebieCount: 15,
     freebieCosts: {

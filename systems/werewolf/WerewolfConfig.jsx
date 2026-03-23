@@ -1,19 +1,17 @@
-// systems/werewolf/werewolfConfig.js
+// systems/werewolf/WerewolfConfig.jsx
 import React from 'react';
 import { getEmptyWerewolf } from '../../data/templates';
 import { SharedData } from '../../data/sharedData';
 import { WerewolfData, WerewolfMerits, WerewolfFlaws } from './werewolfData';
 import { WerewolfAdvantages } from './WerewolfAdvantages';
 import { WerewolfStatus } from './WerewolfStatus';
-import { randomizeCharacter } from './werewolfRandomizer';
-import {themeConfig} from "../../components/ui/themes/themes";
+import { themeConfig } from "../../components/ui/themes/themes";
 
 export const werewolfConfig = {
     systemId:  'wta',
     title:     'Werewolf',
     subtitle:  'The Apocalypse',
     theme:     'werewolf',
-    bgColor:   '#080501',
 
     freebieCount: 15,
     freebieCosts: {
@@ -25,89 +23,131 @@ export const werewolfConfig = {
     meritsList: WerewolfMerits,
     flawsList:  WerewolfFlaws,
 
-    // Werewolf hat keine Caps ohne Freebies und kein excludeAttrField
-    attrCapWithoutFreebies:    null,
-    abilityCapWithoutFreebies: null,
+    /**
+     * Ermittelt Felder, die für bestimmte Abstammungen gesperrt sind.
+     * Lupus dürfen zu Beginn keine technischen/menschlichen Wissensgebiete wählen.
+     */
+    getDisabledFields: (character) => {
+        if (character.info.Abstammung === 'Lupus') {
+            return {
+                kenntnisse: {
+                    Computer: true,
+                    Naturwissenschaften: true,
+                    Gesetzeskenntnis: true,
+                },
+                fertigkeiten: {
+                    Fahren: true,
+                },
+            };
+        }
+        return {};
+    },
 
     // ── Render-Funktionen ────────────────────────────────────────────────
 
     renderRules: () => (
-        <>
-            <p><strong>📜 Attribut-Punkteverteilung</strong><br />Jeder Charakter beginnt mit 1 Punkt in jedem Attribut. Zusätzlich werden 7, 5 und 3 Punkte auf die drei Kategorien verteilt.</p>
-            <p><strong>⚙️ Fähigkeiten-Punkteverteilung</strong><br />Alle Fähigkeiten starten bei 0. Die drei Gruppen erhalten 13, 9 und 5 Punkte.</p>
-            <p><strong>✨ Vorteile</strong><br /><strong>Gaben:</strong> je eine aus Rasse, Vorzeichen und Stamm. <strong>Hintergründe:</strong> 5 Punkte.</p>
-            <p><strong>⭐ Freebies</strong><br />15 Punkte. Attribut 5, Fähigkeit 2, Hintergrund 1, Ansehen 2, Zorn 2, Gnosis 2, Willenskraft 1 pro Punkt.</p>
-        </>
+        <div className="space-y-4">
+            <div>
+                <h4 className="font-bold text-stone-300 mb-1 uppercase text-xs tracking-wider">Abstammungen (Breeds)</h4>
+                <div className="grid grid-cols-1 gap-3 text-stone-400 text-[13px]">
+                    <p><strong>Homid:</strong> Gnosis 1. Startet in der Menschenwelt.</p>
+                    <p><strong>Metis:</strong> Gnosis 3. Deformiert, regeneriert in Crinos.</p>
+                    <p><strong>Lupus:</strong> Gnosis 5. Keine technischen Abilities zu Beginn.</p>
+                </div>
+            </div>
+            <p><strong>📜 Attribute:</strong> 7 / 5 / 3 Punkte.</p>
+            <p><strong>⚙️ Fähigkeiten:</strong> 13 / 9 / 5 Punkte.</p>
+        </div>
     ),
 
     renderInfoField: (key, val, { character, setCharacter, theme }) => {
+        const t = themeConfig[theme] ?? themeConfig.emerald;
         const set = (patch) => setCharacter(p => ({ ...p, info: { ...p.info, ...patch } }));
-        const t = themeConfig[theme] ?? themeConfig.default;
 
-        if (key === 'Stamm') return (
-            <select value={val} onChange={(e) => set({ Stamm: e.target.value })}
-                className={`bg-transparent ${t.text} outline-none py-1 cursor-pointer`}>
-                <option value="" className="bg-black">Wähle...</option>
-                {WerewolfData.tribes.map(t => <option key={t} value={t} className="bg-black">{t}</option>)}
-            </select>
-        );
+        // Spezial-Logik für Abstammung (Breed) Auswahl
+        if (key === 'Abstammung') {
+            const breeds = {
+                'Homid': 1,
+                'Metis': 3,
+                'Lupus': 5
+            };
 
-        if (key === 'Vorzeichen') return (
-            <select value={val} onChange={(e) => set({ Vorzeichen: e.target.value })}
-                className={`bg-transparent ${t.text} outline-none py-1 cursor-pointer`}>
-                <option value="" className="bg-black">Wähle...</option>
-                {WerewolfData.auspices.map(a => <option key={a} value={a} className="bg-black">{a}</option>)}
-            </select>
-        );
+            return (
+                <select
+                    value={val}
+                    onChange={(e) => {
+                        const newBreed = e.target.value;
+                        const startGnosis = breeds[newBreed] || 1;
 
-        if (key === 'Rasse') return (
-            <select value={val} onChange={(e) => set({ Rasse: e.target.value })}
-                className={`bg-transparent ${t.text} outline-none py-1 cursor-pointer`}>
-                <option value="" className="bg-black">Wähle...</option>
-                {WerewolfData.breeds.map(b => <option key={b} value={b} className="bg-black">{b}</option>)}
-            </select>
-        );
+                        setCharacter(p => ({
+                            ...p,
+                            info: { ...p.info, Abstammung: newBreed },
+                            status: { ...p.status, gnosis: startGnosis }
+                        }));
+                    }}
+                    className={`bg-transparent ${t.text} outline-none py-1 cursor-pointer`}
+                >
+                    <option value="" className="bg-stone-900 italic">Wähle...</option>
+                    {Object.keys(breeds).map(b => (
+                        <option key={b} value={b} className="bg-stone-900">{b}</option>
+                    ))}
+                </select>
+            );
+        }
 
-        if (key === 'Konzept') return (
-            <>
-                <input list="wta-concepts" value={val}
-                    onChange={(e) => set({ Konzept: e.target.value })}
-                    className={`bg-transparent ${t.text} outline-none py-1`} />
-                <datalist id="wta-concepts">
-                    {SharedData.concepts?.map((c, i) => <option key={i} value={c} />)}
-                </datalist>
-            </>
-        );
+        // Standard-Dropdowns für Stamm und Vorzeichen
+        if (key === 'Stamm') {
+            return (
+                <select
+                    value={val}
+                    onChange={(e) => set({ Stamm: e.target.value })}
+                    className={`bg-transparent ${t.text} outline-none py-1 cursor-pointer`}
+                >
+                    <option value="" className="bg-stone-900 italic">Wähle...</option>
+                    {WerewolfData.tribes.map(tribe => (
+                        <option key={tribe} value={tribe} className="bg-stone-900">{tribe}</option>
+                    ))}
+                </select>
+            );
+        }
 
-        if (key === 'Wesen') return (
-            <>
-                <input list="wta-natures" value={val}
-                    onChange={(e) => set({ Wesen: e.target.value })}
-                    className={`bg-transparent ${t.text} outline-none py-1`} />
-                <datalist id="wta-natures">
-                    {SharedData.natures?.map((n, i) => <option key={i} value={n} />)}
-                </datalist>
-            </>
-        );
+        if (key === 'Vorzeichen') {
+            return (
+                <select
+                    value={val}
+                    onChange={(e) => set({ Vorzeichen: e.target.value })}
+                    className={`bg-transparent ${t.text} outline-none py-1 cursor-pointer`}
+                >
+                    <option value="" className="bg-stone-900 italic">Wähle...</option>
+                    {WerewolfData.auspices.map(auspice => (
+                        <option key={auspice} value={auspice} className="bg-stone-900">{auspice}</option>
+                    ))}
+                </select>
+            );
+        }
 
-        if (key === 'Verhalten') return (
-            <>
-                <input list="wta-demeanors" value={val}
-                    onChange={(e) => set({ Verhalten: e.target.value })}
-                    className={`bg-transparent ${t.text} outline-none py-1`} />
-                <datalist id="wta-demeanors">
-                    {SharedData.demeanors?.map((d, i) => <option key={i} value={d} />)}
-                </datalist>
-            </>
-        );
+        // Shared Data Inputs
+        if (['Konzept', 'Wesen', 'Verhalten'].includes(key)) {
+            const listId = `wta-${key.toLowerCase()}`;
+            const dataMap = { 'Konzept': SharedData.concepts, 'Wesen': SharedData.natures, 'Verhalten': SharedData.demeanors };
+            return (
+                <>
+                    <input list={listId} value={val}
+                           onChange={(e) => set({ [key]: e.target.value })}
+                           className={`bg-transparent ${t.text} outline-none py-1`} />
+                    <datalist id={listId}>
+                        {dataMap[key]?.map((item, i) => <option key={i} value={item} />)}
+                    </datalist>
+                </>
+            );
+        }
 
         return (
             <input type="text" value={val} onChange={(e) => set({ [key]: e.target.value })}
-                className={`bg-transparent outline-none py-1 ${t.text}`} />
+                   className={`bg-transparent outline-none py-1 ${t.text}`} />
         );
     },
 
     renderAdvantages: (sharedProps) => <WerewolfAdvantages {...sharedProps} />,
     renderStatus:     (sharedProps) => <WerewolfStatus     {...sharedProps} />,
-    onRandomize:      randomizeCharacter,
 };
