@@ -31,6 +31,10 @@ Ein Charakterbogen-Editor für die **World of Darkness** Rollenspielsysteme. Ent
 
 ## Letzte Updates
 
+### Version 1.5 (23.03.2023)
+- **Refactoring
+  - Codestruktur verbessert
+  - Code-Einsparung von 20%-30%
 ### Version 1.4.1 (22.03.2026)
 - **Verbesserungen
   - "Wesen", "Verhalten" und "Konzept" kann jetzt aus einem DropDown-Menü gewählt werden
