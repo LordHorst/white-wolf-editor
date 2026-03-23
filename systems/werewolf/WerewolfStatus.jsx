@@ -1,6 +1,6 @@
 // systems/werewolf/WerewolfStatus.jsx
 import React from 'react';
-import { DotRating, HealthBox } from '../../components/sheetImports';
+import { DotRating } from '../../components/sheetImports';
 
 // ─── Statuswerte-Konfiguration ────────────────────────────────────────────────
 const STATUS_FIELDS = [
@@ -38,9 +38,7 @@ export const WerewolfStatus = ({ character, setCharacter, freebie, showToast, th
     };
 
     return (
-        <section className={`grid grid-cols-2 gap-12 border-t border-${theme}-900/50 pt-8 mb-8`}>
-
-            {/* Linke Spalte: Zorn, Gnosis, Willenskraft */}
+            /* Linke Spalte: Zorn, Gnosis, Willenskraft */
             <div className="space-y-4">
                 {STATUS_FIELDS.map(({ label, key, freebieKey }) => (
                     <div key={key} className="text-center">
@@ -63,14 +61,5 @@ export const WerewolfStatus = ({ character, setCharacter, freebie, showToast, th
                     </div>
                 ))}
             </div>
-
-            {/* Rechte Spalte: Gesundheit */}
-            <HealthBox
-                health={character.status.gesundheit}
-                theme={theme}
-                setCharacter={setCharacter}
-            />
-
-        </section>
     );
 };

@@ -1,7 +1,6 @@
 // systems/mage/MageStatus.jsx
 import React from 'react';
 import { DotRating } from '../../components/ui/DotRating';
-import { HealthBox } from '../../components/ui/HealthBox';
 
 // ─── Hilfsfunktion ───────────────────────────────────────────────────────────
 
@@ -71,9 +70,7 @@ export const MageStatus = ({ character, setCharacter, freebie, showToast, theme 
         setCharacter(p => ({ ...p, status: { ...p.status, paradox: newValue } }));
 
     return (
-        <section className={`grid grid-cols-2 gap-12 border-t border-${theme}-900/50 pt-8 mb-8`}>
-
-            {/* Linke Spalte: Arete, Willenskraft, Quintessenz/Paradox */}
+            /* Linke Spalte: Arete, Willenskraft, Quintessenz/Paradox */
             <div className="space-y-6">
 
                 {/* Arete */}
@@ -142,16 +139,6 @@ export const MageStatus = ({ character, setCharacter, freebie, showToast, theme 
 
                     </div>
                 </div>
-
             </div>
-
-            {/* Rechte Spalte: Gesundheit */}
-            <HealthBox
-                health={character.status.gesundheit}
-                theme={theme}
-                setCharacter={setCharacter}
-            />
-
-        </section>
     );
 };

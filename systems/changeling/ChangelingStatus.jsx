@@ -1,13 +1,12 @@
 // systems/changeling/ChangelingStatus.jsx
 import React from 'react';
-import { DotRating, HealthBox } from '../../components/sheetImports';
+import { DotRating } from '../../components/sheetImports';
 
 export const ChangelingStatus = ({ character, setCharacter, theme }) => {
     const set = (key, value) =>
         setCharacter(p => ({ ...p, status: { ...p.status, [key]: value } }));
 
     return (
-        <section className={`grid grid-cols-2 gap-12 border-t border-${theme}-900/50 pt-8 mb-8`}>
             <div className="space-y-6">
                 {[
                     { label: 'Glamour',      key: 'glamour',      max: 10 },
@@ -28,11 +27,5 @@ export const ChangelingStatus = ({ character, setCharacter, theme }) => {
                     </div>
                 ))}
             </div>
-            <HealthBox
-                health={character.status.gesundheit}
-                theme={theme}
-                setCharacter={setCharacter}
-            />
-        </section>
     );
 };

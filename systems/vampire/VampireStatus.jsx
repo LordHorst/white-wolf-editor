@@ -1,6 +1,6 @@
 // systems/vampire/VampireStatus.jsx
 import React from 'react';
-import { DotRating, HealthBox } from '../../components/sheetImports';
+import { DotRating } from '../../components/sheetImports';
 import { getGenerationInfo } from './vampireHelpers';
 
 /**
@@ -60,9 +60,7 @@ export const VampireStatus = ({ character, setCharacter, freebie, showToast, the
 
     // ─── JSX ─────────────────────────────────────────────────────────────
     return (
-        <section className={`grid grid-cols-2 gap-12 border-t border-${theme}-900/50 pt-8 mb-8`}>
-
-            {/* Linke Spalte */}
+            /* Linke Spalte */
             <div className="space-y-8">
 
                 {/* Menschlichkeit */}
@@ -121,16 +119,6 @@ export const VampireStatus = ({ character, setCharacter, freebie, showToast, the
                         ))}
                     </div>
                 </div>
-
             </div>
-
-            {/* Rechte Spalte: Gesundheit */}
-            <HealthBox
-                health={character.status.gesundheit}
-                theme={theme}
-                setCharacter={setCharacter}
-            />
-
-        </section>
     );
 };

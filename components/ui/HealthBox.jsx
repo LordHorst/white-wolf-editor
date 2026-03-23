@@ -8,10 +8,26 @@ export const HealthBox = ({ character, setCharacter, theme = 'emerald' }) => {
   const t = themeConfig[theme] ?? themeConfig.emerald;
 
   const handleClick = (index) => {
-    const newHealth = health.map((item, idx) => ({
-      ...item,
-      checked: idx <= index,
-    }));
+    // Find the highest checked index
+    const maxCheckedIndex = health.reduce((max, item, idx) =>
+        item.checked ? idx : max, -1
+    );
+
+    let newHealth;
+    if (index === maxCheckedIndex) {
+      // Uncheck this box and all higher ones
+      newHealth = health.map((item, idx) => ({
+        ...item,
+        checked: idx < index,
+      }));
+    } else {
+      // Check this box and all lower ones
+      newHealth = health.map((item, idx) => ({
+        ...item,
+        checked: idx <= index,
+      }));
+    }
+
     setCharacter(prev => ({
       ...prev,
       status: { ...prev.status, gesundheit: newHealth },
