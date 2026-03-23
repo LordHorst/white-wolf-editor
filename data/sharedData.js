@@ -34,8 +34,8 @@ export const SharedData = {
 };
 
 // ---------------- VAMPIRE DATA ---------------------------
-export { VampireData, VampireMerits, VampireFlaws, getClanDisciplines } from './vampireData.js';
+export { VampireData, VampireMerits, VampireFlaws, getClanDisciplines } from '../systems/vampire/vampireData.js';
 // ---------------- WEREWOLF DATA ---------------------------
-export { WerewolfData, WerewolfMerits, WerewolfFlaws } from './werewolfData.js';
+export { WerewolfData, WerewolfMerits, WerewolfFlaws } from '../systems/werewolf/werewolfData.js';
 // ---------------- MAGE DATA ---------------------------
-export { MageData, MageMerits, MageFlaws, getSectsForAffiliation } from './mageData.js';
+export { MageData, MageMerits, MageFlaws, getSectsForAffiliation } from '../systems/mage/mageData.js';
