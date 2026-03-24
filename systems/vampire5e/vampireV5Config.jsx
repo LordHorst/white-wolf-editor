@@ -58,13 +58,15 @@ export const vampireV5Config = {
         );
 
         if (key === 'Konzept') return (
-            <input list="v5-concepts" value={val}
-                onChange={(e) => set({ Konzept: e.target.value })}
-                className={`bg-transparent ${t.text} outline-none py-1`}
-            />/
-            <datalist id="v5-concepts">
-                {SharedData.concepts?.map((c, i) => <option key={i} value={c} />)}
-            </datalist>
+            <>
+                <input list="v5-concepts" value={val}
+                    onChange={(e) => set({ Konzept: e.target.value })}
+                    className={`bg-transparent ${t.text} outline-none py-1`}
+                />
+                <datalist id="v5-concepts">
+                    {SharedData.concepts?.map((c, i) => <option key={i} value={c} />)}
+                </datalist>
+            </>
         );
 
         return (
