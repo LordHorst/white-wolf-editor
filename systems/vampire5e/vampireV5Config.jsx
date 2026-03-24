@@ -12,7 +12,7 @@ export const vampireV5Config = {
     systemId:  'vtm5',
     title:     'Vampire',
     subtitle:  'The Masquerade 5th Edition',
-    theme:     'red',
+    theme:     'vampireV5',
 
     getEmptyCharacter: getEmptyVampireV5,
     meritsList: VampireV5Merits,
@@ -72,7 +72,7 @@ export const vampireV5Config = {
         return (
             <input type="text" value={val}
                 onChange={(e) => set({ [key]: e.target.value })}
-                className="bg-transparent outline-none py-1 text-red-100" />
+                className={`bg-transparent outline-none py-1 ${t.text}}`} />
         );
     },
 

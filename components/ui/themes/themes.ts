@@ -20,11 +20,12 @@ export interface ThemeColors {
     checkedBg: string;   // ← für HealthBox-Kästchen
 }
 
-export type ThemeName = 'vampire' | 'werewolf' | 'mage' | 'changeling' | 'vampire5e' | 'default';
+export type ThemeName = 'vampire' | 'werewolf' | 'mage' | 'changeling' | 'vampireV5' | 'default';
 
+let transparencyValue = 20;
 export const themeConfig: Record<ThemeName, ThemeColors> = {
     vampire: {
-        bg:              'bg-emerald-950/90',
+        bg:              `bg-emerald-950/${transparencyValue}`,
         border:          'border-emerald-800',
         text:            'text-emerald-100',
         accentBorder:    'border-emerald-500',
@@ -45,7 +46,7 @@ export const themeConfig: Record<ThemeName, ThemeColors> = {
         checkedBg:       'bg-emerald-700',
     },
     werewolf: {
-        bg:              'bg-amber-950/90',
+        bg:              `bg-amber-950/${transparencyValue}`,
         border:          'border-amber-800',
         text:            'text-amber-100',
         accentBorder:    'border-amber-500',
@@ -66,7 +67,7 @@ export const themeConfig: Record<ThemeName, ThemeColors> = {
         checkedBg:       'bg-amber-700',
     },
     mage: {
-        bg:              'bg-purple-950/90',
+        bg:              `bg-purple-950/${transparencyValue}`,
         border:          'border-purple-800',
         text:            'text-purple-100',
         accentBorder:    'border-purple-500',
@@ -87,7 +88,7 @@ export const themeConfig: Record<ThemeName, ThemeColors> = {
         checkedBg:       'bg-purple-700',
     },
     changeling: {
-        bg:              'bg-sky-950/90',
+        bg:              `bg-sky-700/${transparencyValue}`,
         border:          'border-sky-800',
         text:            'text-sky-100',
         accentBorder:    'border-sky-500',
@@ -107,8 +108,8 @@ export const themeConfig: Record<ThemeName, ThemeColors> = {
         counterButton:   'bg-sky-800 hover:bg-sky-700 text-white',
         checkedBg:       'bg-sky-700',
     },
-    vampire5e: {
-        bg:              'bg-red-950/90',
+    vampireV5: {
+        bg:              `bg-red-950/${transparencyValue}`,
         border:          'border-red-900',
         text:            'text-red-100',
         accentBorder:    'border-red-500',

@@ -17,7 +17,7 @@ import { themeConfig } from '../../components/ui/themes/themes';
  * @param {string}    theme
  */
 export const DualDamageBox = ({ boxes, onChange, label, theme = 'emerald' }) => {
-    const t = themeConfig[theme] ?? themeConfig.vampire5e;
+    const t = themeConfig[theme] ?? themeConfig.default;
 
     const cycle = (current) => {
         if (current === '')            return 'superficial';

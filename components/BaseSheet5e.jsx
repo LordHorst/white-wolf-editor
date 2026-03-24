@@ -19,7 +19,7 @@ import { themeConfig } from './ui/themes/themes';
  *   - Merits/Flaws ohne Freebie-Kosten
  *
  * Config-Keys:
- *   systemId, title, subtitle, theme, bgColor
+ *   systemId, title, subtitle, theme
  *   getEmptyCharacter, meritsList, flawsList
  *   renderInfoField, renderAdvantages, renderStatus, renderRules
  *   onRandomize
@@ -27,20 +27,11 @@ import { themeConfig } from './ui/themes/themes';
  */
 export const BaseSheet5e = ({ config }) => {
     const {
-        systemId,
-        title,
-        subtitle,
-        theme,
-        bgColor,
-        getEmptyCharacter,
+        systemId, title, subtitle, theme, getEmptyCharacter,
         meritsList  = [],
         flawsList   = [],
-        renderInfoField,
-        renderAdvantages,
-        renderStatus,
-        renderRules,
-        onRandomize,
-        useSystemEffects,
+        renderInfoField, getDisabledFields, renderAdvantages, renderStatus,
+        renderRules, onRandomize, useSystemEffects,
     } = config;
 
     const mngr = useCharacterManager(getEmptyCharacter(), systemId);
@@ -50,7 +41,7 @@ export const BaseSheet5e = ({ config }) => {
     const [showMeritsModal, setShowMeritsModal] = useState(false);
     const [meritsModalType, setMeritsModalType] = useState('merit');
 
-    const t = themeConfig[theme] ?? themeConfig.vampire5e;
+    const t = themeConfig[theme] ?? themeConfig.default;
 
     useSystemEffects?.({ character, setCharacter });
 
@@ -72,17 +63,21 @@ export const BaseSheet5e = ({ config }) => {
     };
     const handleRemoveFlaw = (flaw) =>
         setCharacter(p => ({ ...p, flaws: p.flaws.filter(f => f.name !== flaw.name) }));
-
+    
+    const disabledFields = getDisabledFields ? getDisabledFields(character) : {};
     const sharedProps = { character, setCharacter, showToast, theme };
-
-    const btnClass = `px-3 py-1 text-xs uppercase tracking-wider rounded border ${t.accentText} ${t.border} hover:bg-white/5`;
+    const getButtonClasses = (isActive) =>
+        `px-3 py-1 text-xs uppercase tracking-wider rounded border ${
+            isActive
+                ? `${t.accentText} ${t.border} hover:bg-white/5`
+                : `${t.emptyText} border-transparent bg-black/30 cursor-not-allowed`
+        }`;
 
     return (
         <div className={`${t.accentText} font-serif`}>
             <SheetControls title={title} subtitle={subtitle} theme={theme} mngr={mngr} />
 
-            <div className={`border-2 ${t.border} p-8 shadow-2xl relative`}
-                 style={{ backgroundColor: bgColor }}>
+            <div className={`border-2 ${t.border} ${t.bg} p-8 shadow-2xl relative`}>
 
                 {/* HEADER */}
                 <header className={`text-center mb-10 border-b ${t.border} pb-6 relative`}>
@@ -157,12 +152,10 @@ export const BaseSheet5e = ({ config }) => {
 
                 {/* BUTTONS */}
                 <div className="absolute bottom-4 left-4 flex gap-2">
-                    <button onClick={() => { setShowMeritsModal(true); setMeritsModalType('merit'); }} className={btnClass}>
-                        Vorzüge
-                    </button>
-                    <button onClick={() => { setShowMeritsModal(true); setMeritsModalType('flaw'); }} className={btnClass}>
-                        Nachteile
-                    </button>
+                    <button onClick={() => { setShowMeritsModal(true); setMeritsModalType('merit'); }}
+                            className={getButtonClasses(t.meritButton)}>Vorzüge</button>
+                    <button onClick={() => { setShowMeritsModal(true); setMeritsModalType('flaw'); }}
+                            className={getButtonClasses( t.flawButton)}>Nachteile</button>
                 </div>
             </div>
 

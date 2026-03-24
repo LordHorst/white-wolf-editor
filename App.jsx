@@ -87,11 +87,11 @@ const App = () => {
                                 <div
                                     className="h-px flex-1 bg-gradient-to-r from-transparent via-stone-600 to-transparent"/>
                             </div>
-                            <p className="text-[9px] uppercase tracking-[0.3em] text-stone-600 text-center">World of
+                            <p className="text-[9px] uppercase tracking-[0.3em] text-red-600 text-center">World of
                                 Darkness</p>
                             {['Character', 'Editor'].map(w => (
                                 <span key={w}
-                                      className="block text-lg font-black uppercase tracking-[0.15em] text-center text-transparent bg-clip-text"
+                                      className="block text-lg font-serif uppercase tracking-[0.15em] text-center text-transparent bg-clip-text font-mono"
                                       style={{backgroundImage: 'linear-gradient(135deg,#d6d3d1 0%,#78716c 50%,#a8a29e 100%)'}}>{w}</span>
                             ))}
                             <div className="flex items-center gap-2 pt-2">
