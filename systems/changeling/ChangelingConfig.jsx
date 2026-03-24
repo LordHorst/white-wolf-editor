@@ -4,7 +4,8 @@ import { SharedData } from '../../data/sharedData';
 import { ChangelingData, ChangelingMerits, ChangelingFlaws } from './changelingData';
 import { ChangelingAdvantages } from './ChangelingAdvantages';
 import { ChangelingStatus } from './ChangelingStatus';
-
+import { themeConfig } from "../../components/ui/themes/themes";
+import {randomizeCharacter} from "./changelingRandomizer";
 // ─── Leerer Charakter ────────────────────────────────────────────────────────
 const getEmptyChangeling = () => ({
     info: {
@@ -64,11 +65,12 @@ export const changelingConfig = {
     ),
 
     renderInfoField: (key, val, { setCharacter, theme }) => {
+        const t = themeConfig[theme] ?? themeConfig.default;
         const set = (patch) => setCharacter(p => ({ ...p, info: { ...p.info, ...patch } }));
 
         if (key === 'Kith') return (
             <select value={val} onChange={(e) => set({ Kith: e.target.value })}
-                    className={`bg-transparent text-${theme}-100 outline-none py-1 cursor-pointer`}>
+                    className={`bg-transparent ${t.text} outline-none py-1 cursor-pointer`}>
                 <option value="" className="bg-black">Wähle...</option>
                 {ChangelingData.kiths.map(k => <option key={k} value={k} className="bg-black">{k}</option>)}
             </select>
@@ -76,7 +78,7 @@ export const changelingConfig = {
 
         if (key === 'Hof') return (
             <select value={val} onChange={(e) => set({ Hof: e.target.value })}
-                    className={`bg-transparent text-${theme}-100 outline-none py-1 cursor-pointer`}>
+                    className={`bg-transparent ${t.text} outline-none py-1 cursor-pointer`}>
                 <option value="" className="bg-black">Wähle...</option>
                 {ChangelingData.courts.map(c => <option key={c} value={c} className="bg-black">{c}</option>)}
             </select>
@@ -86,7 +88,7 @@ export const changelingConfig = {
             <>
                 <input list="ctd-concepts" value={val}
                        onChange={(e) => set({ Konzept: e.target.value })}
-                       className={`bg-transparent text-${theme}-100 outline-none py-1`} />
+                       className={`bg-transparent ${t.text} outline-none py-1`} />
                 <datalist id="ctd-concepts">
                     {SharedData.concepts?.map((c, i) => <option key={i} value={c} />)}
                 </datalist>
@@ -95,10 +97,11 @@ export const changelingConfig = {
 
         return (
             <input type="text" value={val} onChange={(e) => set({ [key]: e.target.value })}
-                   className={`bg-transparent outline-none py-1 text-${theme}-100`} />
+                   className={`bg-transparent outline-none py-1 ${t.text}`} />
         );
     },
 
     renderAdvantages: (sharedProps) => <ChangelingAdvantages {...sharedProps} />,
     renderStatus:     (sharedProps) => <ChangelingStatus     {...sharedProps} />,
+    onRandomize:      randomizeCharacter,
 };

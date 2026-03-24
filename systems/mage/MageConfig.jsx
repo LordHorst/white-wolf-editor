@@ -5,7 +5,7 @@ import { MageData, MageMerits, MageFlaws } from './mageData';
 import { MageAdvantages } from './MageAdvantages';
 import { MageStatus } from './MageStatus';
 import { randomizeCharacter } from './mageRandomizer';
-
+import { themeConfig } from '../../components/ui/themes/themes';
 // ─── Mage-spezifische Zusatzprüfung ─────────────────────────────────────────
 // Wird an useTraitValidation übergeben (via BaseSheet → mageConfig)
 const kampfkunstValidation = (name, newValue) =>
@@ -45,6 +45,7 @@ export const mageConfig = {
 
     // key + val kommen aus BaseSheet, sharedProps enthält { character, setCharacter, theme }
     renderInfoField: (key, val, { character, setCharacter, theme }) => {
+        const t = themeConfig[theme] ?? themeConfig.default;
         const set = (patch) =>
             setCharacter(p => ({ ...p, info: { ...p.info, ...patch } }));
 
@@ -52,7 +53,7 @@ export const mageConfig = {
             <select
                 value={val}
                 onChange={(e) => set({ Zugehörigkeit: e.target.value, Gruppierung: '' })}
-                className={`bg-transparent text-${theme}-100 outline-none py-1 cursor-pointer`}
+                className={`bg-transparent ${t.text} outline-none py-1 cursor-pointer`}
             >
                 <option value="">Wähle...</option>
                 {MageData.affiliations.map(a => (
@@ -84,7 +85,7 @@ export const mageConfig = {
             <select
                 value={val}
                 onChange={(e) => set({ Essenz: e.target.value })}
-                className={`bg-transparent text-${theme}-100 outline-none py-1 cursor-pointer`}
+                className={`bg-transparent ${t.text} outline-none py-1 cursor-pointer`}
             >
                 <option value="">Wähle...</option>
                 {MageData.essences.map(e => (
@@ -99,7 +100,7 @@ export const mageConfig = {
                 type="text"
                 value={val}
                 onChange={(e) => set({ [key]: e.target.value })}
-                className={`bg-transparent outline-none py-1 text-${theme}-100`}
+                className={`bg-transparent outline-none py-1 ${t.text}`}
             />
         );
     },

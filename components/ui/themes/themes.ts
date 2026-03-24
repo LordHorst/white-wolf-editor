@@ -20,12 +20,11 @@ export interface ThemeColors {
     checkedBg: string;   // ← für HealthBox-Kästchen
 }
 
-export type ThemeName = 'vampire' | 'werewolf' | 'mage' | 'changeling' | 'default';
+export type ThemeName = 'vampire' | 'werewolf' | 'mage' | 'changeling' | 'vampire5e' | 'default';
 
-let transparencyValue = 20;
 export const themeConfig: Record<ThemeName, ThemeColors> = {
     vampire: {
-        bg:              `bg-emerald-950/${transparencyValue}`,
+        bg:              'bg-emerald-950/90',
         border:          'border-emerald-800',
         text:            'text-emerald-100',
         accentBorder:    'border-emerald-500',
@@ -46,7 +45,7 @@ export const themeConfig: Record<ThemeName, ThemeColors> = {
         checkedBg:       'bg-emerald-700',
     },
     werewolf: {
-        bg:              `bg-amber-950/${transparencyValue}`,
+        bg:              'bg-amber-950/90',
         border:          'border-amber-800',
         text:            'text-amber-100',
         accentBorder:    'border-amber-500',
@@ -67,7 +66,7 @@ export const themeConfig: Record<ThemeName, ThemeColors> = {
         checkedBg:       'bg-amber-700',
     },
     mage: {
-        bg:              `bg-purple-950/${transparencyValue}`,
+        bg:              'bg-purple-950/90',
         border:          'border-purple-800',
         text:            'text-purple-100',
         accentBorder:    'border-purple-500',
@@ -88,7 +87,7 @@ export const themeConfig: Record<ThemeName, ThemeColors> = {
         checkedBg:       'bg-purple-700',
     },
     changeling: {
-        bg:              `bg-sky-950/${transparencyValue}`,
+        bg:              'bg-sky-950/90',
         border:          'border-sky-800',
         text:            'text-sky-100',
         accentBorder:    'border-sky-500',
@@ -107,6 +106,27 @@ export const themeConfig: Record<ThemeName, ThemeColors> = {
         disabledButton:  'bg-gray-700 opacity-50 cursor-not-allowed',
         counterButton:   'bg-sky-800 hover:bg-sky-700 text-white',
         checkedBg:       'bg-sky-700',
+    },
+    vampire5e: {
+        bg:              'bg-red-950/90',
+        border:          'border-red-900',
+        text:            'text-red-100',
+        accentBorder:    'border-red-500',
+        accentText:      'text-red-300',
+        tabActive:       'border-red-500 text-red-300',
+        tabInactive:     'text-red-500 hover:text-red-300',
+        meritButton:     'bg-red-800 hover:bg-red-700 text-white',
+        flawButton:      'bg-rose-800 hover:bg-rose-700 text-white',
+        footerText:      'text-red-400',
+        headerButton:    'text-red-400 hover:text-red-200',
+        emptyText:       'text-red-600',
+        descriptionText: 'text-red-400',
+        meritBadge:      'bg-red-800 text-red-200',
+        flawBadge:       'bg-rose-800 text-rose-200',
+        removeButton:    'bg-gray-700 hover:bg-gray-600 text-white',
+        disabledButton:  'bg-gray-700 opacity-50 cursor-not-allowed',
+        counterButton:   'bg-red-800 hover:bg-red-700 text-white',
+        checkedBg:       'bg-red-700',
     },
     default: {
         bg:              'bg-white',

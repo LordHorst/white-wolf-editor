@@ -6,6 +6,7 @@ import { WerewolfData, WerewolfMerits, WerewolfFlaws } from './werewolfData';
 import { WerewolfAdvantages } from './WerewolfAdvantages';
 import { WerewolfStatus } from './WerewolfStatus';
 import { themeConfig } from "../../components/ui/themes/themes";
+import {randomizeCharacter} from "./werewolfRandomizer";
 
 export const werewolfConfig = {
     systemId:  'wta',
@@ -61,7 +62,7 @@ export const werewolfConfig = {
     ),
 
     renderInfoField: (key, val, { character, setCharacter, theme }) => {
-        const t = themeConfig[theme] ?? themeConfig.emerald;
+        const t = themeConfig[theme] ?? themeConfig.default;
         const set = (patch) => setCharacter(p => ({ ...p, info: { ...p.info, ...patch } }));
 
         // Spezial-Logik für Abstammung (Breed) Auswahl
@@ -150,4 +151,5 @@ export const werewolfConfig = {
 
     renderAdvantages: (sharedProps) => <WerewolfAdvantages {...sharedProps} />,
     renderStatus:     (sharedProps) => <WerewolfStatus     {...sharedProps} />,
+    onRandomize:      randomizeCharacter,
 };
