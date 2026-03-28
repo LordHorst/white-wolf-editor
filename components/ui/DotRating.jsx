@@ -1,6 +1,6 @@
 import React from 'react';
 // Korrektur des Pfads: themes.ts liegt laut Struktur in ./themes/themes
-import { themeConfig } from './themes/themes';
+import {themeConfig} from './themes/themes';
 
 /**
  * DotRating ist eine wiederverwendbare Komponente zur Anzeige und Bearbeitung
@@ -14,7 +14,7 @@ export const DotRating = ({
                               disabled = false,
                               min = 0
                           }) => {
-    
+
     const t = themeConfig[theme] ?? themeConfig.default;
 
     return (

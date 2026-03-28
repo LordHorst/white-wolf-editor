@@ -18,11 +18,11 @@ export const VampireV5Data = {
 };
 
 export const VampireV5Merits = [
-    { name: 'Schöne Gesichtszüge', cost: 1, description: '+1 Würfel auf sozialen Würfen.' },
-    { name: 'Kontakte',            cost: 1, description: 'Informationsnetzwerk in einem Bereich.', stackable: true, maxStack: 5 },
+    {name: 'Schöne Gesichtszüge', cost: 1, description: '+1 Würfel auf sozialen Würfen.'},
+    {name: 'Kontakte', cost: 1, description: 'Informationsnetzwerk in einem Bereich.', stackable: true, maxStack: 5},
 ];
 
 export const VampireV5Flaws = [
-    { name: 'Feind',  cost: 1, description: 'Jemand will dir schaden.' },
-    { name: 'Sucht',  cost: 1, description: 'Abhängigkeit von einer Substanz oder einem Verhalten.' },
+    {name: 'Feind', cost: 1, description: 'Jemand will dir schaden.'},
+    {name: 'Sucht', cost: 1, description: 'Abhängigkeit von einer Substanz oder einem Verhalten.'},
 ];

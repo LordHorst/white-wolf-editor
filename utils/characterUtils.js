@@ -23,9 +23,9 @@ export const calculateGroupBonusPoints = (character, excludeField = null) => {
         }, 0);
 
     return {
-        körperlich:     calcGroup(attrs.körperlich),
+        körperlich: calcGroup(attrs.körperlich),
         gesellschaftlich: calcGroup(attrs.gesellschaftlich),
-        geistig:        calcGroup(attrs.geistig),
+        geistig: calcGroup(attrs.geistig),
     };
 };
 
@@ -73,8 +73,8 @@ export const sumBackgrounds = (backgrounds) =>
 
 // ─── Zufalls-Utilities ──────────────────────────────────────────────────────
 
-export const randomInt  = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
-export const randomChoice = (arr)    => arr[Math.floor(Math.random() * arr.length)];
+export const randomInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+export const randomChoice = (arr) => arr[Math.floor(Math.random() * arr.length)];
 
 /** Gibt eine neue, gemischte Kopie des Arrays zurück (Fisher-Yates). */
 export const shuffleArray = (arr) => {
@@ -113,13 +113,15 @@ export const distributePoints = (items, totalPoints, maxPerItem = 5) => {
  */
 export const randomizeAttributes = (baseAttributes) => {
     const categories = Object.keys(baseAttributes);
-    const shuffled   = shuffleArray([7, 5, 3]);
-    const result     = JSON.parse(JSON.stringify(baseAttributes));
+    const shuffled = shuffleArray([7, 5, 3]);
+    const result = JSON.parse(JSON.stringify(baseAttributes));
 
     categories.forEach((cat, idx) => {
         const names = Object.keys(result[cat]);
-        const dist  = distributePoints(names, shuffled[idx], 5);
-        names.forEach((name, i) => { result[cat][name] += dist[i]; });
+        const dist = distributePoints(names, shuffled[idx], 5);
+        names.forEach((name, i) => {
+            result[cat][name] += dist[i];
+        });
     });
     return result;
 };
@@ -130,14 +132,16 @@ export const randomizeAttributes = (baseAttributes) => {
  * @returns {object} Neues Fähigkeits-Objekt mit verteilten Punkten
  */
 export const randomizeAbilities = (emptyAbilities) => {
-    const groups  = Object.keys(emptyAbilities);
+    const groups = Object.keys(emptyAbilities);
     const shuffled = shuffleArray([13, 9, 5]);
-    const result  = JSON.parse(JSON.stringify(emptyAbilities));
+    const result = JSON.parse(JSON.stringify(emptyAbilities));
 
     groups.forEach((group, idx) => {
         const names = Object.keys(result[group]);
-        const dist  = distributePoints(names, shuffled[idx], 3);
-        names.forEach((name, i) => { result[group][name] = dist[i]; });
+        const dist = distributePoints(names, shuffled[idx], 3);
+        names.forEach((name, i) => {
+            result[group][name] = dist[i];
+        });
     });
     return result;
 };
@@ -157,9 +161,9 @@ export const randomizeBackgrounds = (availableBgs, count = 5, totalPoints = 5) =
         const bgName = randomChoice(available);
         const points = randomInt(1, Math.min(5, remaining));
         used.add(bgName);
-        list.push({ name: bgName, value: points });
+        list.push({name: bgName, value: points});
         remaining -= points;
     }
-    while (list.length < count) list.push({ name: "", value: 0 });
+    while (list.length < count) list.push({name: "", value: 0});
     return list;
 };

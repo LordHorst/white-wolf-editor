@@ -1,8 +1,8 @@
 import React from 'react';
-import { DotRating } from './DotRating';
-import { themeConfig } from './themes/themes';
+import {DotRating} from './DotRating';
+import {themeConfig} from './themes/themes';
 
-export const ListTrait = ({ block, title, theme, onChange, max = 5 }) => {
+export const ListTrait = ({block, title, theme, onChange, max = 5}) => {
     const t = themeConfig[theme] ?? themeConfig.default;
 
     return (

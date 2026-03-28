@@ -1,6 +1,6 @@
 import React from 'react';
-import { DotRating } from './DotRating';
-import { themeConfig } from './themes/themes';
+import {DotRating} from './DotRating';
+import {themeConfig} from './themes/themes';
 
 export const TraitSection = ({
                                  title,
@@ -35,7 +35,7 @@ export const TraitSection = ({
         // Fallback für Objekt-Struktur: disabledFields['Wissen']['Computer']
         return disabledFields?.[cat]?.[name] ?? false;
     };
-    
+
     // ─── Listen-Variante (z. B. Disziplinen) ──────────────────────────────
     if (isList && Array.isArray(data)) {
         return (
@@ -44,14 +44,14 @@ export const TraitSection = ({
                     {title}
                 </h2>
                 <div className="space-y-2">
-                    {data.map((item, idx) => (       // ← data statt fields
+                    {data.map((item, idx) => (
                         <div key={idx} className="flex justify-between items-center gap-2">
                             <span className="text-xs text-stone-400 flex-1">{item.name}</span>
                             <DotRating
                                 theme={theme}
                                 value={item.value}
                                 min={0}
-                                onChange={(v) => onChange(item.name, v)}  // ← onChange korrekt aufrufen
+                                onChange={(v) => onChange(item.name, v)}
                             />
                             {onRemove && (
                                 <button onClick={() => onRemove(item.name)}
@@ -60,7 +60,10 @@ export const TraitSection = ({
                         </div>
                     ))}
                     {onAdd && suggestions && (
-                        <select onChange={(e) => { if (e.target.value) onAdd(e.target.value); e.target.value = ''; }}
+                        <select onChange={(e) => {
+                            if (e.target.value) onAdd(e.target.value);
+                            e.target.value = '';
+                        }}
                                 value=""
                                 className={`bg-black/40 border text-sm rounded px-2 py-1 flex-1 ${t.border} ${t.text}`}>
                             <option value="">Hinzufügen…</option>
@@ -83,8 +86,10 @@ export const TraitSection = ({
                     // Guard against invalid fields
                     if (!fields || typeof fields !== 'object' || Array.isArray(fields)) return null;
 
-                    const stats = groupStats[cat];
+                    // groupStats kann null oder undefined sein – dann wird kein Label angezeigt
+                    const stats = groupStats?.[cat];
                     const statsLabel = stats ? ` (${stats.bonus}/${stats.limit})` : '';
+
                     return (
                         <div key={cat} className="space-y-2">
                             <h3 className={`text-[11px] font-bold uppercase italic border-b pb-1 ${groupHeadClass}`}>
@@ -98,9 +103,10 @@ export const TraitSection = ({
                                     <div key={name}
                                          className={`flex justify-between items-center transition-all ${isDisabled ? 'opacity-25 grayscale' : ''}`}
                                          title={isDisabled ? 'Für diese Abstammung nicht verfügbar.' : ''}>
-                        <span className={`text-xs ${isDisabled ? 'line-through text-stone-600' : 'text-stone-400 hover:text-stone-100'}`}>
-                            {name.replace(/_/g, ' ')}
-                        </span>
+                                        <span
+                                            className={`text-xs ${isDisabled ? 'line-through text-stone-600' : 'text-stone-400 hover:text-stone-100'}`}>
+                                            {name.replace(/_/g, ' ')}
+                                        </span>
                                         <DotRating
                                             theme={theme}
                                             value={numericValue}

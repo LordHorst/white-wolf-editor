@@ -1,17 +1,17 @@
 // systems/vampire/VampireStatus.jsx
 import React from 'react';
-import { DotRating } from '../../components/sheetImports';
-import { getGenerationInfo } from './vampireHelpers';
-import { themeConfig } from '../../components/ui/themes/themes';
+import {DotRating} from '../../../components/sheetImports';
+import {getGenerationInfo} from './vampireHelpers';
+import {themeConfig} from '../../../components/ui/themes/themes';
 
 /**
  * Zeigt Menschlichkeit, Willenskraft, Blutvorrat und Gesundheit.
  * Empfängt sharedProps aus BaseSheet:
  * { character, setCharacter, freebie, showToast, theme }
  */
-export const VampireStatus = ({ character, setCharacter, freebie, showToast, theme }) => {
-    const { tugenden }    = character.advantages;
-    const { bloodCapacity } = getGenerationInfo(character.advantages.hintergründe);
+export const VampireStatus = ({character, setCharacter, freebie, showToast, theme}) => {
+    const {tugenden} = character.advantages;
+    const {bloodCapacity} = getGenerationInfo(character.advantages.hintergründe);
     const t = themeConfig[theme] ?? themeConfig.default;
 
     // ─── Menschlichkeit ──────────────────────────────────────────────────
@@ -30,10 +30,10 @@ export const VampireStatus = ({ character, setCharacter, freebie, showToast, the
                 showToast(`Nicht genug Freebies (${cost} benötigt, ${freebie.freebiePoints} verfügbar).`, 'error');
                 return;
             }
-            setCharacter(p => ({ ...p, status: { ...p.status, menschlichkeit: newValue } }));
+            setCharacter(p => ({...p, status: {...p.status, menschlichkeit: newValue}}));
             freebie.spend('humanity', current, newValue);
         } else {
-            setCharacter(p => ({ ...p, status: { ...p.status, menschlichkeit: newValue } }));
+            setCharacter(p => ({...p, status: {...p.status, menschlichkeit: newValue}}));
         }
     };
 
@@ -53,10 +53,10 @@ export const VampireStatus = ({ character, setCharacter, freebie, showToast, the
                 showToast(`Nicht genug Freebies (${cost} benötigt, ${freebie.freebiePoints} verfügbar).`, 'error');
                 return;
             }
-            setCharacter(p => ({ ...p, status: { ...p.status, willenskraft: newValue } }));
+            setCharacter(p => ({...p, status: {...p.status, willenskraft: newValue}}));
             freebie.spend('willpower', current, newValue);
         } else {
-            setCharacter(p => ({ ...p, status: { ...p.status, willenskraft: newValue } }));
+            setCharacter(p => ({...p, status: {...p.status, willenskraft: newValue}}));
         }
     };
 
@@ -94,7 +94,7 @@ export const VampireStatus = ({ character, setCharacter, freebie, showToast, the
                 {/* Verbrauchte Willenskraft (Kästchen) */}
                 <div className="flex justify-center space-x-1.5 mt-2">
                     {[...Array(10)].map((_, i) => (
-                        <div key={i} className={`w-4 h-4 border ${t.border}`} />
+                        <div key={i} className={`w-4 h-4 border ${t.border}`}/>
                     ))}
                 </div>
             </div>

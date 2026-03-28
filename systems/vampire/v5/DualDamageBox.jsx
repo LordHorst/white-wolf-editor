@@ -1,6 +1,6 @@
 // systems/vampire5e/DualDamageBox.jsx
 import React from 'react';
-import { themeConfig } from '../../components/ui/themes/themes';
+import {themeConfig} from '../../../components/ui/themes/themes';
 
 /**
  * DualDamageBox
@@ -16,11 +16,11 @@ import { themeConfig } from '../../components/ui/themes/themes';
  * @param {string}    label
  * @param {string}    theme
  */
-export const DualDamageBox = ({ boxes, onChange, label, theme = 'emerald' }) => {
+export const DualDamageBox = ({boxes, onChange, label, theme = 'emerald'}) => {
     const t = themeConfig[theme] ?? themeConfig.default;
 
     const cycle = (current) => {
-        if (current === '')            return 'superficial';
+        if (current === '') return 'superficial';
         if (current === 'superficial') return 'aggravated';
         return '';
     };
@@ -43,12 +43,12 @@ export const DualDamageBox = ({ boxes, onChange, label, theme = 'emerald' }) => 
                         className={`
                             w-6 h-6 border-2 flex items-center justify-center cursor-pointer
                             text-xs font-bold select-none transition-all
-                            ${state === 'aggravated'  ? `${t.border} ${t.checkedBg} text-white`       : ''}
-                            ${state === 'superficial' ? `${t.border} bg-transparent ${t.accentText}`  : ''}
-                            ${state === ''            ? `${t.border} bg-black/30`                     : ''}
+                            ${state === 'aggravated' ? `${t.border} ${t.checkedBg} text-white` : ''}
+                            ${state === 'superficial' ? `${t.border} bg-transparent ${t.accentText}` : ''}
+                            ${state === '' ? `${t.border} bg-black/30` : ''}
                         `}
                     >
-                        {state === 'aggravated'  && 'X'}
+                        {state === 'aggravated' && 'X'}
                         {state === 'superficial' && '/'}
                     </div>
                 ))}

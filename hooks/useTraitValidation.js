@@ -1,9 +1,9 @@
-import { useCallback, useMemo } from 'react';
+import {useCallback, useMemo} from 'react';
 import {
-    calculateGroupBonusPoints,
-    getGroupLimits,
     calculateAbilityTotals,
+    calculateGroupBonusPoints,
     getAbilityLimits,
+    getGroupLimits,
 } from '../utils/characterUtils';
 
 /**
@@ -54,7 +54,7 @@ export const useTraitValidation = ({
         return Object.fromEntries(
             Object.entries(bonusPoints).map(([group, bonus]) => [
                 group,
-                { bonus, limit: attrLimits[group] },
+                {bonus, limit: attrLimits[group]},
             ])
         );
     }, [character, attrLimits, excludeAttrField]);
@@ -64,7 +64,7 @@ export const useTraitValidation = ({
         return Object.fromEntries(
             Object.entries(totals).map(([group, total]) => [
                 group,
-                { bonus: total, limit: abilityLimits[group] },
+                {bonus: total, limit: abilityLimits[group]},
             ])
         );
     }, [character, abilityLimits]);
@@ -92,7 +92,7 @@ export const useTraitValidation = ({
 
         const testChar = JSON.parse(JSON.stringify(character));
         testChar.attributes[cat][name] = newValue;
-        const newBonus  = calculateGroupBonusPoints(testChar, excludeAttrField);
+        const newBonus = calculateGroupBonusPoints(testChar, excludeAttrField);
         const newLimits = getGroupLimits(newBonus);
         const valid = Object.entries(newBonus).every(([g, b]) => b <= newLimits[g]);
 
@@ -114,7 +114,10 @@ export const useTraitValidation = ({
         // System-spezifische Zusatzprüfung (z. B. Kampfkunst-Limit bei Mage)
         if (extraAbilityValidation) {
             const errorMsg = extraAbilityValidation(name, newValue);
-            if (errorMsg) { showToast(errorMsg, 'error'); return; }
+            if (errorMsg) {
+                showToast(errorMsg, 'error');
+                return;
+            }
         }
 
         if (freebie.freebiesActive) {
@@ -131,6 +134,8 @@ export const useTraitValidation = ({
         if (abilityCapWithoutFreebies !== null && newValue > abilityCapWithoutFreebies) {
             showToast(`Fähigkeiten können ohne Freebies maximal ${abilityCapWithoutFreebies} Punkte haben.`, 'error');
             return;
+        } else {
+            showToast(`Fähigkeiten können ohne Freebies maximal ${abilityCapWithoutFreebies} Punkte haben.`, 'error');
         }
 
         const testChar = JSON.parse(JSON.stringify(character));

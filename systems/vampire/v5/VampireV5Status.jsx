@@ -1,7 +1,7 @@
 // systems/vampire5e/VampireV5Status.jsx
 import React from 'react';
-import { DotRating } from '../../components/sheetImports';
-import { DualDamageBox } from './DualDamageBox';
+import {DotRating} from '../../../components/sheetImports';
+import {DualDamageBox} from './DualDamageBox';
 
 /**
  * V5-Status: Hunger, Menschlichkeit, Blutmacht, Gesundheit, Willenskraft.
@@ -9,9 +9,9 @@ import { DualDamageBox } from './DualDamageBox';
  * Gesundheit und Willenskraft werden hier direkt gerendert, da DualDamageBox
  * V5-spezifisch ist und nicht im generischen BaseSheet liegt.
  */
-export const VampireV5Status = ({ character, setCharacter, theme }) => {
+export const VampireV5Status = ({character, setCharacter, theme}) => {
     const set = (key, value) =>
-        setCharacter(p => ({ ...p, status: { ...p.status, [key]: value } }));
+        setCharacter(p => ({...p, status: {...p.status, [key]: value}}));
 
     return (
         <div className="space-y-6">

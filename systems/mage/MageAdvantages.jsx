@@ -1,10 +1,10 @@
 // systems/mage/MageAdvantages.jsx
 import React from 'react';
-import { DotRating } from '../../components/ui/DotRating';
-import { BackgroundListItem } from '../../components/ui/BackgroundSection';
-import { MageData } from './mageData';
-import { sumBackgrounds } from '../../utils/characterUtils';
-import { getPredefinedBackgrounds } from './mageRandomizer';
+import {DotRating} from '../../components/ui/DotRating';
+import {BackgroundListItem} from '../../components/ui/BackgroundSection';
+import {MageData} from './mageData';
+import {sumBackgrounds} from '../../utils/characterUtils';
+import {getPredefinedBackgrounds} from './mageRandomizer';
 
 // ─── Hilfsfunktion ───────────────────────────────────────────────────────────
 const sumSpheres = (spheres) =>
@@ -16,17 +16,17 @@ const sumSpheres = (spheres) =>
  * Empfängt sharedProps aus BaseSheet:
  *   { character, setCharacter, freebie, showToast, theme }
  */
-export const MageAdvantages = ({ character, setCharacter, freebie, showToast, theme }) => {
+export const MageAdvantages = ({character, setCharacter, freebie, showToast, theme}) => {
 
     // ─── Sphären ─────────────────────────────────────────────────────────
     const spheresTotal = sumSpheres(character.advantages.sphären);
 
     const handleSphereChange = (sphereName, newValue) => {
-        const oldValue   = character.advantages.sphären[sphereName];
+        const oldValue = character.advantages.sphären[sphereName];
         if (newValue === oldValue) return;
 
-        const newSpheres = { ...character.advantages.sphären, [sphereName]: newValue };
-        const newTotal   = sumSpheres(newSpheres);
+        const newSpheres = {...character.advantages.sphären, [sphereName]: newValue};
+        const newTotal = sumSpheres(newSpheres);
 
         if (freebie.freebiesActive) {
             const cost = freebie.getCost('sphere', oldValue, newValue);
@@ -34,11 +34,11 @@ export const MageAdvantages = ({ character, setCharacter, freebie, showToast, th
                 showToast(`Nicht genug Freebies (${cost} benötigt, ${freebie.freebiePoints} verfügbar).`, 'error');
                 return;
             }
-            setCharacter(p => ({ ...p, advantages: { ...p.advantages, sphären: newSpheres } }));
+            setCharacter(p => ({...p, advantages: {...p.advantages, sphären: newSpheres}}));
             freebie.spend('sphere', oldValue, newValue);
         } else {
             if (newTotal <= 3) {
-                setCharacter(p => ({ ...p, advantages: { ...p.advantages, sphären: newSpheres } }));
+                setCharacter(p => ({...p, advantages: {...p.advantages, sphären: newSpheres}}));
             } else {
                 showToast(`Maximal 3 Punkte in Sphären erlaubt (aktuell ${newTotal}).`, 'error');
             }
@@ -50,11 +50,11 @@ export const MageAdvantages = ({ character, setCharacter, freebie, showToast, th
 
     const handleBackgroundsChange = (index, name, value) => {
         const newList = [...character.advantages.hintergründe];
-        if (name !== undefined) newList[index] = { ...newList[index], name };
+        if (name !== undefined) newList[index] = {...newList[index], name};
 
         if (value !== undefined) {
             const oldValue = newList[index].value;
-            newList[index] = { ...newList[index], value };
+            newList[index] = {...newList[index], value};
             const newTotal = sumBackgrounds(newList);
 
             if (freebie.freebiesActive) {
@@ -63,18 +63,18 @@ export const MageAdvantages = ({ character, setCharacter, freebie, showToast, th
                     showToast(`Nicht genug Freebies (${cost} benötigt, ${freebie.freebiePoints} verfügbar).`, 'error');
                     return;
                 }
-                setCharacter(p => ({ ...p, advantages: { ...p.advantages, hintergründe: newList } }));
+                setCharacter(p => ({...p, advantages: {...p.advantages, hintergründe: newList}}));
                 freebie.spend('background', oldValue, value);
             } else {
                 if (newTotal <= 5) {
-                    setCharacter(p => ({ ...p, advantages: { ...p.advantages, hintergründe: newList } }));
+                    setCharacter(p => ({...p, advantages: {...p.advantages, hintergründe: newList}}));
                 } else {
                     showToast(`Maximal 5 Punkte in Hintergründen erlaubt (aktuell ${newTotal}).`, 'error');
                 }
             }
         } else {
             // Nur Name geändert, kein Wert → direkt setzen
-            setCharacter(p => ({ ...p, advantages: { ...p.advantages, hintergründe: newList } }));
+            setCharacter(p => ({...p, advantages: {...p.advantages, hintergründe: newList}}));
         }
     };
 

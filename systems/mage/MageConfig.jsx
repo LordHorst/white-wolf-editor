@@ -1,11 +1,10 @@
 // systems/mage/mageConfig.js
 import React from 'react';
-import { getEmptyMage } from '../../data/templates';
-import { MageData, MageMerits, MageFlaws } from './mageData';
-import { MageAdvantages } from './MageAdvantages';
-import { MageStatus } from './MageStatus';
-import { randomizeCharacter } from './mageRandomizer';
-import { themeConfig } from '../../components/ui/themes/themes';
+import {MageData, MageFlaws, MageMerits, getEmptyMage} from './mageData';
+import {MageAdvantages} from './MageAdvantages';
+import {MageStatus} from './MageStatus';
+import {randomizeCharacter} from './mageRandomizer';
+import {themeConfig} from '../../components/ui/themes/themes';
 // ─── Mage-spezifische Zusatzprüfung ─────────────────────────────────────────
 // Wird an useTraitValidation übergeben (via BaseSheet → mageConfig)
 const kampfkunstValidation = (name, newValue) =>
@@ -15,10 +14,10 @@ const kampfkunstValidation = (name, newValue) =>
 
 // ─── Config-Objekt ───────────────────────────────────────────────────────────
 export const mageConfig = {
-    systemId:  'mta',
-    title:     'Mage',
-    subtitle:  'The Ascension',
-    theme:     'mage',
+    systemId: 'mta',
+    title: 'Mage',
+    subtitle: 'The Ascension',
+    theme: 'mage',
 
     freebieCount: 15,
     freebieCosts: {
@@ -28,31 +27,33 @@ export const mageConfig = {
 
     getEmptyCharacter: getEmptyMage,
     meritsList: MageMerits,
-    flawsList:  MageFlaws,
+    flawsList: MageFlaws,
 
-    extraAbilityValidation:    kampfkunstValidation,
+    extraAbilityValidation: kampfkunstValidation,
 
     // ── Render-Funktionen ────────────────────────────────────────────────────
 
     renderRules: () => (
         <>
-            <p><strong>📜 Attribut-Punkteverteilung</strong><br />7 / 5 / 3 Punkte auf die drei Kategorien. Ohne Freebies max. 5 pro Attribut.</p>
-            <p><strong>⚙️ Fähigkeiten</strong><br />13 / 9 / 5 Punkte. Ohne Freebies max. 3 pro Fähigkeit.</p>
-            <p><strong>✨ Vorteile</strong><br />Sphären: 3 Punkte (max. 3 pro Sphäre). Hintergründe: 5 Punkte.</p>
-            <p><strong>⭐ Freebies</strong><br />15 Punkte. Attribut 5, Fähigkeit 2, Sphäre 4, Arete 8, Willenskraft 1, Quintessenz 2.</p>
+            <p><strong>📜 Attribut-Punkteverteilung</strong><br/>7 / 5 / 3 Punkte auf die drei Kategorien. Ohne Freebies
+                max. 5 pro Attribut.</p>
+            <p><strong>⚙️ Fähigkeiten</strong><br/>13 / 9 / 5 Punkte. Ohne Freebies max. 3 pro Fähigkeit.</p>
+            <p><strong>✨ Vorteile</strong><br/>Sphären: 3 Punkte (max. 3 pro Sphäre). Hintergründe: 5 Punkte.</p>
+            <p><strong>⭐ Freebies</strong><br/>15 Punkte. Attribut 5, Fähigkeit 2, Sphäre 4, Arete 8, Willenskraft 1,
+                Quintessenz 2.</p>
         </>
     ),
 
     // key + val kommen aus BaseSheet, sharedProps enthält { character, setCharacter, theme }
-    renderInfoField: (key, val, { character, setCharacter, theme }) => {
+    renderInfoField: (key, val, {character, setCharacter, theme}) => {
         const t = themeConfig[theme] ?? themeConfig.default;
         const set = (patch) =>
-            setCharacter(p => ({ ...p, info: { ...p.info, ...patch } }));
+            setCharacter(p => ({...p, info: {...p.info, ...patch}}));
 
         if (key === 'Zugehörigkeit') return (
             <select
                 value={val}
-                onChange={(e) => set({ Zugehörigkeit: e.target.value, Gruppierung: '' })}
+                onChange={(e) => set({Zugehörigkeit: e.target.value, Gruppierung: ''})}
                 className={`bg-transparent ${t.text} outline-none py-1 cursor-pointer`}
             >
                 <option value="">Wähle...</option>
@@ -70,7 +71,7 @@ export const mageConfig = {
                 <select
                     value={val}
                     disabled={!character.info.Zugehörigkeit}
-                    onChange={(e) => set({ Gruppierung: e.target.value })}
+                    onChange={(e) => set({Gruppierung: e.target.value})}
                     className={`bg-transparent outline-none py-1 cursor-pointer ${!character.info.Zugehörigkeit ? 'opacity-50' : `text-${theme}-100`}`}
                 >
                     <option value="">Wähle...</option>
@@ -84,7 +85,7 @@ export const mageConfig = {
         if (key === 'Essenz') return (
             <select
                 value={val}
-                onChange={(e) => set({ Essenz: e.target.value })}
+                onChange={(e) => set({Essenz: e.target.value})}
                 className={`bg-transparent ${t.text} outline-none py-1 cursor-pointer`}
             >
                 <option value="">Wähle...</option>
@@ -99,7 +100,7 @@ export const mageConfig = {
             <input
                 type="text"
                 value={val}
-                onChange={(e) => set({ [key]: e.target.value })}
+                onChange={(e) => set({[key]: e.target.value})}
                 className={`bg-transparent outline-none py-1 ${t.text}`}
             />
         );
@@ -108,7 +109,7 @@ export const mageConfig = {
     // sharedProps = { character, setCharacter, freebie, showToast, theme }
     // — wird 1:1 aus BaseSheet weitergereicht
     renderAdvantages: (sharedProps) => <MageAdvantages {...sharedProps} />,
-    renderStatus:     (sharedProps) => <MageStatus     {...sharedProps} />,
+    renderStatus: (sharedProps) => <MageStatus     {...sharedProps} />,
 
     // onRandomize wird in BaseSheet so aufgerufen:
     // onRandomize({ character, setCharacter, freebie, showToast })

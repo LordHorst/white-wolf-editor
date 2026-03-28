@@ -1,84 +1,151 @@
 // components/BaseSheet.jsx
-import React, { useEffect, useState } from 'react';
-import { Info } from 'lucide-react';
-import { useCharacterManager, useFreebies, useMeritsFlaws, useTraitValidation } from '../hooks';
+import React, {useEffect, useState} from 'react';
+import {Info} from 'lucide-react';
+import {useCharacterManager, useFreebies, useMeritsFlaws, useTraitValidation} from '../hooks';
 import {
-    SheetControls, TraitSection, StorageModals,
-    MeritsFlawsModal, MeritsFlawsSection, HealthBox,
+    HealthBox,
+    MeritsFlawsModal,
+    MeritsFlawsSection,
+    SheetControls,
+    StorageModals,
+    TraitSection,
 } from './sheetImports';
-import { themeConfig } from './ui/themes/themes';
+import {themeConfig} from './ui/themes/themes';
+import {getButtonClasses} from '../utils/buttonClasses'; // ausgelagerte Hilfsfunktion
 
-export const BaseSheet = ({ config }) => {
+export const BaseSheet = ({config}) => {
     const {
         systemId, title, subtitle, theme,
         freebieCount = 15, freebieCosts,
         getEmptyCharacter, meritsList, flawsList,
-        attrCapWithoutFreebies    = 5,
+        attrCapWithoutFreebies = 5,
         abilityCapWithoutFreebies = 3,
-        excludeAttrField          = null,
-        getExcludeAttrField       = null,
-        getDisabledFields         = null,
-        extraAbilityValidation    = null,
+        excludeAttrField = null,
+        getExcludeAttrField = null,
+        getDisabledFields = null,
+        extraAbilityValidation = null,
         renderInfoField, renderAdvantages, renderStatus, renderRules,
         onRandomize, useSystemEffects,
+        // Neue Props für V5-Kompatibilität
+        disableFreebies = false,
+        disableHealthBox = false,
+        showRandomizeButton = false,
+        simpleValidation = false,
     } = config;
 
     const mngr = useCharacterManager(getEmptyCharacter(), systemId);
-    const { character, setCharacter, updateStat, showToast } = mngr;
+    const {character, setCharacter, updateStat, showToast} = mngr;
 
-    const [showRules, setShowRules]             = useState(false);
+    const [showRules, setShowRules] = useState(false);
     const [showMeritsModal, setShowMeritsModal] = useState(false);
     const [meritsModalType, setMeritsModalType] = useState('merit');
 
-    const freebie = useFreebies(freebieCount, freebieCosts);
+    // Freebie-Handling: Wenn deaktiviert, wird ein Dummy-Objekt mit freebiesActive = false verwendet
+    const freebie = disableFreebies
+        ? {
+            freebiePoints: 0, freebiesActive: false, reset: () => {
+            }, spend: () => {
+            }, add: () => {
+            }
+        }
+        : useFreebies(freebieCount, freebieCosts);
+
     const t = themeConfig[theme] ?? themeConfig.default;
 
-    const { handleAddMerit, handleRemoveMerit, handleAddFlaw, handleRemoveFlaw } =
-        useMeritsFlaws({ character, setCharacter, freebie, showToast });
+    // Merits/Flaws Handler – je nach Freebie-Modus unterschiedlich
+    let handleAddMerit, handleRemoveMerit, handleAddFlaw, handleRemoveFlaw;
+    if (disableFreebies) {
+        // Einfache Handler ohne Freebie-Logik
+        handleAddMerit = (merit) => {
+            if (character.merits.some(m => m.name === merit.name)) {
+                showToast('Bereits ausgewählt.', 'error');
+                return;
+            }
+            setCharacter(p => ({...p, merits: [...p.merits, {...merit, quantity: 1}]}));
+        };
+        handleRemoveMerit = (merit) =>
+            setCharacter(p => ({...p, merits: p.merits.filter(m => m.name !== merit.name)}));
+        handleAddFlaw = (flaw) => {
+            if (character.flaws.some(f => f.name === flaw.name)) {
+                showToast('Bereits ausgewählt.', 'error');
+                return;
+            }
+            setCharacter(p => ({...p, flaws: [...p.flaws, flaw]}));
+        };
+        handleRemoveFlaw = (flaw) =>
+            setCharacter(p => ({...p, flaws: p.flaws.filter(f => f.name !== flaw.name)}));
+    } else {
+        // Komplexe Handler mit Freebie-Kosten
+        const meritsFlaws = useMeritsFlaws({character, setCharacter, freebie, showToast});
+        handleAddMerit = meritsFlaws.handleAddMerit;
+        handleRemoveMerit = meritsFlaws.handleRemoveMerit;
+        handleAddFlaw = meritsFlaws.handleAddFlaw;
+        handleRemoveFlaw = meritsFlaws.handleRemoveFlaw;
+    }
 
     const resolvedExcludeAttrField = getExcludeAttrField
         ? getExcludeAttrField(character)
         : excludeAttrField;
 
-    const { attrGroupStats, abilityGroupStats, validateAndApplyAttributeChange, validateAndApplyAbilityChange } =
-        useTraitValidation({
+    // Validierung: Bei simpleValidation wird direkt updateStat verwendet, sonst useTraitValidation
+    let validateAndApplyAttributeChange, validateAndApplyAbilityChange, attrGroupStats, abilityGroupStats;
+    if (simpleValidation) {
+        validateAndApplyAttributeChange = (cat, name, val) => updateStat('attributes', cat, name, val);
+        validateAndApplyAbilityChange = (cat, name, val) => updateStat('abilities', cat, name, val);
+        attrGroupStats = null;
+        abilityGroupStats = null;
+    } else {
+        const validation = useTraitValidation({
             character, updateStat, freebie, showToast,
             excludeAttrField: resolvedExcludeAttrField,
             attrCapWithoutFreebies, abilityCapWithoutFreebies, extraAbilityValidation,
         });
+        validateAndApplyAttributeChange = validation.validateAndApplyAttributeChange;
+        validateAndApplyAbilityChange = validation.validateAndApplyAbilityChange;
+        attrGroupStats = validation.attrGroupStats;
+        abilityGroupStats = validation.abilityGroupStats;
+    }
 
-    useEffect(() => { freebie.reset(freebieCount); }, [character.info.Name]);
-    useSystemEffects?.({ character, setCharacter });
+    useEffect(() => {
+        if (!disableFreebies) freebie.reset(freebieCount);
+    }, [character.info.Name, disableFreebies]);
+
+    useSystemEffects?.({character, setCharacter});
 
     const disabledFields = getDisabledFields ? getDisabledFields(character) : {};
-    const sharedProps    = { character, setCharacter, freebie, showToast, theme };
+    const sharedProps = {character, setCharacter, freebie, showToast, theme};
 
-    const getButtonClasses = (isActive) =>
-        `px-3 py-1 text-xs uppercase tracking-wider rounded border ${
-            isActive
-                ? `${t.accentText} ${t.border} hover:bg-white/5`
-                : `${t.emptyText} border-transparent bg-black/30 cursor-not-allowed`
-        }`;
+    // Button-Aktivität: Bei deaktiviertem Freebie immer true (Buttons sollen klickbar sein)
+    const isButtonActive = disableFreebies ? true : freebie?.freebiesActive;
 
     return (
         <div className={`${t.accentText} font-serif`}>
-            <SheetControls title={title} subtitle={subtitle} theme={theme} mngr={mngr} freebieState={freebie} />
+            <div className={`sticky top-0 z-50 backdrop-blur-md border-b ${t.border} py-4 px-4 mb-4 ${t.bg}/80`}>
+                <SheetControls 
+                    title={config.title}
+                    subtitle={config.subtitle}
+                    theme={theme}
+                    mngr={mngr}
+                    freebieState={freebie}
+                    onRandomize={config.onRandomize}
+                    setCharacter={setCharacter}
+                    freebie={freebie}
+                    showToast={showToast}
+                />
+            </div>
 
-            <div className={`border-2 ${t.bg} ${t.border} p-8 shadow-2xl relative`} >
+            <div className={`border-2 ${t.bg} ${t.border} p-8 shadow-2xl relative`}>
 
                 {/* HEADER */}
                 <header className={`text-center mb-12 border-b ${t.border} pb-6 relative`}>
                     <h1 className="text-5xl font-bold tracking-[0.2em] uppercase mb-2">{title}</h1>
                     <div className="absolute top-0 right-0 flex gap-2">
-                        {onRandomize && (
-                            <button onClick={() => onRandomize({ character, setCharacter, freebie, showToast })}
-                                    className={`p-2 ${t.headerButton} transition-colors`} title="Zufälliger Charakter">
-                                🎲
-                            </button>
-                        )}
-                        <button onClick={() => setShowRules(!showRules)}
-                                className={`p-2 ${t.headerButton} transition-colors`} title="Regeln anzeigen">
-                            <Info size={20} />
+                        <button
+                            onClick={() => setShowRules(!showRules)}
+                            className={`p-2 ${t.headerButton} transition-colors`}
+                            title="Regeln anzeigen"
+                        >
+                            <Info size={20}/>
                         </button>
                     </div>
                 </header>
@@ -101,47 +168,85 @@ export const BaseSheet = ({ config }) => {
                 </div>
 
                 {/* ATTRIBUTE & FÄHIGKEITEN */}
-                <TraitSection title="Attribute" data={character.attributes} theme={theme}
-                              onChange={validateAndApplyAttributeChange} isAttr
-                              disabledFields={disabledFields} groupStats={attrGroupStats} />
-                <TraitSection title="Fähigkeiten" data={character.abilities} theme={theme}
-                              onChange={validateAndApplyAbilityChange} disabledFields={disabledFields}
-                              groupStats={abilityGroupStats} />
+                <TraitSection
+                    title="Attribute"
+                    data={character.attributes}
+                    theme={theme}
+                    onChange={validateAndApplyAttributeChange}
+                    isAttr
+                    disabledFields={disabledFields}
+                    groupStats={attrGroupStats}
+                />
+                <TraitSection
+                    title="Fähigkeiten"
+                    data={character.abilities}
+                    theme={theme}
+                    onChange={validateAndApplyAbilityChange}
+                    disabledFields={disabledFields}
+                    groupStats={abilityGroupStats}
+                />
 
                 {/* VORTEILE */}
                 {renderAdvantages(sharedProps)}
 
-                {/* STATUS (links) + GESUNDHEIT (rechts) */}
-                <section className={`grid grid-cols-1 md:grid-cols-2 gap-12 border-t ${t.border} pt-8 mb-8`}>
+                {/* STATUS (links) + GESUNDHEIT (rechts) – HealthBox wird bei disableHealthBox weggelassen */}
+                <section
+                    className={`grid grid-cols-1 ${!disableHealthBox ? 'md:grid-cols-2' : ''} gap-12 border-t ${t.border} pt-8 mb-8`}>
                     <div>{renderStatus(sharedProps)}</div>
-                    <HealthBox character={character} setCharacter={setCharacter} theme={theme} />
+                    {!disableHealthBox && (
+                        <HealthBox character={character} setCharacter={setCharacter} theme={theme}/>
+                    )}
                 </section>
 
                 {/* VORZÜGE & NACHTEILE */}
                 <MeritsFlawsSection
-                    merits={character.merits} flaws={character.flaws}
-                    onRemoveMerit={handleRemoveMerit} onRemoveFlaw={handleRemoveFlaw}
-                    freebiesActive={freebie.freebiesActive} theme={theme}
+                    merits={character.merits}
+                    flaws={character.flaws}
+                    onRemoveMerit={handleRemoveMerit}
+                    onRemoveFlaw={handleRemoveFlaw}
+                    freebiesActive={!disableFreebies && freebie.freebiesActive}
+                    theme={theme}
                 />
-                <br />
+                <br/>
 
                 {/* BUTTONS */}
                 <div className="absolute bottom-4 left-4 flex gap-2">
-                    <button onClick={() => { setShowMeritsModal(true); setMeritsModalType('merit'); }}
-                            className={getButtonClasses(freebie?.freebiesActive)}>Vorzüge</button>
-                    <button onClick={() => { setShowMeritsModal(true); setMeritsModalType('flaw'); }}
-                            className={getButtonClasses(freebie?.freebiesActive)}>Nachteile</button>
+                    <button
+                        onClick={() => {
+                            setShowMeritsModal(true);
+                            setMeritsModalType('merit');
+                        }}
+                        className={getButtonClasses(t, isButtonActive)}
+                    >
+                        Vorzüge
+                    </button>
+                    <button
+                        onClick={() => {
+                            setShowMeritsModal(true);
+                            setMeritsModalType('flaw');
+                        }}
+                        className={getButtonClasses(t, isButtonActive)}
+                    >
+                        Nachteile
+                    </button>
                 </div>
             </div>
 
-            <StorageModals mngr={mngr} theme={theme} />
+            <StorageModals mngr={mngr} theme={theme}/>
             <MeritsFlawsModal
-                isOpen={showMeritsModal} onClose={() => setShowMeritsModal(false)}
-                type={meritsModalType} meritsList={meritsList} flawsList={flawsList}
-                selectedMerits={character.merits} selectedFlaws={character.flaws}
-                onAddMerit={handleAddMerit} onRemoveMerit={handleRemoveMerit}
-                onAddFlaw={handleAddFlaw} onRemoveFlaw={handleRemoveFlaw}
-                freebiePoints={freebie.freebiePoints} freebiesActive={freebie.freebiesActive}
+                isOpen={showMeritsModal}
+                onClose={() => setShowMeritsModal(false)}
+                type={meritsModalType}
+                meritsList={meritsList}
+                flawsList={flawsList}
+                selectedMerits={character.merits}
+                selectedFlaws={character.flaws}
+                onAddMerit={handleAddMerit}
+                onRemoveMerit={handleRemoveMerit}
+                onAddFlaw={handleAddFlaw}
+                onRemoveFlaw={handleRemoveFlaw}
+                freebiePoints={disableFreebies ? 0 : freebie.freebiePoints}
+                freebiesActive={!disableFreebies && freebie.freebiesActive}
                 theme={theme}
             />
         </div>

@@ -1,25 +1,25 @@
 // systems/vampire5e/VampireV5Advantages.jsx
 import React from 'react';
-import { DotRating, BackgroundListItem } from '../../components/sheetImports';
-import { VampireV5Data } from './vampireV5Data';
-import { sumBackgrounds } from '../../utils/characterUtils';
+import {BackgroundListItem, DotRating} from '../../../components/sheetImports';
+import {VampireV5Data} from './vampireV5Data';
+import {sumBackgrounds} from '../../../utils/characterUtils';
 
-export const VampireV5Advantages = ({ character, setCharacter, theme }) => {
-    const disciplinesTotal  = character.advantages.disziplinen.reduce((s, d) => s + d.value, 0);
-    const backgroundsTotal  = sumBackgrounds(character.advantages.hintergründe);
+export const VampireV5Advantages = ({character, setCharacter, theme}) => {
+    const disciplinesTotal = character.advantages.disziplinen.reduce((s, d) => s + d.value, 0);
+    const backgroundsTotal = sumBackgrounds(character.advantages.hintergründe);
 
     const handleDisciplineChange = (index, name, value) => {
         const newList = [...character.advantages.disziplinen];
-        if (name  !== undefined) newList[index] = { ...newList[index], name };
-        if (value !== undefined) newList[index] = { ...newList[index], value };
-        setCharacter(p => ({ ...p, advantages: { ...p.advantages, disziplinen: newList } }));
+        if (name !== undefined) newList[index] = {...newList[index], name};
+        if (value !== undefined) newList[index] = {...newList[index], value};
+        setCharacter(p => ({...p, advantages: {...p.advantages, disziplinen: newList}}));
     };
 
     const handleBackgroundChange = (index, name, value) => {
         const newList = [...character.advantages.hintergründe];
-        if (name  !== undefined) newList[index] = { ...newList[index], name };
-        if (value !== undefined) newList[index] = { ...newList[index], value };
-        setCharacter(p => ({ ...p, advantages: { ...p.advantages, hintergründe: newList } }));
+        if (name !== undefined) newList[index] = {...newList[index], name};
+        if (value !== undefined) newList[index] = {...newList[index], value};
+        setCharacter(p => ({...p, advantages: {...p.advantages, hintergründe: newList}}));
     };
 
     return (

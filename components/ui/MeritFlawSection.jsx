@@ -1,5 +1,5 @@
 import React from 'react';
-import { themeConfig } from './themes/themes';
+import {themeConfig} from './themes/themes';
 
 export const MeritsFlawsSection = ({
                                        merits,
@@ -12,8 +12,8 @@ export const MeritsFlawsSection = ({
     const t = themeConfig[theme] ?? themeConfig.default;
 
     const renderList = (items, isFlaws) => {
-        const label    = isFlaws ? 'Nachteile' : 'Vorzüge';
-        const empty    = isFlaws ? 'Keine Nachteile ausgewählt.' : 'Keine Vorzüge ausgewählt.';
+        const label = isFlaws ? 'Nachteile' : 'Vorzüge';
+        const empty = isFlaws ? 'Keine Nachteile ausgewählt.' : 'Keine Vorzüge ausgewählt.';
         const onRemove = isFlaws ? onRemoveFlaw : onRemoveMerit;
 
         return (
@@ -26,7 +26,8 @@ export const MeritsFlawsSection = ({
                         {[...items]
                             .sort((a, b) => a.name.localeCompare(b.name))
                             .map((item, idx) => (
-                                <li key={idx} className={`text-xs ${t.text} flex justify-between items-center border-b ${t.border} pb-1 opacity-80`}>
+                                <li key={idx}
+                                    className={`text-xs ${t.text} flex justify-between items-center border-b ${t.border} pb-1 opacity-80`}>
                                     <span>
                                         <span className="font-bold">{item.name}</span>
                                         {!isFlaws && (item.quantity ?? 1) > 1 && (
@@ -37,7 +38,8 @@ export const MeritsFlawsSection = ({
                                         ({isFlaws ? item.cost : item.cost * (item.quantity ?? 1)})
                                     </span>
                                     {freebiesActive && (
-                                        <button onClick={() => onRemove(item)} className="text-rose-400 hover:text-rose-300 text-xs ml-2">
+                                        <button onClick={() => onRemove(item)}
+                                                className="text-rose-400 hover:text-rose-300 text-xs ml-2">
                                             Entfernen
                                         </button>
                                     )}

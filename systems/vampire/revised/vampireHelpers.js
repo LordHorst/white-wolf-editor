@@ -1,14 +1,14 @@
 // systems/vampire/vampireHelpers.js
-import { VampireData } from './vampireData';
+import {VampireData} from './vampireData';
 
 // ─── Generationsmapping ──────────────────────────────────────────────────────
 export const generationMap = {
-    0: { generation: '13', bloodCapacity: 10 },
-    1: { generation: '12', bloodCapacity: 11 },
-    2: { generation: '11', bloodCapacity: 12 },
-    3: { generation: '10', bloodCapacity: 13 },
-    4: { generation: '9',  bloodCapacity: 14 },
-    5: { generation: '8',  bloodCapacity: 15 },
+    0: {generation: '13', bloodCapacity: 10},
+    1: {generation: '12', bloodCapacity: 11},
+    2: {generation: '11', bloodCapacity: 12},
+    3: {generation: '10', bloodCapacity: 13},
+    4: {generation: '9', bloodCapacity: 14},
+    5: {generation: '8', bloodCapacity: 15},
 };
 
 /** Gibt Generation und Blutkapazität anhand des Hintergrundwerts zurück. */

@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
-import { Info } from 'lucide-react';
-import { DotRating } from './DotRating';
-import { themeConfig } from './themes/themes';
+import React, {useState} from 'react';
+import {Info} from 'lucide-react';
+import {DotRating} from './DotRating';
+import {themeConfig} from './themes/themes';
 
-export const BackgroundTooltip = ({ backgroundName, value, backgroundsData, theme = 'emerald', children }) => {
+export const BackgroundTooltip = ({backgroundName, value, backgroundsData, theme = 'vampire', children}) => {
     const [show, setShow] = useState(false);
     const t = themeConfig[theme] ?? themeConfig.default;
     const background = backgroundsData?.[backgroundName];
@@ -19,7 +19,8 @@ export const BackgroundTooltip = ({ backgroundName, value, backgroundsData, them
         >
             {children}
             {show && (
-                <div className={`absolute z-50 bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 p-2 bg-black border ${t.border} rounded shadow-lg text-xs ${t.text}`}>
+                <div
+                    className={`absolute z-50 bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 p-2 bg-black border ${t.border} rounded shadow-lg text-xs ${t.text}`}>
                     <div className="font-bold mb-1">{backgroundName} (Stufe {value})</div>
                     <div>{levelDesc}</div>
                 </div>
@@ -35,7 +36,7 @@ export const BackgroundListItem = ({
                                        predefinedOptions = [],
                                        backgroundsData = null,
                                        maxPointsPerBackground = 5,
-                                       theme = 'emerald',
+                                       theme = 'vampire',
                                    }) => {
     const t = themeConfig[theme] ?? themeConfig.default;
     const [isCustom, setIsCustom] = useState(
@@ -63,7 +64,7 @@ export const BackgroundListItem = ({
                     onChange={(e) => handleNameChange(e.target.value)}
                     className={inputClass}
                 >
-                    <option value="" disabled />
+                    <option value="" disabled/>
                     {predefinedOptions.map(opt => (
                         <option key={opt} value={opt} className="bg-black">{opt}</option>
                     ))}
@@ -97,7 +98,7 @@ export const BackgroundListItem = ({
                     backgroundsData={backgroundsData}
                     theme={theme}
                 >
-                    <Info size={14} className={`${t.emptyText} cursor-help`} />
+                    <Info size={14} className={`${t.emptyText} cursor-help`}/>
                 </BackgroundTooltip>
             )}
         </div>

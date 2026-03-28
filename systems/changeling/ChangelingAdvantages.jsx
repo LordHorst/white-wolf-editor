@@ -1,17 +1,17 @@
 // systems/changeling/ChangelingAdvantages.jsx
 import React from 'react';
-import { BackgroundListItem } from '../../components/sheetImports';
-import { sumBackgrounds } from '../../utils/characterUtils';
+import {BackgroundListItem} from '../../components/sheetImports';
+import {sumBackgrounds} from '../../utils/characterUtils';
 
-export const ChangelingAdvantages = ({ character, setCharacter, freebie, showToast, theme }) => {
+export const ChangelingAdvantages = ({character, setCharacter, freebie, showToast, theme}) => {
     const backgroundsTotal = sumBackgrounds(character.advantages.hintergründe);
 
     const handleBackgroundsChange = (index, name, value) => {
         const newList = [...character.advantages.hintergründe];
-        if (name  !== undefined) newList[index] = { ...newList[index], name };
+        if (name !== undefined) newList[index] = {...newList[index], name};
         if (value !== undefined) {
             const oldValue = newList[index].value;
-            newList[index] = { ...newList[index], value };
+            newList[index] = {...newList[index], value};
             const newTotal = sumBackgrounds(newList);
 
             if (freebie.freebiesActive) {
@@ -20,17 +20,17 @@ export const ChangelingAdvantages = ({ character, setCharacter, freebie, showToa
                     showToast(`Nicht genug Freebies (${cost} benötigt, ${freebie.freebiePoints} verfügbar).`, 'error');
                     return;
                 }
-                setCharacter(p => ({ ...p, advantages: { ...p.advantages, hintergründe: newList } }));
+                setCharacter(p => ({...p, advantages: {...p.advantages, hintergründe: newList}}));
                 freebie.spend('background', oldValue, value);
             } else {
                 if (newTotal <= 5) {
-                    setCharacter(p => ({ ...p, advantages: { ...p.advantages, hintergründe: newList } }));
+                    setCharacter(p => ({...p, advantages: {...p.advantages, hintergründe: newList}}));
                 } else {
                     showToast(`Maximal 5 Punkte in Hintergründen erlaubt.`, 'error');
                 }
             }
         } else {
-            setCharacter(p => ({ ...p, advantages: { ...p.advantages, hintergründe: newList } }));
+            setCharacter(p => ({...p, advantages: {...p.advantages, hintergründe: newList}}));
         }
     };
 

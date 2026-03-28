@@ -1,3 +1,79 @@
+import {SharedData} from "../../../data/sharedData";
+
+export const getEmptyVampire = () => ({
+    info: {
+        Name: "",
+        Spieler: "",
+        Chronik: "",
+        Wesen: "",
+        Verhalten: "",
+        Clan: "",
+        Generation: "",
+        Zuflucht: "",
+        Konzept: ""
+    },
+    attributes: {
+        körperlich: {Körperkraft: 1, Geschick: 1, Widerstandsfähigkeit: 1},
+        gesellschaftlich: {Charisma: 1, Manipulation: 1, Erscheinungsbild: 1},
+        geistig: {Wahrnehmung: 1, Intelligenz: 1, Geistesschärfe: 1}
+    },
+    abilities: {
+        talente: {
+            Ausdruck: 0,
+            Aufmerksamkeit: 0,
+            Ausflüchte: 0,
+            Ausweichen: 0,
+            Einschüchtern: 0,
+            Empathie: 0,
+            Führungsqualitäten: 0,
+            Handgemenge: 0,
+            Sportlichkeit: 0,
+            Szenekenntnis: 0
+        },
+        fertigkeiten: {
+            Etikette: 0,
+            Fahren: 0,
+            Handwerk: 0,
+            Heimlichkeit: 0,
+            Nahkampf: 0,
+            Schusswaffen: 0,
+            Sicherheit: 0,
+            Tierkunde: 0,
+            Überleben: 0,
+            Vortrag: 0
+        },
+        kenntnisse: {
+            Akademisches_Wissen: 0,
+            Computer: 0,
+            Finanzen: 0,
+            Gesetzeskenntnis: 0,
+            Linguistik: 0,
+            Medizin: 0,
+            Nachforschungen: 0,
+            Naturwissenschaften: 0,
+            Okkultismus: 0,
+            Politik: 0
+        }
+    },
+    advantages: {
+        disziplinen: [{name: "", value: 0}, {name: "", value: 0}, {name: "", value: 0}],
+        hintergründe: [{name: "", value: 0}, {name: "", value: 0}, {name: "", value: 0}, {
+            name: "",
+            value: 0
+        }, {name: "", value: 0}],
+        tugenden: {Gewissen: 1, Selbstbeherrschung: 1, Mut: 1}
+    },
+    status: {
+        menschlichkeit: 2,
+        willenskraft: 1,
+        blutvorrat: 10,
+        gesundheit: JSON.parse(JSON.stringify(SharedData.initialHealth))
+    },
+    extra: {erfahrung: "", vorzügeSchwächen: []},
+    merits: [],
+    flaws: []
+});
+
 export const VampireData = {
     clans: {
         "Camarilla": {
@@ -119,14 +195,14 @@ export const VampireData = {
 };
 
 export const VampireMerits = [
-    { name: "Essen", cost: 1, description: "Der Vampir kann Nahrung zu sich nehmen." },
-    { name: "Verführerische Stimme", cost: 2, description: "Die Stimme des Charakters ist außergewöhnlich angenehm." },
+    {name: "Essen", cost: 1, description: "Der Vampir kann Nahrung zu sich nehmen."},
+    {name: "Verführerische Stimme", cost: 2, description: "Die Stimme des Charakters ist außergewöhnlich angenehm."},
     // ... weitere Vorteile
 ];
 
 export const VampireFlaws = [
-    { name: "Klein", cost: 1, description: "Der Charakter ist auffällig klein." },
-    { name: "Monströses Aussehen", cost: 3, description: "Das Aussehen ist abschreckend und unvergesslich." },
+    {name: "Klein", cost: 1, description: "Der Charakter ist auffällig klein."},
+    {name: "Monströses Aussehen", cost: 3, description: "Das Aussehen ist abschreckend und unvergesslich."},
     // ... weitere Nachteile
 ];
 

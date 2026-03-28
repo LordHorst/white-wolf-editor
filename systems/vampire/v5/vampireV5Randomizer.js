@@ -1,7 +1,7 @@
-import { randomChoice, randomInt } from '../../utils/characterUtils';
-import { SharedData } from '../../data/sharedData';
-import { VampireV5Data } from './vampireV5Data';
-import { getEmptyVampireV5 } from '../../data/vampireV5Template';
+import {randomChoice, randomInt} from '../../../utils/characterUtils';
+import {SharedData} from '../../../data/sharedData';
+import {VampireV5Data} from './vampireV5Data';
+import {getEmptyVampireV5} from '../../../data/vampireV5Template';
 
 /**
  * Erstellt einen zufälligen Charakter für Vampire V5.
@@ -10,7 +10,7 @@ import { getEmptyVampireV5 } from '../../data/vampireV5Template';
  * - Fertigkeiten: 8/5/2 verteilen
  * - Disziplinen: 2 Punkte in einer, 1 Punkt in einer anderen Clan-Disziplin
  */
-export const randomizeCharacter = ({ setCharacter, showToast }) => {
+export const randomizeCharacter = ({setCharacter, showToast}) => {
     const emptyChar = getEmptyVampireV5();
 
     // --- Basis Infos ---
@@ -66,8 +66,8 @@ export const randomizeCharacter = ({ setCharacter, showToast }) => {
 
     const shuffledDisciplines = [...clanDisciplines].sort(() => Math.random() - 0.5);
     if (shuffledDisciplines.length >= 2) {
-        disciplinesList.push({ name: shuffledDisciplines[0], value: 2 });
-        disciplinesList.push({ name: shuffledDisciplines[1], value: 1 });
+        disciplinesList.push({name: shuffledDisciplines[0], value: 2});
+        disciplinesList.push({name: shuffledDisciplines[1], value: 1});
     }
 
     // --- Statuswerte (Gesundheit & Willenskraft) ---
@@ -86,7 +86,7 @@ export const randomizeCharacter = ({ setCharacter, showToast }) => {
     // Helper: Passt die Track-Länge für die V5 DualDamageBox an, falls das Template Arrays nutzt
     const formatTrack = (templateTrack, maxVal) => {
         if (Array.isArray(templateTrack)) {
-            return Array.from({ length: maxVal }, () => ({ value: 0 })); // 0 = leer (kein Schaden)
+            return Array.from({length: maxVal}, () => ({value: 0})); // 0 = leer (kein Schaden)
         }
         return maxVal;
     };
@@ -108,9 +108,9 @@ export const randomizeCharacter = ({ setCharacter, showToast }) => {
             ...emptyChar.advantages,
             disziplinen: disciplinesList,
             hintergründe: [
-                { name: 'Ressourcen', value: randomInt(1, 3) },
-                { name: 'Herde', value: randomInt(0, 2) },
-                { name: 'Kontakte', value: randomInt(0, 3) }
+                {name: 'Ressourcen', value: randomInt(1, 3)},
+                {name: 'Herde', value: randomInt(0, 2)},
+                {name: 'Kontakte', value: randomInt(0, 3)}
             ].filter(h => h.value > 0).slice(0, 2), // Max 2 zufällige Vorteile behalten
         },
         status: {

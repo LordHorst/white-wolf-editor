@@ -1,3 +1,57 @@
+import {SharedData} from "../../data/sharedData";
+
+export const getEmptyMage = () => ({
+    info: {
+        Name: "",
+        Wesen: "",
+        Zugehörigkeit: "",
+        Spieler: "",
+        Verhalten: "",
+        Gruppierung: "",
+        Chronik: "",
+        Essenz: "",
+        Konzept: ""
+    },
+    attributes: {
+        körperlich: {Körperkraft: 1, Geschick: 1, Widerstandsfähigkeit: 1},
+        gesellschaftlich: {Charisma: 1, Manipulation: 1, Erscheinungsbild: 1},
+        geistig: {Wahrnehmung: 1, Intelligenz: 1, Geistesschärfe: 1}
+    },
+    abilities: {
+        talente: {
+            Aufmerksamkeit: 0, Asudruck: 0, Ausflüchte: 0, Einschüchtern: 0, Empathie: 0,
+            Führungsqualitäten: 0, Handgemenge: 0, Kunst: 0, Sechster_Sinn: 0,
+            Sportlichkeit: 0, Szenekenntnis: 0
+        },
+        fertigkeiten: {
+            Etikette: 0, Fahren: 0, Handwerk: 0, Heimlichkeit: 0, Kampfkunst: 0,
+            Meditation: 0, Nahkampf: 0, Recherche: 0, Schusswaffen: 0, Technologie: 0, Überleben: 0
+        },
+        kenntnisse: {
+            Akademisches_Wissen: 0, Computer: 0, Enigmas: 0, Esoterik: 0, Gesetzeskenntnis: 0,
+            Kosmologie: 0, Medizin: 0, Nachforschungen: 0, Naturwissenschaften: 0, Okkultismus: 0,
+            Poltik: 0
+        }
+    },
+    advantages: {
+        sphären: MageData.spheres.reduce((acc, curr) => ({...acc, [curr]: 0}), {}),
+        hintergründe: [
+            {name: "", value: 0}, {name: "", value: 0},
+            {name: "", value: 0}, {name: "", value: 0}, {name: "", value: 0}
+        ],
+    },
+    status: {
+        arete: 1,
+        willenskraft: 5,
+        quintessenz: 1,
+        paradox: 0,
+        gesundheit: JSON.parse(JSON.stringify(SharedData.initialHealth))
+    },
+    extra: {erfahrung: "", vorzügeSchwächen: []},
+    merits: [],
+    flaws: []
+});
+
 export const MageData = {
     affiliations: [
         {
@@ -134,10 +188,20 @@ export const getSectsForAffiliation = (affiliationName) => {
 };
 
 export const MageMerits = [
-    {name: "Fremdsprache", cost: 1, description: "Der Charakter spricht eine zusätzliche Sprache.", stackable: true, maxStack: 5 },
+    {
+        name: "Fremdsprache",
+        cost: 1,
+        description: "Der Charakter spricht eine zusätzliche Sprache.",
+        stackable: true,
+        maxStack: 5
+    },
     {name: "Geschärfter Sinn", cost: 1, description: "Ein einzelner deiner Sinne ist schärfter als gewöhnlich."},
-    {name: "Dunkle Triade", cost: 3, description: "Eine charmante (und zugleich beunruhigende) Mischung aus Narzissmus, Machiavellismus und Soziopathie macht dich zu einem gewandten, regelbrechenden Verführer."},
-    {name: "Geschärfte Sinne", cost: 3, description: "Alle fünf deiner Sinne sind schärfter als gewöhnlich."},    
+    {
+        name: "Dunkle Triade",
+        cost: 3,
+        description: "Eine charmante (und zugleich beunruhigende) Mischung aus Narzissmus, Machiavellismus und Soziopathie macht dich zu einem gewandten, regelbrechenden Verführer."
+    },
+    {name: "Geschärfte Sinne", cost: 3, description: "Alle fünf deiner Sinne sind schärfter als gewöhnlich."},
     {name: "Verführerische Stimme", cost: 2, description: "Die Stimme des Charakters ist außergewöhnlich angenehm."},
     // ... weitere Vorteile
 ];

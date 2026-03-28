@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import {useCallback} from 'react';
 
 /**
  * useMeritsFlaws
@@ -10,7 +10,7 @@ import { useCallback } from 'react';
  *
  * @param {{ character, setCharacter, freebie, showToast }} param0
  */
-export const useMeritsFlaws = ({ character, setCharacter, freebie, showToast }) => {
+export const useMeritsFlaws = ({character, setCharacter, freebie, showToast}) => {
 
     const handleAddMerit = useCallback((merit) => {
         if (!freebie.freebiesActive) return;
@@ -30,8 +30,8 @@ export const useMeritsFlaws = ({ character, setCharacter, freebie, showToast }) 
             setCharacter(prev => ({
                 ...prev,
                 merits: existing
-                    ? prev.merits.map(m => m.name === merit.name ? { ...m, quantity: m.quantity + 1 } : m)
-                    : [...prev.merits, { ...merit, quantity: 1 }],
+                    ? prev.merits.map(m => m.name === merit.name ? {...m, quantity: m.quantity + 1} : m)
+                    : [...prev.merits, {...merit, quantity: 1}],
             }));
         } else {
             if (existing) {
@@ -42,7 +42,7 @@ export const useMeritsFlaws = ({ character, setCharacter, freebie, showToast }) 
                 showToast(`Nicht genug Freebies (${merit.cost} benötigt, ${freebie.freebiePoints} verfügbar).`, 'error');
                 return;
             }
-            setCharacter(prev => ({ ...prev, merits: [...prev.merits, { ...merit, quantity: 1 }] }));
+            setCharacter(prev => ({...prev, merits: [...prev.merits, {...merit, quantity: 1}]}));
         }
         freebie.spendPoints(merit.cost);
     }, [character.merits, freebie, setCharacter, showToast]);
@@ -54,10 +54,10 @@ export const useMeritsFlaws = ({ character, setCharacter, freebie, showToast }) 
         if (merit.stackable && existing.quantity > 1) {
             setCharacter(prev => ({
                 ...prev,
-                merits: prev.merits.map(m => m.name === merit.name ? { ...m, quantity: m.quantity - 1 } : m),
+                merits: prev.merits.map(m => m.name === merit.name ? {...m, quantity: m.quantity - 1} : m),
             }));
         } else {
-            setCharacter(prev => ({ ...prev, merits: prev.merits.filter(m => m.name !== merit.name) }));
+            setCharacter(prev => ({...prev, merits: prev.merits.filter(m => m.name !== merit.name)}));
         }
         freebie.addPoints(merit.cost);
     }, [character.merits, freebie, setCharacter]);
@@ -68,14 +68,14 @@ export const useMeritsFlaws = ({ character, setCharacter, freebie, showToast }) 
             showToast('Dieser Nachteil ist bereits ausgewählt.', 'error');
             return;
         }
-        setCharacter(prev => ({ ...prev, flaws: [...prev.flaws, flaw] }));
+        setCharacter(prev => ({...prev, flaws: [...prev.flaws, flaw]}));
         freebie.addPoints(flaw.cost);
     }, [character.flaws, freebie, setCharacter, showToast]);
 
     const handleRemoveFlaw = useCallback((flaw) => {
-        setCharacter(prev => ({ ...prev, flaws: prev.flaws.filter(f => f.name !== flaw.name) }));
+        setCharacter(prev => ({...prev, flaws: prev.flaws.filter(f => f.name !== flaw.name)}));
         freebie.spendPoints(flaw.cost);
     }, [freebie, setCharacter]);
 
-    return { handleAddMerit, handleRemoveMerit, handleAddFlaw, handleRemoveFlaw };
+    return {handleAddMerit, handleRemoveMerit, handleAddFlaw, handleRemoveFlaw};
 };

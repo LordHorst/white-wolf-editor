@@ -1,31 +1,26 @@
 // systems/vampire/VampireAdvantages.jsx
 import React from 'react';
-import { DotRating, ListTrait, BackgroundListItem } from '../../components/sheetImports';
-import { VampireData, getClanDisciplines } from './vampireData';
-import { sumBackgrounds } from '../../utils/characterUtils';
-import {
-    sumDisciplines,
-    sumVirtues,
-    getPredefinedBackgrounds,
-    getGenerationInfo,
-} from './vampireHelpers';
+import {BackgroundListItem, DotRating, ListTrait} from '../../../components/sheetImports';
+import {VampireData} from './vampireData';
+import {sumBackgrounds} from '../../../utils/characterUtils';
+import {getPredefinedBackgrounds, sumDisciplines, sumVirtues,} from './vampireHelpers';
 
 /**
  * Zeigt Disziplinen, Hintergründe und Tugenden für den Vampir-Charakterbogen.
  * Empfängt sharedProps aus BaseSheet:
  *   { character, setCharacter, freebie, showToast, theme }
  */
-export const VampireAdvantages = ({ character, setCharacter, freebie, showToast, theme }) => {
+export const VampireAdvantages = ({character, setCharacter, freebie, showToast, theme}) => {
 
     // ─── Disziplinen ─────────────────────────────────────────────────────
     const disciplinesTotal = sumDisciplines(character.advantages.disziplinen);
 
     const handleDisciplinesChange = (index, name, value) => {
         const newList = [...character.advantages.disziplinen];
-        if (name  !== undefined) newList[index] = { ...newList[index], name };
+        if (name !== undefined) newList[index] = {...newList[index], name};
         if (value !== undefined) {
             const oldValue = newList[index].value;
-            newList[index] = { ...newList[index], value };
+            newList[index] = {...newList[index], value};
             const newTotal = sumDisciplines(newList);
 
             if (freebie.freebiesActive) {
@@ -34,17 +29,17 @@ export const VampireAdvantages = ({ character, setCharacter, freebie, showToast,
                     showToast(`Nicht genug Freebies (${cost} benötigt, ${freebie.freebiePoints} verfügbar).`, 'error');
                     return;
                 }
-                setCharacter(p => ({ ...p, advantages: { ...p.advantages, disziplinen: newList } }));
+                setCharacter(p => ({...p, advantages: {...p.advantages, disziplinen: newList}}));
                 freebie.spend('discipline', oldValue, value);
             } else {
                 if (newTotal <= 3) {
-                    setCharacter(p => ({ ...p, advantages: { ...p.advantages, disziplinen: newList } }));
+                    setCharacter(p => ({...p, advantages: {...p.advantages, disziplinen: newList}}));
                 } else {
                     showToast(`Maximal 3 Punkte in Disziplinen erlaubt (aktuell ${newTotal}).`, 'error');
                 }
             }
         } else {
-            setCharacter(p => ({ ...p, advantages: { ...p.advantages, disziplinen: newList } }));
+            setCharacter(p => ({...p, advantages: {...p.advantages, disziplinen: newList}}));
         }
     };
 
@@ -53,10 +48,10 @@ export const VampireAdvantages = ({ character, setCharacter, freebie, showToast,
 
     const handleBackgroundsChange = (index, name, value) => {
         const newList = [...character.advantages.hintergründe];
-        if (name  !== undefined) newList[index] = { ...newList[index], name };
+        if (name !== undefined) newList[index] = {...newList[index], name};
         if (value !== undefined) {
             const oldValue = newList[index].value;
-            newList[index] = { ...newList[index], value };
+            newList[index] = {...newList[index], value};
             const newTotal = sumBackgrounds(newList);
 
             if (freebie.freebiesActive) {
@@ -65,17 +60,17 @@ export const VampireAdvantages = ({ character, setCharacter, freebie, showToast,
                     showToast(`Nicht genug Freebies (${cost} benötigt, ${freebie.freebiePoints} verfügbar).`, 'error');
                     return;
                 }
-                setCharacter(p => ({ ...p, advantages: { ...p.advantages, hintergründe: newList } }));
+                setCharacter(p => ({...p, advantages: {...p.advantages, hintergründe: newList}}));
                 freebie.spend('background', oldValue, value);
             } else {
                 if (newTotal <= 5) {
-                    setCharacter(p => ({ ...p, advantages: { ...p.advantages, hintergründe: newList } }));
+                    setCharacter(p => ({...p, advantages: {...p.advantages, hintergründe: newList}}));
                 } else {
                     showToast(`Maximal 5 Punkte in Hintergründen erlaubt (aktuell ${newTotal}).`, 'error');
                 }
             }
         } else {
-            setCharacter(p => ({ ...p, advantages: { ...p.advantages, hintergründe: newList } }));
+            setCharacter(p => ({...p, advantages: {...p.advantages, hintergründe: newList}}));
         }
     };
 
@@ -83,10 +78,10 @@ export const VampireAdvantages = ({ character, setCharacter, freebie, showToast,
     const virtuesExtra = sumVirtues(character.advantages.tugenden) - 3;
 
     const handleVirtueChange = (name, newValue) => {
-        const oldValue   = character.advantages.tugenden[name];
+        const oldValue = character.advantages.tugenden[name];
         if (newValue === oldValue) return;
-        const newVirtues = { ...character.advantages.tugenden, [name]: newValue };
-        const newTotal   = sumVirtues(newVirtues);
+        const newVirtues = {...character.advantages.tugenden, [name]: newValue};
+        const newTotal = sumVirtues(newVirtues);
 
         if (freebie.freebiesActive) {
             const cost = freebie.getCost('virtue', oldValue, newValue);
@@ -94,11 +89,11 @@ export const VampireAdvantages = ({ character, setCharacter, freebie, showToast,
                 showToast(`Nicht genug Freebies (${cost} benötigt, ${freebie.freebiePoints} verfügbar).`, 'error');
                 return;
             }
-            setCharacter(p => ({ ...p, advantages: { ...p.advantages, tugenden: newVirtues } }));
+            setCharacter(p => ({...p, advantages: {...p.advantages, tugenden: newVirtues}}));
             freebie.spend('virtue', oldValue, newValue);
         } else {
             if (newTotal <= 10) {
-                setCharacter(p => ({ ...p, advantages: { ...p.advantages, tugenden: newVirtues } }));
+                setCharacter(p => ({...p, advantages: {...p.advantages, tugenden: newVirtues}}));
             } else {
                 showToast('Maximal 7 zusätzliche Punkte für Tugenden (Gesamt max. 10).', 'error');
             }

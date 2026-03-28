@@ -1,6 +1,6 @@
 // systems/mage/MageStatus.jsx
 import React from 'react';
-import { DotRating } from '../../components/ui/DotRating';
+import {DotRating} from '../../components/ui/DotRating';
 
 // ─── Hilfsfunktion ───────────────────────────────────────────────────────────
 
@@ -8,7 +8,7 @@ import { DotRating } from '../../components/ui/DotRating';
  * Erstellt einen Handler für Status-Werte, die nur mit Freebies erhöht werden dürfen.
  * Verringern ist immer erlaubt.
  */
-const makeFreebieStatusHandler = ({ key, freebieKey, character, setCharacter, freebie, showToast }) =>
+const makeFreebieStatusHandler = ({key, freebieKey, character, setCharacter, freebie, showToast}) =>
     (newValue) => {
         const current = character.status[key];
         if (newValue === current) return;
@@ -19,13 +19,13 @@ const makeFreebieStatusHandler = ({ key, freebieKey, character, setCharacter, fr
                 showToast(`Nicht genug Freebies (${cost} benötigt, ${freebie.freebiePoints} verfügbar).`, 'error');
                 return;
             }
-            setCharacter(p => ({ ...p, status: { ...p.status, [key]: newValue } }));
+            setCharacter(p => ({...p, status: {...p.status, [key]: newValue}}));
             freebie.spend(freebieKey, current, newValue);
         } else {
             if (newValue > current) {
                 showToast(`${key.charAt(0).toUpperCase() + key.slice(1)} kann nur mit Freebies erhöht werden.`, 'error');
             } else {
-                setCharacter(p => ({ ...p, status: { ...p.status, [key]: newValue } }));
+                setCharacter(p => ({...p, status: {...p.status, [key]: newValue}}));
             }
         }
     };
@@ -34,7 +34,7 @@ const makeFreebieStatusHandler = ({ key, freebieKey, character, setCharacter, fr
 /**
  * Rendert zwei Reihen à 10 anklickbare Kästchen für Quintessenz oder Paradox.
  */
-const PoolTracker = ({ value, onChange, color }) => (
+const PoolTracker = ({value, onChange, color}) => (
     <div>
         {[0, 10].map((offset) => (
             <div key={offset} className={`flex space-x-1 ${offset > 0 ? 'mt-1' : ''} ${offset > 0 ? '' : ''}`}>
@@ -60,85 +60,93 @@ const PoolTracker = ({ value, onChange, color }) => (
  * Empfängt sharedProps aus BaseSheet:
  *   { character, setCharacter, freebie, showToast, theme }
  */
-export const MageStatus = ({ character, setCharacter, freebie, showToast, theme }) => {
-    const handlerArgs = { character, setCharacter, freebie, showToast };
+export const MageStatus = ({character, setCharacter, freebie, showToast, theme}) => {
+    const handlerArgs = {character, setCharacter, freebie, showToast};
 
-    const handleAreteChange        = makeFreebieStatusHandler({ ...handlerArgs, key: 'arete',       freebieKey: 'arete'        });
-    const handleWillpowerChange    = makeFreebieStatusHandler({ ...handlerArgs, key: 'willenskraft', freebieKey: 'willpower'    });
-    const handleQuintessenceChange = makeFreebieStatusHandler({ ...handlerArgs, key: 'quintessenz',  freebieKey: 'quintessence' });
-    const handleParadoxChange      = (newValue) =>
-        setCharacter(p => ({ ...p, status: { ...p.status, paradox: newValue } }));
+    const handleAreteChange = makeFreebieStatusHandler({...handlerArgs, key: 'arete', freebieKey: 'arete'});
+    const handleWillpowerChange = makeFreebieStatusHandler({
+        ...handlerArgs,
+        key: 'willenskraft',
+        freebieKey: 'willpower'
+    });
+    const handleQuintessenceChange = makeFreebieStatusHandler({
+        ...handlerArgs,
+        key: 'quintessenz',
+        freebieKey: 'quintessence'
+    });
+    const handleParadoxChange = (newValue) =>
+        setCharacter(p => ({...p, status: {...p.status, paradox: newValue}}));
 
     return (
-            /* Linke Spalte: Arete, Willenskraft, Quintessenz/Paradox */
-            <div className="space-y-6">
+        /* Linke Spalte: Arete, Willenskraft, Quintessenz/Paradox */
+        <div className="space-y-6">
 
-                {/* Arete */}
-                <div className="text-center">
-                    <h3 className={`text-xs text-${theme}-700 uppercase font-bold mb-2`}>Arete</h3>
-                    <div className="flex justify-center">
-                        <DotRating
-                            theme={theme}
-                            value={character.status.arete}
-                            min={1}
-                            max={10}
-                            onChange={handleAreteChange}
-                        />
-                    </div>
-                </div>
-
-                {/* Willenskraft */}
-                <div className="text-center">
-                    <h3 className={`text-xs text-${theme}-700 uppercase font-bold mb-2`}>Willenskraft</h3>
-                    <div className="flex justify-center">
-                        <DotRating
-                            theme={theme}
-                            value={character.status.willenskraft}
-                            min={5}
-                            max={10}
-                            onChange={handleWillpowerChange}
-                        />
-                    </div>
-                    {/* Verbrauchte Willenskraft (Kästchen) */}
-                    <div className="flex justify-center space-x-1.5 mt-2">
-                        {[...Array(10)].map((_, i) => (
-                            <div key={i} className={`w-4 h-4 border border-${theme}-900`} />
-                        ))}
-                    </div>
-                </div>
-
-                {/* Quintessenz / Paradox */}
-                <div className="text-center">
-                    <h3 className={`text-xs text-${theme}-700 uppercase font-bold mb-2`}>
-                        Quintessenz / Paradox
-                    </h3>
-                    <div className="flex justify-center items-center space-x-4">
-
-                        {/* Quintessenz */}
-                        <div className="text-right">
-                            <span className={`text-[10px] uppercase text-${theme}-400`}>Quintessenz</span>
-                            <PoolTracker
-                                value={character.status.quintessenz}
-                                onChange={handleQuintessenceChange}
-                                color={theme}
-                            />
-                        </div>
-
-                        {/* Trennlinie */}
-                        <div className={`w-px h-10 bg-${theme}-900/50`} />
-
-                        {/* Paradox */}
-                        <div className="text-left">
-                            <span className="text-[10px] uppercase text-red-500">Paradox</span>
-                            <PoolTracker
-                                value={character.status.paradox}
-                                onChange={handleParadoxChange}
-                                color="red"
-                            />
-                        </div>
-
-                    </div>
+            {/* Arete */}
+            <div className="text-center">
+                <h3 className={`text-xs text-${theme}-700 uppercase font-bold mb-2`}>Arete</h3>
+                <div className="flex justify-center">
+                    <DotRating
+                        theme={theme}
+                        value={character.status.arete}
+                        min={1}
+                        max={10}
+                        onChange={handleAreteChange}
+                    />
                 </div>
             </div>
+
+            {/* Willenskraft */}
+            <div className="text-center">
+                <h3 className={`text-xs text-${theme}-700 uppercase font-bold mb-2`}>Willenskraft</h3>
+                <div className="flex justify-center">
+                    <DotRating
+                        theme={theme}
+                        value={character.status.willenskraft}
+                        min={5}
+                        max={10}
+                        onChange={handleWillpowerChange}
+                    />
+                </div>
+                {/* Verbrauchte Willenskraft (Kästchen) */}
+                <div className="flex justify-center space-x-1.5 mt-2">
+                    {[...Array(10)].map((_, i) => (
+                        <div key={i} className={`w-4 h-4 border border-${theme}-900`}/>
+                    ))}
+                </div>
+            </div>
+
+            {/* Quintessenz / Paradox */}
+            <div className="text-center">
+                <h3 className={`text-xs text-${theme}-700 uppercase font-bold mb-2`}>
+                    Quintessenz / Paradox
+                </h3>
+                <div className="flex justify-center items-center space-x-4">
+
+                    {/* Quintessenz */}
+                    <div className="text-right">
+                        <span className={`text-[10px] uppercase text-${theme}-400`}>Quintessenz</span>
+                        <PoolTracker
+                            value={character.status.quintessenz}
+                            onChange={handleQuintessenceChange}
+                            color={theme}
+                        />
+                    </div>
+
+                    {/* Trennlinie */}
+                    <div className={`w-px h-10 bg-${theme}-900/50`}/>
+
+                    {/* Paradox */}
+                    <div className="text-left">
+                        <span className="text-[10px] uppercase text-red-500">Paradox</span>
+                        <PoolTracker
+                            value={character.status.paradox}
+                            onChange={handleParadoxChange}
+                            color="red"
+                        />
+                    </div>
+
+                </div>
+            </div>
+        </div>
     );
 };

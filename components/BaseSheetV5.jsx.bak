@@ -1,12 +1,9 @@
 // components/BaseSheet5e.jsx
-import React, { useEffect, useState } from 'react';
-import { Info } from 'lucide-react';
-import { useCharacterManager } from '../hooks';
-import {
-    SheetControls, TraitSection, StorageModals,
-    MeritsFlawsModal, MeritsFlawsSection,
-} from './sheetImports';
-import { themeConfig } from './ui/themes/themes';
+import React, {useState} from 'react';
+import {Info} from 'lucide-react';
+import {useCharacterManager, useTraitValidation} from '../hooks';
+import {MeritsFlawsModal, MeritsFlawsSection, SheetControls, StorageModals, TraitSection,} from './sheetImports';
+import {themeConfig} from './ui/themes/themes';
 
 /**
  * BaseSheet5e
@@ -25,47 +22,65 @@ import { themeConfig } from './ui/themes/themes';
  *   onRandomize
  *   useSystemEffects
  */
-export const BaseSheet5e = ({ config }) => {
+export const BaseSheetV5 = ({config}) => {
     const {
         systemId, title, subtitle, theme, getEmptyCharacter,
-        meritsList  = [],
-        flawsList   = [],
+        meritsList = [],
+        flawsList = [],
+        attrCapWithoutFreebies = 5,
+        abilityCapWithoutFreebies = 3,
+        excludeAttrField = null,
+        getExcludeAttrField = null,
+        extraAbilityValidation = null,
         renderInfoField, getDisabledFields, renderAdvantages, renderStatus,
         renderRules, onRandomize, useSystemEffects,
     } = config;
 
     const mngr = useCharacterManager(getEmptyCharacter(), systemId);
-    const { character, setCharacter, updateStat, showToast } = mngr;
+    const {character, setCharacter, updateStat, showToast} = mngr;
 
-    const [showRules, setShowRules]             = useState(false);
+    const [showRules, setShowRules] = useState(false);
     const [showMeritsModal, setShowMeritsModal] = useState(false);
     const [meritsModalType, setMeritsModalType] = useState('merit');
 
     const t = themeConfig[theme] ?? themeConfig.default;
 
-    useSystemEffects?.({ character, setCharacter });
+    useSystemEffects?.({character, setCharacter});
 
     // Merits/Flaws ohne Freebie-Logik
-    const handleAddMerit  = (merit) => {
+    const handleAddMerit = (merit) => {
         if (character.merits.some(m => m.name === merit.name)) {
-            showToast('Bereits ausgewählt.', 'error'); return;
+            showToast('Bereits ausgewählt.', 'error');
+            return;
         }
-        setCharacter(p => ({ ...p, merits: [...p.merits, { ...merit, quantity: 1 }] }));
+        setCharacter(p => ({...p, merits: [...p.merits, {...merit, quantity: 1}]}));
     };
     const handleRemoveMerit = (merit) =>
-        setCharacter(p => ({ ...p, merits: p.merits.filter(m => m.name !== merit.name) }));
+        setCharacter(p => ({...p, merits: p.merits.filter(m => m.name !== merit.name)}));
 
-    const handleAddFlaw  = (flaw) => {
+    const handleAddFlaw = (flaw) => {
         if (character.flaws.some(f => f.name === flaw.name)) {
-            showToast('Bereits ausgewählt.', 'error'); return;
+            showToast('Bereits ausgewählt.', 'error');
+            return;
         }
-        setCharacter(p => ({ ...p, flaws: [...p.flaws, flaw] }));
+        setCharacter(p => ({...p, flaws: [...p.flaws, flaw]}));
     };
     const handleRemoveFlaw = (flaw) =>
-        setCharacter(p => ({ ...p, flaws: p.flaws.filter(f => f.name !== flaw.name) }));
-    
+        setCharacter(p => ({...p, flaws: p.flaws.filter(f => f.name !== flaw.name)}));
+
+    const resolvedExcludeAttrField = getExcludeAttrField
+        ? getExcludeAttrField(character)
+        : excludeAttrField;
+
+    const {attrGroupStats, abilityGroupStats, validateAndApplyAttributeChange, validateAndApplyAbilityChange} =
+        useTraitValidation({
+            character, updateStat, showToast, freebie: null,
+            excludeAttrField: resolvedExcludeAttrField,
+            attrCapWithoutFreebies, abilityCapWithoutFreebies, extraAbilityValidation,
+        });
+
     const disabledFields = getDisabledFields ? getDisabledFields(character) : {};
-    const sharedProps = { character, setCharacter, showToast, theme };
+    const sharedProps = {character, setCharacter, showToast, theme};
     const getButtonClasses = (isActive) =>
         `px-3 py-1 text-xs uppercase tracking-wider rounded border ${
             isActive
@@ -75,7 +90,7 @@ export const BaseSheet5e = ({ config }) => {
 
     return (
         <div className={`${t.accentText} font-serif`}>
-            <SheetControls title={title} subtitle={subtitle} theme={theme} mngr={mngr} />
+            <SheetControls title={title} subtitle={subtitle} theme={theme} mngr={mngr}/>
 
             <div className={`border-2 ${t.border} ${t.bg} p-8 shadow-2xl relative`}>
 
@@ -86,7 +101,7 @@ export const BaseSheet5e = ({ config }) => {
                     <div className="absolute top-0 right-0 flex gap-2">
                         {onRandomize && (
                             <button
-                                onClick={() => onRandomize({ character, setCharacter, showToast })}
+                                onClick={() => onRandomize({character, setCharacter, showToast})}
                                 className={`p-2 ${t.headerButton} transition-colors`}
                                 title="Zufälliger Charakter"
                             >🎲</button>
@@ -95,7 +110,7 @@ export const BaseSheet5e = ({ config }) => {
                             onClick={() => setShowRules(!showRules)}
                             className={`p-2 ${t.headerButton} transition-colors`}
                             title="Regeln anzeigen"
-                        ><Info size={20} /></button>
+                        ><Info size={20}/></button>
                     </div>
                 </header>
 
@@ -148,18 +163,26 @@ export const BaseSheet5e = ({ config }) => {
                     freebiesActive={true}
                     theme={theme}
                 />
-                <br />
+                <br/>
 
                 {/* BUTTONS */}
                 <div className="absolute bottom-4 left-4 flex gap-2">
-                    <button onClick={() => { setShowMeritsModal(true); setMeritsModalType('merit'); }}
-                            className={getButtonClasses(t.meritButton)}>Vorzüge</button>
-                    <button onClick={() => { setShowMeritsModal(true); setMeritsModalType('flaw'); }}
-                            className={getButtonClasses( t.flawButton)}>Nachteile</button>
+                    <button onClick={() => {
+                        setShowMeritsModal(true);
+                        setMeritsModalType('merit');
+                    }}
+                            className={getButtonClasses(t.meritButton)}>Vorzüge
+                    </button>
+                    <button onClick={() => {
+                        setShowMeritsModal(true);
+                        setMeritsModalType('flaw');
+                    }}
+                            className={getButtonClasses(t.flawButton)}>Nachteile
+                    </button>
                 </div>
             </div>
 
-            <StorageModals mngr={mngr} theme={theme} />
+            <StorageModals mngr={mngr} theme={theme}/>
             <MeritsFlawsModal
                 isOpen={showMeritsModal}
                 onClose={() => setShowMeritsModal(false)}

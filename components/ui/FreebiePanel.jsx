@@ -1,13 +1,14 @@
 import React from 'react';
-import { Sparkles, Coins } from 'lucide-react';
-import { themeConfig } from './themes/themes';
+import {Coins, Sparkles} from 'lucide-react';
+import {themeConfig} from './themes/themes';
 
-export const FreebiePanel = ({ points, active, onToggle, theme = 'emerald' }) => {
+export const FreebiePanel = ({points, active, onToggle, theme = 'emerald'}) => {
     const t = themeConfig[theme] ?? themeConfig.default;
 
     return (
-        <div className={`flex items-center space-x-2 px-3 py-1.5 border rounded text-[10px] font-bold uppercase tracking-widest ${t.border} ${t.accentText}`}>
-            <Coins size={14} />
+        <div
+            className={`flex items-center space-x-2 px-3 py-1.5 border rounded text-[10px] font-bold uppercase tracking-widest ${t.border} ${t.accentText}`}>
+            <Coins size={14}/>
             <span>Freebies: {points}</span>
             <button
                 onClick={onToggle}
@@ -17,7 +18,7 @@ export const FreebiePanel = ({ points, active, onToggle, theme = 'emerald' }) =>
                         : 'bg-stone-800/60 text-stone-400'
                 }`}
             >
-                <Sparkles size={12} />
+                <Sparkles size={12}/>
                 <span>{active ? 'ON' : 'OFF'}</span>
             </button>
         </div>
