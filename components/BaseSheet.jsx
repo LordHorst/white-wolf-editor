@@ -12,10 +12,16 @@ import {
 } from './sheetImports';
 import {themeConfig} from './ui/themes/themes';
 import {getButtonClasses} from '../utils/buttonClasses'; // ausgelagerte Hilfsfunktion
+import {
+    calculateAbilityTotals,
+    calculateGroupBonusPoints,
+    getAbilityLimits,
+    getGroupLimits,
+} from '../utils/characterUtils';
 
 export const BaseSheet = ({config}) => {
     const {
-        systemId, title, subtitle, theme,
+        systemId, title, theme,
         freebieCount = 15, freebieCosts,
         getEmptyCharacter, meritsList, flawsList,
         attrCapWithoutFreebies = 5,
@@ -25,11 +31,10 @@ export const BaseSheet = ({config}) => {
         getDisabledFields = null,
         extraAbilityValidation = null,
         renderInfoField, renderAdvantages, renderStatus, renderRules,
-        onRandomize, useSystemEffects,
+        useSystemEffects,
         // Neue Props für V5-Kompatibilität
         disableFreebies = false,
         disableHealthBox = false,
-        showRandomizeButton = false,
         simpleValidation = false,
     } = config;
 
@@ -89,21 +94,51 @@ export const BaseSheet = ({config}) => {
 
     // Validierung: Bei simpleValidation wird direkt updateStat verwendet, sonst useTraitValidation
     let validateAndApplyAttributeChange, validateAndApplyAbilityChange, attrGroupStats, abilityGroupStats;
+    const validation = useTraitValidation({
+        character, updateStat, freebie, showToast,
+        excludeAttrField: resolvedExcludeAttrField,
+        attrCapWithoutFreebies, abilityCapWithoutFreebies, extraAbilityValidation,
+    });
+
     if (simpleValidation) {
+        // Einfache Handler ohne Validierung
         validateAndApplyAttributeChange = (cat, name, val) => updateStat('attributes', cat, name, val);
         validateAndApplyAbilityChange = (cat, name, val) => updateStat('abilities', cat, name, val);
         attrGroupStats = null;
         abilityGroupStats = null;
     } else {
-        const validation = useTraitValidation({
-            character, updateStat, freebie, showToast,
-            excludeAttrField: resolvedExcludeAttrField,
-            attrCapWithoutFreebies, abilityCapWithoutFreebies, extraAbilityValidation,
-        });
+        // Volle Validierung mit Limits
         validateAndApplyAttributeChange = validation.validateAndApplyAttributeChange;
         validateAndApplyAbilityChange = validation.validateAndApplyAbilityChange;
         attrGroupStats = validation.attrGroupStats;
         abilityGroupStats = validation.abilityGroupStats;
+    }
+    
+    // Gültigkeit des Charakters bestimmen
+    let characterIsValid = false;
+    if (!simpleValidation && attrGroupStats && abilityGroupStats) {
+        const attrBonus = calculateGroupBonusPoints(character, resolvedExcludeAttrField);
+        const attrLimits = getGroupLimits(attrBonus);
+        const attrValid = Object.entries(attrGroupStats).every(
+            ([group, data]) => data.bonus === attrLimits[group]
+        );
+
+        const abilityTotals = calculateAbilityTotals(character);
+        const abilityLimits = getAbilityLimits(abilityTotals);
+        const abilityValid = Object.entries(abilityGroupStats).every(
+            ([group, data]) => data.bonus === abilityLimits[group]
+        );
+
+        characterIsValid = attrValid && abilityValid;
+        // --- DEBUGGING START ---
+        console.log("=== CHARAKTER VALIDIERUNG ===");
+        console.log("Attribute Valid:", attrValid, "| Ist:", JSON.stringify(attrGroupStats), "| Soll:", JSON.stringify(attrLimits));
+        console.log("Fähigkeiten Valid:", abilityValid, "| Ist:", JSON.stringify(abilityGroupStats), "| Soll:", JSON.stringify(abilityLimits));
+        console.log("Ist der Charakter komplett gültig?", characterIsValid);
+        // --- DEBUGGING END ---
+    } else if (simpleValidation) {
+        // Bei einfacher Validierung (z.B. V5) gilt der Charakter als gültig, sobald die Grundwerte verteilt sind
+        characterIsValid = true;
     }
 
     useEffect(() => {
@@ -121,7 +156,7 @@ export const BaseSheet = ({config}) => {
     return (
         <div className={`${t.accentText} font-serif`}>
             <div className={`sticky top-0 z-50 backdrop-blur-md border-b ${t.border} py-4 px-4 mb-4 ${t.bg}/80`}>
-                <SheetControls 
+                <SheetControls
                     title={config.title}
                     subtitle={config.subtitle}
                     theme={theme}
@@ -130,6 +165,7 @@ export const BaseSheet = ({config}) => {
                     onRandomize={config.onRandomize}
                     setCharacter={setCharacter}
                     freebie={freebie}
+                    freebieDisabled={!characterIsValid}
                     showToast={showToast}
                 />
             </div>
@@ -216,6 +252,7 @@ export const BaseSheet = ({config}) => {
                             setShowMeritsModal(true);
                             setMeritsModalType('merit');
                         }}
+                        disabled={!isButtonActive}
                         className={getButtonClasses(t, isButtonActive)}
                     >
                         Vorzüge
@@ -225,6 +262,7 @@ export const BaseSheet = ({config}) => {
                             setShowMeritsModal(true);
                             setMeritsModalType('flaw');
                         }}
+                        disabled={!isButtonActive}
                         className={getButtonClasses(t, isButtonActive)}
                     >
                         Nachteile

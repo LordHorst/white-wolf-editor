@@ -2,8 +2,13 @@ import React from 'react';
 import {Coins, Sparkles} from 'lucide-react';
 import {themeConfig} from './themes/themes';
 
-export const FreebiePanel = ({points, active, onToggle, theme = 'emerald'}) => {
+// Hier haben wir 'disabled' als Parameter hinzugefügt
+export const FreebiePanel = ({points, active, onToggle, theme = 'default', disabled}) => {
     const t = themeConfig[theme] ?? themeConfig.default;
+
+    // WICHTIG: Der Button darf nur gesperrt sein, wenn die Freebies AUS sind und der Charakter noch nicht valide ist.
+    // Wenn die Freebies AN sind, muss man sie immer wieder ausschalten können!
+    const isLocked = disabled && !active;
 
     return (
         <div
@@ -11,12 +16,10 @@ export const FreebiePanel = ({points, active, onToggle, theme = 'emerald'}) => {
             <Coins size={14}/>
             <span>Freebies: {points}</span>
             <button
-                onClick={onToggle}
-                className={`ml-2 flex items-center space-x-1 px-2 py-0.5 rounded transition-colors ${
-                    active
-                        ? `${t.checkedBg} ${t.accentText} opacity-80`
-                        : 'bg-stone-800/60 text-stone-400'
-                }`}
+                // Der neue Status (Gegenteil von active) wird direkt an onToggle übergeben
+                onClick={() => onToggle(!active)}
+                disabled={isLocked}
+                className={`ml-2 flex items-center space-x-1 px-2 py-0.5 rounded transition-colors ${isLocked ? 'opacity-50 cursor-not-allowed' : 'hover:bg-white/10'}`}
             >
                 <Sparkles size={12}/>
                 <span>{active ? 'ON' : 'OFF'}</span>

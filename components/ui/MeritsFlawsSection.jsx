@@ -12,7 +12,7 @@ import React from 'react';
  * @param {function} props.onRemoveMerit    - Callback (merit) => void
  * @param {function} props.onRemoveFlaw     - Callback (flaw) => void
  * @param {boolean}  props.freebiesActive   - Zeigt "Entfernen"-Buttons wenn aktiv
- * @param {string}   [props.theme]          - Tailwind-Farbname ('emerald' | 'purple' | 'amber')
+ * @param {string}   [props.theme]          
  */
 export const MeritsFlawsSection = ({
                                        merits,
@@ -20,7 +20,7 @@ export const MeritsFlawsSection = ({
                                        onRemoveMerit,
                                        onRemoveFlaw,
                                        freebiesActive,
-                                       theme = 'emerald',
+                                       theme = 'default',
                                    }) => (
     <div className={`grid grid-cols-2 gap-8 mt-8 border-t border-${theme}-900/50 pt-6`}>
         {/* Vorzüge */}
@@ -37,15 +37,15 @@ export const MeritsFlawsSection = ({
                                 key={idx}
                                 className={`text-xs text-${theme}-300 flex justify-between items-center border-b border-${theme}-800/30 pb-1`}
                             >
-                <span>
-                  <span className="font-bold">{merit.name}</span>
-                    {(merit.quantity ?? 1) > 1 && (
-                        <span className={`text-${theme}-400 ml-1`}>×{merit.quantity}</span>
-                    )}
-                </span>
+                                <span>
+                                  <span className="font-bold">{merit.name}</span>
+                                    {(merit.quantity ?? 1) > 1 && (
+                                        <span className={`text-${theme}-400 ml-1`}>×{merit.quantity}</span>
+                                    )}
+                                </span>
                                 <span className={`text-${theme}-500 ml-2`}>
-                  ({merit.cost * (merit.quantity ?? 1)})
-                </span>
+                                  ({merit.cost * (merit.quantity ?? 1)})
+                                </span>
                                 {freebiesActive && (
                                     <button
                                         onClick={() => onRemoveMerit(merit)}
@@ -74,10 +74,10 @@ export const MeritsFlawsSection = ({
                                 key={idx}
                                 className={`text-xs text-${theme}-300 flex justify-between items-center border-b border-${theme}-800/30 pb-1`}
                             >
-                <span>
-                  <span className="font-bold">{flaw.name}</span>
-                  <span className={`text-${theme}-500 ml-2`}>({flaw.cost})</span>
-                </span>
+                                <span>
+                                  <span className="font-bold">{flaw.name}</span>
+                                  <span className={`text-${theme}-500 ml-2`}>({flaw.cost})</span>
+                                </span>
                                 {freebiesActive && (
                                     <button
                                         onClick={() => onRemoveFlaw(flaw)}

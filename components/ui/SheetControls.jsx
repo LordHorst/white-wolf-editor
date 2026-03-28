@@ -3,7 +3,7 @@ import {Download, FolderOpen, Shield, ShieldOff, Upload} from 'lucide-react';
 import {FreebiePanel} from './FreebiePanel';
 import {themeConfig} from './themes/themes';
 
-export const SheetControls = ({title, subtitle, theme, mngr, freebieState, onRandomize, setCharacter, freebie, showToast}) => {
+export const SheetControls = ({title, subtitle, theme, mngr, freebieState, onRandomize, setCharacter, freebie, freebieDisabled, showToast}) => {
     const t = themeConfig[theme] ?? themeConfig.default;
 
     const btnClass = `flex items-center space-x-1 px-3 py-1.5 border bg-black/40 transition-all rounded text-[10px] font-bold uppercase tracking-widest ${t.accentText} ${t.border} hover:bg-black/60`;
@@ -19,8 +19,10 @@ export const SheetControls = ({title, subtitle, theme, mngr, freebieState, onRan
                         <FreebiePanel
                             points={freebieState.freebiePoints}
                             active={freebieState.freebiesActive}
-                            onToggle={freebieState.setFreebiesActive}
+                            // Wir nutzen nun den übergebenen newState aus dem Panel
+                            onToggle={(newState) => freebieState.setFreebiesActive(newState)}
                             theme={theme}
+                            disabled={freebieDisabled}
                         />
                     )}
                     <input type="file" accept=".json" ref={mngr.fileInputRef} onChange={mngr.importJSON}

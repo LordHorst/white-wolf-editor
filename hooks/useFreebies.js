@@ -48,7 +48,7 @@ export const useFreebies = (initialPoints = 0, costMap = {}, updateTrait) => {
         setFreebiePoints(newPoints);
         setFreebiesActive(false);
     }, [initialPoints]);
-
+    
     return {
         freebiePoints,
         freebiesActive,
