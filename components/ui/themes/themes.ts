@@ -22,10 +22,9 @@ export interface ThemeColors {
 
 export type ThemeName = 'vampire' | 'werewolf' | 'mage' | 'changeling' | 'vampireV5' | 'default';
 
-let transparencyValue = 20;
 export const themeConfig: Record<ThemeName, ThemeColors> = {
     vampire: {
-        bg: `bg-emerald-950/${transparencyValue}`,
+        bg: `bg-emerald-950/20`,
         border: 'border-emerald-800',
         text: 'text-emerald-100',
         accentBorder: 'border-emerald-500',
@@ -46,7 +45,7 @@ export const themeConfig: Record<ThemeName, ThemeColors> = {
         checkedBg: 'bg-emerald-700',
     },
     werewolf: {
-        bg: `bg-amber-950/${transparencyValue}`,
+        bg: `bg-amber-950/20`,
         border: 'border-amber-800',
         text: 'text-amber-100',
         accentBorder: 'border-amber-500',
@@ -67,7 +66,7 @@ export const themeConfig: Record<ThemeName, ThemeColors> = {
         checkedBg: 'bg-amber-700',
     },
     mage: {
-        bg: `bg-purple-950/${transparencyValue}`,
+        bg: `bg-purple-950/20`,
         border: 'border-purple-800',
         text: 'text-purple-100',
         accentBorder: 'border-purple-500',
@@ -88,7 +87,7 @@ export const themeConfig: Record<ThemeName, ThemeColors> = {
         checkedBg: 'bg-purple-700',
     },
     changeling: {
-        bg: `bg-sky-700/20`,//caching issue? doesn't work with variable...
+        bg: `bg-sky-700/20`,
         border: 'border-sky-800',
         text: 'text-sky-100',
         accentBorder: 'border-sky-500',
@@ -109,7 +108,7 @@ export const themeConfig: Record<ThemeName, ThemeColors> = {
         checkedBg: 'bg-sky-700',
     },
     vampireV5: {
-        bg: `bg-red-950/20`,//caching issue? doesn't work with variable...
+        bg: `bg-red-950/20`,
         border: 'border-red-900',
         text: 'text-red-100',
         accentBorder: 'border-red-500',

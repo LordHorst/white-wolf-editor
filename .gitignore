@@ -3,3 +3,6 @@
 /.idea/projectSettingsUpdater.xml
 /.idea/vcs.xml
 /.idea/workspace.xml
+assets/
+node_modules/
+dist/assets/
