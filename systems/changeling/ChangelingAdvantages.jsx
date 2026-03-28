@@ -2,9 +2,11 @@
 import React from 'react';
 import {BackgroundListItem} from '../../components/sheetImports';
 import {sumBackgrounds} from '../../utils/characterUtils';
+import {ChangelingData} from './changelingData';
 
 export const ChangelingAdvantages = ({character, setCharacter, freebie, showToast, theme}) => {
     const backgroundsTotal = sumBackgrounds(character.advantages.hintergründe);
+    const predefinedBackgrounds = Object.keys(ChangelingData.backgrounds);
 
     const handleBackgroundsChange = (index, name, value) => {
         const newList = [...character.advantages.hintergründe];
@@ -49,6 +51,8 @@ export const ChangelingAdvantages = ({character, setCharacter, freebie, showToas
                         item={bg}
                         index={idx}
                         onChange={handleBackgroundsChange}
+                        predefinedOptions={predefinedBackgrounds}
+                        backgroundsData={ChangelingData.backgrounds}
                         theme={theme}
                     />
                 ))}

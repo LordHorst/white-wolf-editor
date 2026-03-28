@@ -1,5 +1,6 @@
 // systems/changeling/changelingData.js
 import {SharedData} from "../../data/sharedData";
+import {ChangelingBackgrounds} from "./data/changelingBackgrounds";
 
 export const getEmptyChangeling = () => ({
     info: {
@@ -25,10 +26,12 @@ export const getEmptyChangeling = () => ({
         kenntnisse: {Akademisches_Wissen: 0, Computer: 0, Medizin: 0, Okkultismus: 0},
     },
     advantages: {
-        hintergründe: [
-            {name: '', value: 0}, {name: '', value: 0}, {name: '', value: 0},
-            {name: '', value: 0}, {name: '', value: 0},
-        ],
+        hintergründe: [{name: "", value: 0},
+            {name: "", value: 0},
+            {name: "", value: 0},
+            {name: "", value: 0},
+            {name: "", value: 0},
+        ]
     },
     status: {
         glamour: 1,
@@ -44,9 +47,9 @@ export const getEmptyChangeling = () => ({
 export const ChangelingData = {
     kiths: ['Boggan', 'Eshu', 'Nocker', 'Piskey', 'Pooka', 'Redcap', 'Satyr', 'Sidhe', 'Sluagh', 'Troll'],
     courts: ['Seelie', 'Unseelie'],
-    backgrounds: {},
+    backgrounds: ChangelingBackgrounds,
     affiliations: ['Kith', 'Court'],
 };
 
-export const ChangelingMerits = [];
-export const ChangelingFlaws = [];
+export {ChangelingMerits} from "./data/changelingMerits";
+export {ChangelingFlaws} from "./data/changelingFlaws";

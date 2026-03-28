@@ -1,7 +1,7 @@
 // systems/changeling/changelingRandomizer.js
 import {randomChoice, randomizeAbilities, randomizeAttributes, randomizeBackgrounds,} from '../../utils/characterUtils';
 import {SharedData} from '../../data/sharedData';
-import {ChangelingData} from "./changelingData";
+import {ChangelingData, getEmptyChangeling} from "./changelingData";
 
 // ─── Hilfsfunktionen ────────────────────────────────────────────────────────
 
@@ -35,12 +35,12 @@ export const randomizeCharacter = ({setCharacter, freebie, showToast}) => {
         Konzept: randomChoice(SharedData.concepts ?? ['?']),
     };
 
-    const rawAbilities = randomizeAbilities(getEmptyTemplate().abilities);
+    const rawAbilities = randomizeAbilities(getEmptyChangeling().abilities);
 
 
     setCharacter({
         info,
-        attributes: randomizeAttributes(getEmptyMage().attributes),
+        attributes: randomizeAttributes(getEmptyChangeling().attributes),
         abilities: rawAbilities,
         advantages: {
             hintergründe: randomizeBackgrounds(getPredefinedBackgrounds()),
