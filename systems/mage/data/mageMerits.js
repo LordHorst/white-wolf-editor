@@ -1,0 +1,26 @@
+// systems/mage/data/mageMerits.js
+export const MageMerits = [
+    {name: "Fremdsprache", cost: 1, description: "Der Charakter spricht eine zusätzliche Sprache fließend. Kann mehrfach genommen werden (max. 5).", stackable: true, maxStack: 5},
+    {name: "Geschärfter Sinn", cost: 1, description: "Ein einzelner deiner Sinne (Sehen, Hören, Riechen, Schmecken, Tasten) ist schärfer als gewöhnlich. Schwierigkeiten für Wahrnehmung mit diesem Sinn sinken um 2."},
+    {name: "Geschärfte Sinne", cost: 3, description: "Alle fünf deiner Sinne sind schärfer als gewöhnlich. Schwierigkeiten für Wahrnehmungswürfe sinken um 2."},
+    {name: "Verführerische Stimme", cost: 2, description: "Deine Stimme ist außergewöhnlich angenehm. Schwierigkeiten für Überzeugungs- und Verführungswürfe sinken um 2."},
+    {name: "Eidetisches Gedächtnis", cost: 2, description: "Du kannst dich an alles Gesehene und Gehörte erinnern."},
+    {name: "Blitzreaktion", cost: 2, description: "Du reagierst schneller als andere. Du erhältst +2 auf Initiative."},
+    {name: "Zäher Hund", cost: 2, description: "Du bist widerstandsfähiger gegen Schmerz und Verletzungen. Du erhältst +2 Würfel auf alle Würfe, um Schaden zu widerstehen."},
+    {name: "Natürliche Begabung", cost: 3, description: "Du hast eine natürliche Begabung für eine bestimmte Fertigkeit (z.B. Okkultismus, Meditation). Du erhältst +2 Würfel auf Würfe mit dieser Fertigkeit."},
+    {name: "Code der Ehre", cost: 2, description: "Du folgst einem persönlichen Ehrenkodex. Wenn du nach diesem Kodex handelst, erhältst du +2 Würfel auf Willenskraftwürfe."},
+    {name: "Gemeinsinn", cost: 1, description: "Du hast einen gesunden Menschenverstand. Der Spielleiter warnt dich, wenn du etwas offensichtlich Unvernünftiges tun willst."},
+    {name: "Zweihändig", cost: 1, description: "Du kannst beide Hände gleich geschickt einsetzen. Du erhältst keine Abzüge für die Verwendung deiner nicht-dominanten Hand."},
+    {name: "Glückspilz", cost: 3, description: "Du hast außergewöhnliches Glück. Einmal pro Geschichte darfst du einen misslungenen Wurf wiederholen (einschließlich Patzer)."},
+    {name: "Eisenwille", cost: 3, description: "Dein Wille ist unbezwingbar. Du erhältst +3 Würfel auf alle Würfe gegen mentale Beeinflussung (Dominate, Gedankenmagie usw.)."},
+    {name: "Heiler", cost: 2, description: "Du hast eine natürliche Gabe, andere zu heilen. Bei medizinischen Versorgungswürfen erhältst du +2 Würfel."},
+    {name: "Sprachgenie", cost: 3, description: "Du lernst neue Sprachen in einem Viertel der üblichen Zeit und sprichst sie akzentfrei."},
+    {name: "Überlebenskünstler", cost: 2, description: "Du findest in jeder Umgebung Nahrung und Unterschlupf. Alle Überlebenswürfe erhalten +2 Würfel."},
+    {name: "Meditation", cost: 2, description: "Du kannst dich schneller in Meditation versetzen. Die Zeit zum Regenerieren von Quintessenz durch Meditation halbiert sich."},
+    {name: "Geweihtes Nest", cost: 2, description: "Dein Nest (falls vorhanden) ist besonders rein und ergiebig. Es liefert eine zusätzliche Quintessenz pro Woche."},
+    {name: "Verbesserter Fokus", cost: 3, description: "Dein magischer Fokus (Zauberstab, Amulett, Tanz, etc.) ist besonders gut geeignet. Du erhältst -1 Schwierigkeit auf alle Zauberwürfe, die diesen Fokus nutzen."},
+    {name: "Resistenz gegen Paradox", cost: 4, description: "Du bist widerstandsfähiger gegen die Auswirkungen von Paradox. Du erhältst +2 Würfel auf alle Würfe, um Paradox zu widerstehen."},
+    {name: "Verborgene Magie", cost: 2, description: "Deine Zauber sind schwerer zu erkennen. Schwierigkeiten für andere, deine Magie wahrzunehmen, erhöhen sich um 2."},
+    {name: "Traumvisionär", cost: 3, description: "Deine Träume sind besonders klar und oft prophetisch. Der Spielleiter kann dir Hinweise auf zukünftige Ereignisse geben."},
+    {name: "Dunkle Triade", cost: 3, description: "Eine charmante (und zugleich beunruhigende) Mischung aus Narzissmus, Machiavellismus und Soziopathie macht dich zu einem gewandten, regelbrechenden Verführer. Du erhältst +2 Würfel auf Manipulations- und Subterfuge-Würfe."}
+];
