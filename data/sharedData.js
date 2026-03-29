@@ -1,3 +1,8 @@
+const archetypes = ["Abenteurer", "Abweichler", "Architekt", "Autokrat", "Büßer", "Einzelgänger", "Fanatiker", "Fürsorger", "Griesgram", "Handlanger", "Intrigant", "Kavalier", "Kind", "Konformist",
+    "Lebemann/-frau", "Leiter", "Masochist", "Märtyrer", "Monster", "Pädagoge", "Perfektionist", "Rebell", "Richter", "Ritualist", "Schurke", "Traditionalist", "Trickbetrüger", "Überlebender",
+    "Visionär", "Wettkämpfer"
+];
+
 export const SharedData = {
     firstNames: [
         "Viktor", "Elena", "Julian", "Sophia", "Marcus", "Clara", "Dimitri", "Isabel", "Arthur", "Lilith", "Aleksandr", "Anya", "Mikhail", "Tatiana", "Nikolai", "Giovanni", "Lorenzo", "Francesca", "Alessia",
@@ -26,8 +31,3 @@ export const SharedData = {
         {label: "Außer Gefecht", penalty: "X", checked: false}
     ]
 };
-
-const archetypes = ["Abenteurer", "Abweichler", "Architekt", "Autokrat", "Büßer", "Einzelgänger", "Fanatiker", "Fürsorger", "Griesgram", "Handlanger", "Intrigant", "Kavalier", "Kind", "Konformist",
-    "Lebemann/-frau", "Leiter", "Masochist", "Märtyrer", "Monster", "Pädagoge", "Perfektionist", "Rebell", "Richter", "Ritualist", "Schurke", "Traditionalist", "Trickbetrüger", "Überlebender",
-    "Visionär", "Wettkämpfer"
-];
