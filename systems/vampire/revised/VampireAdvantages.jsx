@@ -1,9 +1,10 @@
 // systems/vampire/VampireAdvantages.jsx
 import React from 'react';
-import {BackgroundListItem, DotRating, ListTrait} from '../../../components/sheetImports';
+import {BackgroundListItem, DotRating, ListTrait} from '../../../components';
 import {VampireData} from './vampireData';
 import {sumBackgrounds} from '../../../utils/characterUtils';
 import {getPredefinedBackgrounds, sumDisciplines, sumVirtues,} from './vampireHelpers';
+import {themeConfig} from "../../../components/ui/themes/themes";
 
 /**
  * Zeigt Disziplinen, Hintergründe und Tugenden für den Vampir-Charakterbogen.
@@ -11,7 +12,7 @@ import {getPredefinedBackgrounds, sumDisciplines, sumVirtues,} from './vampireHe
  *   { character, setCharacter, freebie, showToast, theme }
  */
 export const VampireAdvantages = ({character, setCharacter, freebie, showToast, theme}) => {
-
+    const t = themeConfig[theme] ?? themeConfig.default;
     // ─── Disziplinen ─────────────────────────────────────────────────────
     const disciplinesTotal = sumDisciplines(character.advantages.disziplinen);
 
@@ -103,7 +104,7 @@ export const VampireAdvantages = ({character, setCharacter, freebie, showToast, 
     // ─── JSX ─────────────────────────────────────────────────────────────
     return (
         <section className="mb-8">
-            <h2 className={`text-xl font-bold uppercase tracking-widest text-${theme}-500 text-center py-2 mb-6 bg-${theme}-950/20`}>
+            <h2 className={`text-xl font-bold uppercase tracking-widest ${t.text} text-center py-2 mb-6 ${t.bg}}`}>
                 Vorteile
             </h2>
             <div className="grid grid-cols-3 gap-8">
@@ -119,7 +120,7 @@ export const VampireAdvantages = ({character, setCharacter, freebie, showToast, 
 
                 {/* Hintergründe */}
                 <div>
-                    <h3 className={`text-xs font-bold text-${theme}-700 uppercase mb-4`}>
+                    <h3 className={`text-xs font-bold ${t.text} uppercase mb-4`}>
                         Hintergründe ({backgroundsTotal}/5)
                     </h3>
                     {character.advantages.hintergründe.map((bg, idx) => (
@@ -137,7 +138,7 @@ export const VampireAdvantages = ({character, setCharacter, freebie, showToast, 
 
                 {/* Tugenden */}
                 <div>
-                    <h3 className={`text-xs font-bold text-${theme}-700 uppercase mb-4`}>
+                    <h3 className={`text-xs font-bold ${t.text} uppercase mb-4`}>
                         Tugenden ({virtuesExtra}/7)
                     </h3>
                     {Object.entries(character.advantages.tugenden).map(([name, val]) => (

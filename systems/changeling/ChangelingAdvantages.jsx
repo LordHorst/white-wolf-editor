@@ -1,6 +1,6 @@
 // systems/changeling/ChangelingAdvantages.jsx
 import React from 'react';
-import {BackgroundListItem} from '../../components/sheetImports';
+import {BackgroundListItem} from '../../components';
 import {sumBackgrounds} from '../../utils/characterUtils';
 import {ChangelingData} from './changelingData';
 

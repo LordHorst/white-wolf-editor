@@ -9,14 +9,8 @@ export const SharedData = {
         "Al-Farsi", "Haddad", "Nasser", "Sharma", "Patel", "Singh", "Tanaka", "Sato", "Kobayashi", "Li", "Wang", "Zhang", "Garcia", "Martinez", "Rojas", "Okafor", "Diallo", "Mensah", "Andersson", "Johansson",
         "Bjornsen", "Müller", "Schmidt", "Schneider", "Fischer", "Weber", "Wagner", "Becker", "Hoffmann", "Schäfer", "Koch"
     ],
-    demeanors: ["Abenteurer", "Abweichler", "Architekt", "Autokrat", "Büßer", "Einzelgänger", "Fanatiker", "Fürsorger", "Griesgram", "Handlanger", "Intrigant", "Kavalier", "Kind", "Konformist",
-        "Lebemann/-frau", "Leiter", "Masochist", "Märtyrer", "Monster", "Pädagoge", "Perfektionist", "Rebell", "Richter", "Ritualist", "Schurke", "Traditionalist", "Trickbetrüger", "Überlebender",
-        "Visionär", "Wettkämpfer"
-    ],
-    natures: ["Abenteurer", "Abweichler", "Architekt", "Autokrat", "Büßer", "Einzelgänger", "Fanatiker", "Fürsorger", "Griesgram", "Handlanger", "Intrigant", "Kavalier", "Kind", "Konformist",
-        "Lebemann/-frau", "Leiter", "Masochist", "Märtyrer", "Monster", "Pädagoge", "Perfektionist", "Rebell", "Richter", "Ritualist", "Schurke", "Traditionalist", "Trickbetrüger", "Überlebender",
-        "Visionär", "Wettkämpfer"
-    ],
+    demeanors: archetypes,
+    natures: archetypes,
     concepts: ["Abgehalfterter Rockstar", "Korrupter Staatsanwalt", "Straßenphilosoph", "Ehemaliger Kultführer", "Besessener Kunstsammler", "Untergrund-DJ", "Verstoßene Adelige",
         "Fanatischer Jäger, der selbst zum Vampir wurde", "Eiskalter Investmentbanker", "Verlassene Waisenhausleiterin", "Zynischer Kriegsreporter", "Okkulter Buchhändler", "Gescheiterter Revolutionär",
         "Influencer mit dunklem Geheimnis", "Paranoider Verschwörungstheoretiker", "Eleganter Kunstdieb", "Medizinischer Ethiker ohne Moral", "Ex-Polizist auf Rachefeldzug", "Theaterregisseur mit Gottkomplex",
@@ -32,10 +26,8 @@ export const SharedData = {
         {label: "Außer Gefecht", penalty: "X", checked: false}
     ]
 };
-/*
-// ---------------- VAMPIRE DATA ---------------------------
-//export {VampireData, VampireMerits, VampireFlaws, getClanDisciplines} from '../systems/vampire/revised/vampireData.js';
-// ---------------- WEREWOLF DATA ---------------------------
-export {WerewolfData, WerewolfMerits, WerewolfFlaws} from '../systems/werewolf/werewolfData.js';
-// ---------------- MAGE DATA ---------------------------
-export {MageData, MageMerits, MageFlaws, getSectsForAffiliation} from '../systems/mage/mageData.js';*/
+
+const archetypes = ["Abenteurer", "Abweichler", "Architekt", "Autokrat", "Büßer", "Einzelgänger", "Fanatiker", "Fürsorger", "Griesgram", "Handlanger", "Intrigant", "Kavalier", "Kind", "Konformist",
+    "Lebemann/-frau", "Leiter", "Masochist", "Märtyrer", "Monster", "Pädagoge", "Perfektionist", "Rebell", "Richter", "Ritualist", "Schurke", "Traditionalist", "Trickbetrüger", "Überlebender",
+    "Visionär", "Wettkämpfer"
+];

@@ -1,6 +1,6 @@
 // systems/werewolf/WerewolfStatus.jsx
 import React from 'react';
-import {DotRating} from '../../components/sheetImports';
+import {DotRating} from '../../components';
 
 // ─── Statuswerte-Konfiguration ────────────────────────────────────────────────
 const STATUS_FIELDS = [

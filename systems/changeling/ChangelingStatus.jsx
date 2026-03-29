@@ -1,6 +1,6 @@
 // systems/changeling/ChangelingStatus.jsx
 import React from 'react';
-import {DotRating} from '../../components/sheetImports';
+import {DotRating} from '../../components';
 
 export const ChangelingStatus = ({character, setCharacter, theme}) => {
     const set = (key, value) =>

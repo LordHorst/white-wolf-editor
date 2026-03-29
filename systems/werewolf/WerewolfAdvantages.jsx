@@ -1,6 +1,6 @@
 // systems/werewolf/WerewolfAdvantages.jsx
 import React from 'react';
-import {BackgroundListItem, DotRating} from '../../components/sheetImports';
+import {BackgroundListItem, DotRating} from '../../components';
 import {WerewolfData} from './werewolfData';
 import {sumBackgrounds} from '../../utils/characterUtils';
 import {getPredefinedBackgrounds} from './werewolfHelpers';

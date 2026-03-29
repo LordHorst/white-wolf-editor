@@ -1,4 +1,4 @@
-// components/sheetImports.js
+// components/index.js
 export {SheetControls} from './ui/SheetControls';
 export {TraitSection} from './ui/TraitSection';
 export {ListTrait} from './ui/ListTrait';

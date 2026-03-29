@@ -1,6 +1,6 @@
 // systems/vampire5e/VampireV5Advantages.jsx
 import React from 'react';
-import {BackgroundListItem, DotRating} from '../../../components/sheetImports';
+import {BackgroundListItem, DotRating} from '../../../components';
 import {VampireV5Data} from './vampireV5Data';
 import {sumBackgrounds} from '../../../utils/characterUtils';
 

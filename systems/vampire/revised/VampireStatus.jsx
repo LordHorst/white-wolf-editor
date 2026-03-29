@@ -1,6 +1,6 @@
 // systems/vampire/VampireStatus.jsx
 import React from 'react';
-import {DotRating} from '../../../components/sheetImports';
+import {DotRating} from '../../../components';
 import {getGenerationInfo} from './vampireHelpers';
 import {themeConfig} from '../../../components/ui/themes/themes';
 

@@ -9,7 +9,7 @@ import {
     SheetControls,
     StorageModals,
     TraitSection,
-} from './sheetImports';
+} from '.';
 import {themeConfig} from './ui/themes/themes';
 import {getButtonClasses} from '../utils/buttonClasses'; // ausgelagerte Hilfsfunktion
 import {
@@ -58,7 +58,10 @@ export const BaseSheet = ({config}) => {
     const t = themeConfig[theme] ?? themeConfig.default;
 
     // Merits/Flaws Handler – je nach Freebie-Modus unterschiedlich
+    const meritsFlaws = useMeritsFlaws({character, setCharacter, freebie, showToast});
+
     let handleAddMerit, handleRemoveMerit, handleAddFlaw, handleRemoveFlaw;
+
     if (disableFreebies) {
         // Einfache Handler ohne Freebie-Logik
         handleAddMerit = (merit) => {
@@ -81,7 +84,6 @@ export const BaseSheet = ({config}) => {
             setCharacter(p => ({...p, flaws: p.flaws.filter(f => f.name !== flaw.name)}));
     } else {
         // Komplexe Handler mit Freebie-Kosten
-        const meritsFlaws = useMeritsFlaws({character, setCharacter, freebie, showToast});
         handleAddMerit = meritsFlaws.handleAddMerit;
         handleRemoveMerit = meritsFlaws.handleRemoveMerit;
         handleAddFlaw = meritsFlaws.handleAddFlaw;
@@ -130,12 +132,6 @@ export const BaseSheet = ({config}) => {
         );
 
         characterIsValid = attrValid && abilityValid;
-        // --- DEBUGGING START ---
-        console.log("=== CHARAKTER VALIDIERUNG ===");
-        console.log("Attribute Valid:", attrValid, "| Ist:", JSON.stringify(attrGroupStats), "| Soll:", JSON.stringify(attrLimits));
-        console.log("Fähigkeiten Valid:", abilityValid, "| Ist:", JSON.stringify(abilityGroupStats), "| Soll:", JSON.stringify(abilityLimits));
-        console.log("Ist der Charakter komplett gültig?", characterIsValid);
-        // --- DEBUGGING END ---
     } else if (simpleValidation) {
         // Bei einfacher Validierung (z.B. V5) gilt der Charakter als gültig, sobald die Grundwerte verteilt sind
         characterIsValid = true;

@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
-import {ChevronLeft, ChevronRight, Droplets, Flame, Moon, Sparkles} from 'lucide-react';
+import {ChevronLeft, ChevronRight, Crosshair, Droplets, Flame, Moon, Sparkles} from 'lucide-react';
 import {Fairy} from './components/icons/fairy-icon'
-import {Changeling, Mage, Vampire, VampireV5, Werewolf} from './systems/Sheets';
+import {Changeling, Hunter, Mage, Vampire, VampireV5, Werewolf} from './systems/Sheets';
 
 const SYSTEM_GROUPS = [
     {
@@ -46,6 +46,16 @@ const SYSTEM_GROUPS = [
                 active: 'border-sky-600/60 bg-sky-950/40 text-sky-300',
                 inactive: 'border-transparent text-stone-500 hover:border-sky-900/50 hover:bg-sky-950/20 hover:text-sky-400',
                 theme: 'changeling'
+            },
+            {
+                id: 'hunter',
+                name: 'Hunter',
+                sub: 'The Reckoning',
+                icon: Crosshair,
+                dot: 'bg-red-400',
+                active: 'border-amber-600/60 bg-amber-950/40 text-red-300',
+                inactive: 'border-transparent text-stone-500 hover:border-amber-900/50 hover:bg-red-950/20 hover:text-red-400',
+                theme: 'hunter'
             },
         ],
     },
@@ -163,6 +173,7 @@ const App = () => {
                     {activeSystem === 'vampire' && <Vampire/>}
                     {activeSystem === 'werewolf' && <Werewolf/>}
                     {activeSystem === 'mage' && <Mage/>}
+                    {activeSystem === 'hunter' && <Hunter/>}
                     {activeSystem === 'vampire5e' && <VampireV5/>}
                 </div>
             </main>

@@ -20,7 +20,7 @@ export interface ThemeColors {
     checkedBg: string;   // ← für HealthBox-Kästchen
 }
 
-export type ThemeName = 'vampire' | 'werewolf' | 'mage' | 'changeling' | 'vampireV5' | 'default';
+export type ThemeName = 'vampire' | 'werewolf' | 'mage' | 'changeling' | 'hunter' | 'vampireV5' | 'default';
 
 export const themeConfig: Record<ThemeName, ThemeColors> = {
     vampire: {
@@ -106,6 +106,27 @@ export const themeConfig: Record<ThemeName, ThemeColors> = {
         disabledButton: 'bg-gray-700 opacity-50 cursor-not-allowed',
         counterButton: 'bg-sky-800 hover:bg-sky-700 text-white',
         checkedBg: 'bg-sky-700',
+    },
+    hunter: {
+        bg: `bg-yellow-950/50`,           // Neutral dark base, distinct from amber‑tinted werewolf bg
+        border: 'border-yellow-800',
+        text: 'text-yellow-100',
+        accentBorder: 'border-yellow-500',
+        accentText: 'text-red-300',
+        tabActive: 'border-yellow-500 text-yellow-300',
+        tabInactive: 'text-yellow-500 hover:text-yellow-300',
+        meritButton: 'bg-yellow-800 hover:bg-yellow-700 text-white',
+        flawButton: 'bg-rose-800 hover:bg-rose-700 text-white',
+        footerText: 'text-yellow-400',
+        headerButton: 'text-yellow-400 hover:text-yellow-200',
+        emptyText: 'text-red-500',
+        descriptionText: 'text-yellow-400',
+        meritBadge: 'bg-yellow-800 text-yellow-200',
+        flawBadge: 'bg-rose-800 text-rose-200',
+        removeButton: 'bg-gray-700 hover:bg-gray-600 text-white',
+        disabledButton: 'bg-gray-700 opacity-50 cursor-not-allowed',
+        counterButton: 'bg-yellow-800 hover:bg-yellow-700 text-white',
+        checkedBg: 'bg-yellow-700',
     },
     vampireV5: {
         bg: `bg-red-950/20`,

@@ -1,6 +1,6 @@
 // systems/vampire5e/VampireV5Status.jsx
 import React from 'react';
-import {DotRating} from '../../../components/sheetImports';
+import {DotRating} from '../../../components';
 import {DualDamageBox} from './DualDamageBox';
 
 /**

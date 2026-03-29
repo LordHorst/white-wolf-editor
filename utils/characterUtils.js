@@ -71,15 +71,6 @@ export const getAbilityLimits = (totals) => {
 export const sumBackgrounds = (backgrounds) =>
     backgrounds.reduce((sum, b) => sum + b.value, 0);
 
-// ─── Disziplinen ───────────────────────────────────────────────────────────
-export const calculateDisciplineTotals = (character) => {
-    const totals = {};
-    for (const [group, fields] of Object.entries(character.attributes)) {
-        totals[group] = Object.values(fields).reduce((sum, v) => sum + v, 0);
-    }
-    return totals;
-};
-
 // ─── Zufalls-Utilities ──────────────────────────────────────────────────────
 
 export const randomInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;

@@ -15,19 +15,7 @@ export const BaseSheetV5 = ({ config }) => {
     return (
         <BaseSheet
             config={{
-                systemId,
-                title,
-                subtitle,
-                theme,
-                getEmptyCharacter,
-                meritsList,
-                flawsList,
-                renderInfoField,
-                renderAdvantages,
-                renderStatus,
-                renderRules,
-                onRandomize,
-                useSystemEffects,
+                ...config,
                 // V5-spezifische Anpassungen:
                 disableFreebies: true,
                 disableHealthBox: true,
