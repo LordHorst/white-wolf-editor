@@ -1,42 +1,12 @@
 import React, {useState} from 'react';
 import {ChevronLeft, ChevronRight, Crosshair, Droplets, Flame, Moon, Sparkles} from 'lucide-react';
 import {Fairy} from './components/icons/fairy-icon'
-import {Changeling, Hunter, Mage, Vampire, VampireV5, Werewolf} from './systems/Sheets';
+import {Changeling, Hunter, HunterV5, Mage, Vampire, VampireV5, Werewolf} from './systems/Sheets';
 
 const SYSTEM_GROUPS = [
     {
         label: 'Classic World of Darkness',
         systems: [
-            {
-                id: 'vampire',
-                name: 'Vampire',
-                sub: 'The Masquerade',
-                icon: Moon,
-                dot: 'bg-emerald-500',
-                active: 'border-emerald-600/60 bg-emerald-950/40 text-emerald-300',
-                inactive: 'border-transparent text-stone-500 hover:border-emerald-900/50 hover:bg-emerald-950/20 hover:text-emerald-400',
-                theme: 'vampire'
-            },
-            {
-                id: 'werewolf',
-                name: 'Werewolf',
-                sub: 'The Apocalypse',
-                icon: Flame,
-                dot: 'bg-amber-500',
-                active: 'border-amber-600/60 bg-amber-950/40 text-amber-300',
-                inactive: 'border-transparent text-stone-500 hover:border-amber-900/50 hover:bg-amber-950/20 hover:text-amber-400',
-                theme: 'werewolf'
-            },
-            {
-                id: 'mage',
-                name: 'Mage',
-                sub: 'The Ascension',
-                icon: Sparkles,
-                dot: 'bg-purple-500',
-                active: 'border-purple-600/60 bg-purple-950/40 text-purple-300',
-                inactive: 'border-transparent text-stone-500 hover:border-purple-900/50 hover:bg-purple-950/20 hover:text-purple-400',
-                theme: 'mage'
-            },
             {
                 id: 'changeling',
                 name: 'Changeling',
@@ -57,11 +27,51 @@ const SYSTEM_GROUPS = [
                 inactive: 'border-transparent text-stone-500 hover:border-amber-900/50 hover:bg-red-950/20 hover:text-red-400',
                 theme: 'hunter'
             },
+            {
+                id: 'mage',
+                name: 'Mage',
+                sub: 'The Ascension',
+                icon: Sparkles,
+                dot: 'bg-purple-500',
+                active: 'border-purple-600/60 bg-purple-950/40 text-purple-300',
+                inactive: 'border-transparent text-stone-500 hover:border-purple-900/50 hover:bg-purple-950/20 hover:text-purple-400',
+                theme: 'mage'
+            },
+            {
+                id: 'vampire',
+                name: 'Vampire',
+                sub: 'The Masquerade',
+                icon: Moon,
+                dot: 'bg-emerald-500',
+                active: 'border-emerald-600/60 bg-emerald-950/40 text-emerald-300',
+                inactive: 'border-transparent text-stone-500 hover:border-emerald-900/50 hover:bg-emerald-950/20 hover:text-emerald-400',
+                theme: 'vampire'
+            },
+            {
+                id: 'werewolf',
+                name: 'Werewolf',
+                sub: 'The Apocalypse',
+                icon: Flame,
+                dot: 'bg-amber-500',
+                active: 'border-amber-600/60 bg-amber-950/40 text-amber-300',
+                inactive: 'border-transparent text-stone-500 hover:border-amber-900/50 hover:bg-amber-950/20 hover:text-amber-400',
+                theme: 'werewolf'
+            },
         ],
     },
     {
         label: 'World of Darkness 5th Edition',
         systems: [
+            {
+                id: 'hunter5e',
+                name: 'Hunter',
+                sub: 'The Reckoning V5',
+                icon: Crosshair,
+                dot: 'bg-red-400',
+                active: 'border-amber-600/60 bg-amber-950/40 text-red-300',
+                inactive: 'border-transparent text-stone-500 hover:border-amber-900/50 hover:bg-red-950/20 hover:text-red-400',
+                theme: 'hunter5e'
+            },
             {
                 id: 'vampire5e',
                 name: 'Vampire',
@@ -170,10 +180,11 @@ const App = () => {
             <main className="flex-1 min-w-0">
                 <div className="p-4 md:p-8 max-w-5xl mx-auto">
                     {activeSystem === 'changeling' && <Changeling/>}
+                    {activeSystem === 'hunter' && <Hunter/>}
+                    {activeSystem === 'mage' && <Mage/>}
                     {activeSystem === 'vampire' && <Vampire/>}
                     {activeSystem === 'werewolf' && <Werewolf/>}
-                    {activeSystem === 'mage' && <Mage/>}
-                    {activeSystem === 'hunter' && <Hunter/>}
+                    {activeSystem === 'hunter5e' && <HunterV5/>}
                     {activeSystem === 'vampire5e' && <VampireV5/>}
                 </div>
             </main>
