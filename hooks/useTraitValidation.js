@@ -134,8 +134,6 @@ export const useTraitValidation = ({
         if (abilityCapWithoutFreebies !== null && newValue > abilityCapWithoutFreebies) {
             showToast(`Fähigkeiten können ohne Freebies maximal ${abilityCapWithoutFreebies} Punkte haben.`, 'error');
             return;
-        } else {
-            showToast(`Fähigkeiten können ohne Freebies maximal ${abilityCapWithoutFreebies} Punkte haben.`, 'error');
         }
 
         const testChar = JSON.parse(JSON.stringify(character));

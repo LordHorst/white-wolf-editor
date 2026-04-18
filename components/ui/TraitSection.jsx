@@ -111,7 +111,8 @@ export const TraitSection = ({
                                             theme={theme}
                                             value={numericValue}
                                             min={isAttr ? 1 : 0}
-                                            onChange={(v) => onChange(cat, name, v)}
+                                            onChange= { (v) => onChange(cat, name, v)
+                                            }
                                             disabled={isDisabled}
                                         />
                                     </div>
